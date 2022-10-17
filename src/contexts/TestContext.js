@@ -1,4 +1,4 @@
-import { React, useState, createContext, useContext, useEffect} from 'react';
+import { React, useState, createContext, useContext} from 'react';
 import { readRecord, updateRecord, deleteRecord } from '../database/DatabaseHelper';
 
 const TestContext = createContext();
@@ -37,7 +37,7 @@ export const TestProvider = ({children}) => {
 
   console.log("***TEST-PROVIDER RENDER***");
   return (
-    <TestContext.Provider value={{record: context, flag, loadContext, updateContext, deleteContext}}>
+    <TestContext.Provider value={{context, flag, loadContext, updateContext, deleteContext}}>
       {children}
     </TestContext.Provider>
   );

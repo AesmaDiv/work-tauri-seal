@@ -16,8 +16,8 @@ function App() {
       </header>
       <section className="App-body">
         <TestProvider>
-          <TestList />
-          <TestInfo />
+          <TestList/>
+          <TestInfo/>
         </TestProvider>
       </section>
       <footer className="App-footer">

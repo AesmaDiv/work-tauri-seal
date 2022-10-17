@@ -1,11 +1,10 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useRef } from 'react';
 import { useTestContext } from '../../contexts/TestContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
 import { Box } from '@mui/system';
 import { Table,TableHead,TableBody,TableRow,TableCell} from '@mui/material';
 import { TableContainer,TablePagination } from '@mui/material';
-// import TestListRow from './TestListRow';
 
 
 const columns = [
@@ -15,32 +14,36 @@ const columns = [
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
 
+const ROWS_PER_PAGE = 50;
+
 
 export default function TestList() {
-  const {flag, loadContext, deleteContext} = useTestContext();
+  const {flag,loadContext} = useTestContext();
   const [list, setList] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(50);
+  // const [page, setPage] = useState(0);
 
+  const lastId = useRef(0);
+  const page = useRef(0);
 
-  useEffect(() => {
-    async function refresh() {
+  async function refresh(last_id) {
       console.log("TEST-LIST creating list...");
-      let result = await readTestList(`ID > 0 Order By ID Desc Limit 1000`);
-      setList(prev => [...prev, ...result]);
+      const condidion = last_id ? `ID <= ${last_id} ` : `ID > 0`;
+      let result = await readTestList(`${condidion} Order By ID Desc Limit 51`);
+      lastId.current = result[0].id;
+      console.log("-------- Last id is %o", lastId);
+      setList(result);
       //console.log("TEST-LIST creating list...done! %o", result);
     }
-    refresh();
-  }, [page]);
+
+  useEffect(() => {
+    refresh(0);
+  }, [flag]);
 
   const _handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    lastId.current = newPage > page ? lastId.current  + 50 : lastId.current - 50;
+    refresh(lastId.current)
+    // setPage(newPage);
     // let result = await readTestList(`ID > 0 Order By ID Desc Limit 100`);
-  };
-
-  const _handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
   };
 
   const _handleSelect = async (row) => {
@@ -56,7 +59,7 @@ export default function TestList() {
 
 
   const _createRow = (data, onSelect) => {
-    console.log("*** TEST-LIST ROW RENDER");
+    console.log("*** TEST-LIST ROW CREATE");
     return (
       <TableRow hover tabIndex={-1} key={data.id} onClick={e => onSelect(data)}>
         {columns
@@ -77,8 +80,8 @@ export default function TestList() {
       </TableRow>
     )
   }
-
   const _createHeaders = () => {
+    console.log("*** TEST-LIST HEADERS CREATE");
     return (
       <TableHead>
         <TableRow>
@@ -98,16 +101,17 @@ export default function TestList() {
     );
   }
   const _createList = () => {
+    console.log("*** TEST-LIST CREATE");
     return (
       <TableBody>
         {
-          list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          list.slice(page.current * ROWS_PER_PAGE, page.current * ROWS_PER_PAGE + ROWS_PER_PAGE)
             .map((row) => _createRow(row, _handleSelect))
         }
       </TableBody>
     );
   }
-  
+
   console.log("***TEST-LIST RENDER***");
   return (
     <Box sx={{
@@ -119,16 +123,15 @@ export default function TestList() {
           {_createList()}
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[50, 100]}
+      {/* <TablePagination
         component="div"
         count={list.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
+        page={page.current}
+        rowsPerPage={ROWS_PER_PAGE}
+        rowsPerPageOptions={[ROWS_PER_PAGE]}
         onPageChange={_handleChangePage}
-        onRowsPerPageChange={_handleChangeRowsPerPage}
         sx={{ height: '35px', color: 'white' }}
-      />
+      /> */}
     </Box>
   );
 }

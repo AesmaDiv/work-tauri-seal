@@ -6,13 +6,13 @@ import cls from './TestInfo.module.css';
 // import { getCurrentDate } from '../../aux/aux';
 
 
-export default function TestInfo(props) {
-  const {record, updateContext} = useTestContext();
+export default function TestInfo() {
+  const {context, updateContext} = useTestContext();
 
   const onSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
-    form_data['id'] = record.id;
+    form_data['id'] = context.id;
     updateContext(form_data);
   }
   
@@ -30,7 +30,7 @@ export default function TestInfo(props) {
       <DataField
         key={item.name}
         data={item}
-        value={record[item.name]}
+        value={context[item.name]}
         full={item.name === 'comments'}
       />
     );
@@ -47,7 +47,7 @@ export default function TestInfo(props) {
       <form className={cls.datafields} onSubmit={onSubmit}>
         {_createForm()}
       </form>
-      <pre>{JSON.stringify(record, null, 2)}</pre>
+      <pre>{JSON.stringify(context, null, 2)}</pre>
     </div>
   );
 }
