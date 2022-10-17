@@ -3,10 +3,11 @@ import { useTestContext } from '../../contexts/TestContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
 import { Box } from '@mui/system';
-import { Table,TableHead,TableBody,TableRow,TableCell} from '@mui/material';
-import { TableContainer,TablePagination } from '@mui/material';
+import { Table,TableHead,TableBody,TableRow,TableCell, Button} from '@mui/material';
+import { TableContainer, Typography } from '@mui/material';
 
 
+const ROWS_PER_PAGE = 50;
 const columns = [
   { width: 80,  sortable: true,   name: 'id',        label: '№'},
   { width: 230, sortable: true,   name: 'datetest',  label: 'Дата испытания'},
@@ -14,37 +15,26 @@ const columns = [
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
 
-const ROWS_PER_PAGE = 50;
-
 
 export default function TestList() {
   const {flag,loadContext} = useTestContext();
   const [list, setList] = useState([]);
-  // const [page, setPage] = useState(0);
 
   const lastId = useRef(0);
   const page = useRef(0);
 
-  async function refresh(last_id) {
-      console.log("TEST-LIST creating list...");
-      const condidion = last_id ? `ID <= ${last_id} ` : `ID > 0`;
-      let result = await readTestList(`${condidion} Order By ID Desc Limit 51`);
-      lastId.current = result[0].id;
-      console.log("-------- Last id is %o", lastId);
-      setList(result);
-      //console.log("TEST-LIST creating list...done! %o", result);
-    }
+  async function refresh() {
+    console.log("TEST-LIST creating list...");
+    let condition = lastId.current ? `ID<=${lastId.current} ` : `ID>0`;
+    condition = `${condition} Order By ID Desc Limit ${ROWS_PER_PAGE}`;
+    let result = await readTestList(condition);
+    lastId.current = result[0].id;
+    setList(result);
+  }
 
   useEffect(() => {
-    refresh(0);
+    refresh();
   }, [flag]);
-
-  const _handleChangePage = (event, newPage) => {
-    lastId.current = newPage > page ? lastId.current  + 50 : lastId.current - 50;
-    refresh(lastId.current)
-    // setPage(newPage);
-    // let result = await readTestList(`ID > 0 Order By ID Desc Limit 100`);
-  };
 
   const _handleSelect = async (row) => {
     console.log("Selected row %o", row);
@@ -56,7 +46,12 @@ export default function TestList() {
     //   };
     // }
   }
-
+  const _handlePage = (e) => {
+    if (e.target.name === 'btn_page_backward' && page.current === 0) return;
+    page.current = page.current + (e.target.name === 'btn_page_backward' ? -1 : 1); 
+    lastId.current = page.current ? lastId.current  - ROWS_PER_PAGE * page.current : 0;
+    refresh();
+  }
 
   const _createRow = (data, onSelect) => {
     console.log("*** TEST-LIST ROW CREATE");
@@ -103,12 +98,18 @@ export default function TestList() {
   const _createList = () => {
     console.log("*** TEST-LIST CREATE");
     return (
-      <TableBody>
-        {
-          list.slice(page.current * ROWS_PER_PAGE, page.current * ROWS_PER_PAGE + ROWS_PER_PAGE)
-            .map((row) => _createRow(row, _handleSelect))
-        }
-      </TableBody>
+      <TableBody>{list.map((row) => _createRow(row, _handleSelect))}</TableBody>
+    );
+  }
+  const _createOptions = () => {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', border: '1px solid yellow', p: 1}}>
+        <Button variant='contained' size='small' onClick={_handlePage} name='btn_page_backward'
+          sx={{mt: '1px', pb: 0}}>назад</Button>
+        <Typography variant='h6'>{list.length}</Typography>
+        <Button variant='contained' size='small' onClick={_handlePage} name='btn_page_forward'
+          sx={{mt: '1px', pb: 0}}>вперед</Button>
+      </Box>
     );
   }
 
@@ -123,15 +124,7 @@ export default function TestList() {
           {_createList()}
         </Table>
       </TableContainer>
-      {/* <TablePagination
-        component="div"
-        count={list.length}
-        page={page.current}
-        rowsPerPage={ROWS_PER_PAGE}
-        rowsPerPageOptions={[ROWS_PER_PAGE]}
-        onPageChange={_handleChangePage}
-        sx={{ height: '35px', color: 'white' }}
-      /> */}
+      {_createOptions()}
     </Box>
   );
 }
