@@ -1,0 +1,35 @@
+:root {
+  --testinfo-bk: rgb(60, 60, 60);
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--testinfo-bk);
+  color: white;
+  overflow: hidden;
+  gap: 10px;
+  padding: 10px 30px 0px 10px;
+}
+form {
+  overflow: visible;
+  height: fit-content;
+  display: grid;
+  grid-auto-rows: minmax(0px, 20px);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(10,1fr);
+  column-gap: 20px;
+  row-gap: 20px;
+  grid-auto-flow: column;
+}
+.gauges {
+  width: min-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  /* justify-content: space-between; */
+}
+pre {
+  text-align: left;
+  justify-content: baseline;
+}

@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "work-tauri-seal",
+    "productName": "fresh-start",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Lukoil ESP Service, LLC",
+        "title": "FreshStart",
         "width": 800
       }
     ]
