@@ -1,4 +1,4 @@
-import { React, useState, createContext, useContext} from 'react';
+import { React, useState, createContext, useContext, useRef} from 'react';
 import { readRecord, updateRecord, deleteRecord } from '../database/DatabaseHelper';
 
 const TestContext = createContext();
@@ -7,7 +7,7 @@ export const useTestContext = () => { return useContext(TestContext); }
 
 export const TestProvider = ({children}) => {
   const [context, setContext] = useState({});
-  const [flag, setFlag] = useState(true);
+  const [flagUpdate, setFlagUpdate] = useState(true);
 
   const loadContext = async (rec_id) => {
     console.log("TEST-PROVIDER loading record %o...", rec_id);
@@ -21,8 +21,8 @@ export const TestProvider = ({children}) => {
     let result = await updateRecord(new_record);
     setContext(new_record);
     console.log("TEST-PROVIDER updating record...done! %o", result);
-    setFlag(!flag);
-    console.log("Flag is %o", flag);
+    setFlagUpdate(!flagUpdate);
+    console.log("Flag is %o", flagUpdate);
   }
 
   const deleteContext = async (record) => {
@@ -31,13 +31,13 @@ export const TestProvider = ({children}) => {
     let result = await deleteRecord(record);
     setContext({});
     console.log("TEST-PROVIDER deleting record...done! %o", result);
-    setFlag(!flag);
+    setFlagUpdate(!flagUpdate);
     return result;
   }
 
   console.log("***TEST-PROVIDER RENDER***");
   return (
-    <TestContext.Provider value={{context, flag, loadContext, updateContext, deleteContext}}>
+    <TestContext.Provider value={{context, flagUpdate, loadContext, updateContext, deleteContext}}>
       {children}
     </TestContext.Provider>
   );

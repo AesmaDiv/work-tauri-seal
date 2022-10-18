@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from 'react';
+import { React, useRef, useEffect, useState } from 'react';
 import { useTestContext } from '../../contexts/TestContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
@@ -17,14 +17,14 @@ const columns = [
 
 
 export default function TestList() {
-  const {flag,loadContext} = useTestContext();
+  const {flagUpdate, loadContext} = useTestContext();
   const [list, setList] = useState([]);
 
   const lastId = useRef(0);
   const page = useRef(0);
 
-  async function refresh() {
-    console.log("TEST-LIST creating list...");
+  async function refreshList() {
+    console.log("TEST-LIST reading list from DB...");
     let condition = lastId.current ? `ID<=${lastId.current} ` : `ID>0`;
     condition = `${condition} Order By ID Desc Limit ${ROWS_PER_PAGE}`;
     let result = await readTestList(condition);
@@ -32,9 +32,7 @@ export default function TestList() {
     setList(result);
   }
 
-  useEffect(() => {
-    refresh();
-  }, [flag]);
+  useEffect(() => {refreshList();}, [flagUpdate]);
 
   const _handleSelect = async (row) => {
     console.log("Selected row %o", row);
@@ -50,13 +48,18 @@ export default function TestList() {
     if (e.target.name === 'btn_page_backward' && page.current === 0) return;
     page.current = page.current + (e.target.name === 'btn_page_backward' ? -1 : 1); 
     lastId.current = page.current ? lastId.current  - ROWS_PER_PAGE * page.current : 0;
-    refresh();
+    refreshList();
   }
 
   const _createRow = (data, onSelect) => {
     console.log("*** TEST-LIST ROW CREATE");
     return (
-      <TableRow hover tabIndex={-1} key={data.id} onClick={e => onSelect(data)}>
+      <TableRow hover tabIndex={-1} key={data.id} onClick={e => onSelect(data)}
+        sx={{
+          '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },
+          '&.MuiTableRow-root:focus': { backgroundColor: '#1976d2' },
+        }}
+      >
         {columns
           // .filter(column => column.name !== 'id')
           .map((column) => {
@@ -64,8 +67,7 @@ export default function TestList() {
             const cell_key = `${column.name}-${cell_val}`
             return (
               <TableCell key={cell_key}
-                sx={{ 
-                  '&:last-child td, &:last-child th': { border: 0 },
+                sx={{
                   width: column.width, color: 'white' }}
               >
                 {cell_val}
@@ -85,7 +87,6 @@ export default function TestList() {
             .map(column => 
               <TableCell key={column.name} 
                 sx={{
-                  '&:last-child td, &:last-child th': { border: 0 },
                   color: 'white', backgroundColor: 'rgb(60,60,60)', width: column.width}}
               >
                 {column.label}

@@ -3,6 +3,7 @@ import { RECORD_COLUMNS } from '../../database/db_tables';
 import { useTestContext } from '../../contexts/TestContext';
 import DataField from './DataField';
 import cls from './TestInfo.module.css';
+import { useEffect, useRef } from 'react';
 // import { getCurrentDate } from '../../aux/aux';
 
 
