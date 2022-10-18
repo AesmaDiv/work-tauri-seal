@@ -1,15 +1,18 @@
-export const RECORD_COLUMNS = [
-  // { col: 0, row: 0, name: "id",       label: "Номер записи"},
+export const RECORD_SEARCH_COLUMNS = [
   { col: 1, row: 1, name: "datetest", label: "Дата испытания"},
-  { col: 1, row: 2, name: "daterecv", label: "Дата поступления"},
   { col: 1, row: 3, name: "customer", label: "Заказчик"},
   { col: 1, row: 4, name: "ordernum", label: "Наряд-заказ" },
-  { col: 2, row: 1, name: "field",    label: "Месторождение" },
-  { col: 2, row: 2, name: "lease",    label: "Куст"},
-  { col: 2, row: 3, name: "well",     label: "Скважина"},
   { col: 1, row: 6, name: "producer", label: "Производитель" },
   { col: 1, row: 7, name: "serial",   label: "Заводской номер" },
   { col: 1, row: 8, name: "sealtype", label: "Тип ГЗ"},
+]
+export const RECORD_COLUMNS = [
+  ...RECORD_SEARCH_COLUMNS,
+  // { col: 0, row: 0, name: "id",       label: "Номер записи"},
+  { col: 1, row: 2, name: "daterecv", label: "Дата поступления"},
+  { col: 2, row: 1, name: "field",    label: "Месторождение" },
+  { col: 2, row: 2, name: "lease",    label: "Куст"},
+  { col: 2, row: 3, name: "well",     label: "Скважина"},
   { col: 2, row: 4, name: "daysrun",  label: "Суточный пробег" },
   { col: 2, row: 6, name: "pwrlimit", label: "Предел мощности"},
   { col: 2, row: 7, name: "tmplimit", label: "Предел температуры"},

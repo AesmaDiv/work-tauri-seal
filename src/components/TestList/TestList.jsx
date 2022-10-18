@@ -2,9 +2,12 @@ import { React, useRef, useEffect, useState } from 'react';
 import { useTestContext } from '../../contexts/TestContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
-import { Box } from '@mui/system';
-import { Table,TableHead,TableBody,TableRow,TableCell, Button} from '@mui/material';
-import { TableContainer, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/system';
+import { Table, TableHead, TableBody, TableRow, TableCell} from '@mui/material';
+import { TableContainer, IconButton } from '@mui/material';
+import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
+import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
+import SearchBar from './SearchBar';
 
 
 const ROWS_PER_PAGE = 50;
@@ -21,12 +24,15 @@ export default function TestList() {
   const [list, setList] = useState([]);
 
   const lastId = useRef(0);
+  const search = useRef('');
   const page = useRef(0);
 
   async function refreshList() {
     console.log("TEST-LIST reading list from DB...");
-    let condition = lastId.current ? `ID<=${lastId.current} ` : `ID>0`;
-    condition = `${condition} Order By ID Desc Limit ${ROWS_PER_PAGE}`;
+    let condition = search.current;
+    condition += lastId.current ? ` ID<=${lastId.current} ` : ` ID>0`;
+    condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
+    console.log("Search conditions %o", condition);
     let result = await readTestList(condition);
     lastId.current = result[0].id;
     setList(result);
@@ -44,10 +50,17 @@ export default function TestList() {
     //   };
     // }
   }
-  const _handlePage = (e) => {
-    if (e.target.name === 'btn_page_backward' && page.current === 0) return;
-    page.current = page.current + (e.target.name === 'btn_page_backward' ? -1 : 1); 
+  const _handlePage = (name) => {
+    if (name === 'bkwrd' && page.current === 0) return;
+    page.current = page.current + (name === 'bkwrd' ? -1 : 1); 
     lastId.current = page.current ? lastId.current  - ROWS_PER_PAGE * page.current : 0;
+    refreshList();
+  }
+  const _handleSearch = (params) => {
+    const {key, val} = params;
+    search.current = [key, val].every(i => i) ?
+      ` ${key} Like '%${val}%' And` :
+      '';
     refreshList();
   }
 
@@ -66,10 +79,7 @@ export default function TestList() {
             const cell_val = data[column.name]
             const cell_key = `${column.name}-${cell_val}`
             return (
-              <TableCell key={cell_key}
-                sx={{
-                  width: column.width, color: 'white' }}
-              >
+              <TableCell key={cell_key} sx={{width: column.width, color: 'white' }}>
                 {cell_val}
               </TableCell>
             );
@@ -104,22 +114,23 @@ export default function TestList() {
   }
   const _createOptions = () => {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', border: '1px solid yellow', p: 1}}>
-        <Button variant='contained' size='small' onClick={_handlePage} name='btn_page_backward'
-          sx={{mt: '1px', pb: 0}}>назад</Button>
-        <Typography variant='h6'>{list.length}</Typography>
-        <Button variant='contained' size='small' onClick={_handlePage} name='btn_page_forward'
-          sx={{mt: '1px', pb: 0}}>вперед</Button>
-      </Box>
+      <Stack direction='row' sx={{ justifyContent: 'space-between', pt: 1 }}>
+        <SearchBar onSubmit={_handleSearch}/>
+        <Stack direction='row'>
+          <IconButton onClick={e => _handlePage('bkwrd')}><Bwrd/></IconButton>
+          <IconButton onClick={e => _handlePage('frwrd')}><Fwrd/></IconButton>
+        </Stack>
+      </Stack>
     );
   }
 
   console.log("***TEST-LIST RENDER***");
   return (
     <Box sx={{
-      p: '10px', border: '1px solid white', display: 'flex', flexDirection: 'column'
+      p: '10px', border: '1px solid white', display: 'flex', flexDirection: 'column',
+     
     }}>
-      <TableContainer sx={{flex: 1, color: 'white'}}>
+      <TableContainer sx={{flex: 1, color: 'white', background: 'linear-gradient(#e66465, #9198e5)'}}>
         <Table stickyHeader aria-label="sticky table" size='small'>
           {_createHeaders()}
           {_createList()}
