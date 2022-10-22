@@ -8,8 +8,6 @@
   background-color: var(--testinfo-bk);
   color: white;
   overflow: hidden;
-  gap: 10px;
-  padding: 10px 30px 0px 10px;
 }
 form {
   overflow: visible;
@@ -21,6 +19,7 @@ form {
   column-gap: 20px;
   row-gap: 20px;
   grid-auto-flow: column;
+  padding-top: 10px;
 }
 .gauges {
   width: min-content;

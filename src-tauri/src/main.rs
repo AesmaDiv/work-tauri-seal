@@ -3,8 +3,6 @@
   windows_subsystem = "windows"
 )]
 
-const DBPATH: &str = "/home/aesmadiv/Develop/Projects/DB/seal.sqlite";
-
 pub mod commands;
 pub mod database;
 

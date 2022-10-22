@@ -10,35 +10,35 @@ use rusqlite_helper::deleting::{delete, delete_table};
 use models_seal::{Tests, TLRow, Dictionary};
 
 
-pub fn get_testlist(condition: &str) -> Vec<TLRow> {
-  let result = read_table_where::<TLRow>(super::DBPATH, "Tests", condition);
+pub fn get_testlist(db_path: &str, condition: &str) -> Vec<TLRow> {
+  let result = read_table_where::<TLRow>(db_path, "Tests", condition);
   _check_vec::<TLRow>(result, "TestList")
 }
 
-pub fn get_record(rec_id: i32) -> Vec<Tests> {
+pub fn get_record(db_path: &str, rec_id: i32) -> Vec<Tests> {
   let cond = format!("ID={}", rec_id);
-  let result = read_where::<Tests>(super::DBPATH, cond.as_str());
+  let result = read_where::<Tests>(db_path, cond.as_str());
   _check_vec::<Tests>(result, format!("Record {}", &rec_id).as_str())
 }
-pub fn set_record(record: &Tests) -> bool {
-  let result = write(super::DBPATH, record);
+pub fn set_record(db_path: &str, record: &Tests) -> bool {
+  let result = write(db_path, record);
   _check_usize(result, "Record write")
 }
-pub fn del_record(record: &Tests) -> bool {
-  let result = delete(super::DBPATH, record);
+pub fn del_record(db_path: &str, record: &Tests) -> bool {
+  let result = delete(db_path, record);
   _check_usize(result, "Record delete")
 }
 
-pub fn get_dict(table: &str) -> Vec<Dictionary> {
-  let result = read_table::<Dictionary>(super::DBPATH, &table);
+pub fn get_dict(db_path: &str, table: &str) -> Vec<Dictionary> {
+  let result = read_table::<Dictionary>(db_path, &table);
   _check_vec::<Dictionary>(result, format!("dictionary {}", &table).as_str())
 }
-pub fn set_dict(table: &str, dict: &Dictionary) -> bool {
-  let result = write_table::<Dictionary>(super::DBPATH, table, dict);
+pub fn set_dict(db_path: &str, table: &str, dict: &Dictionary) -> bool {
+  let result = write_table::<Dictionary>(db_path, table, dict);
   _check_usize(result, "Dictionary write")
 }
-pub fn del_dict(table: &str, dict: &Dictionary) -> bool {
-  let result = delete_table::<Dictionary>(super::DBPATH, table, dict);
+pub fn del_dict(db_path: &str, table: &str, dict: &Dictionary) -> bool {
+  let result = delete_table::<Dictionary>(db_path, table, dict);
   _check_usize(result, "Dictionary delete")
 }
 

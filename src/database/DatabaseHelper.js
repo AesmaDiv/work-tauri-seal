@@ -1,9 +1,11 @@
 import { invoke } from '@tauri-apps/api/tauri';
+import { DBPATH } from './db_tables';
+
 
 export const readTestList = async function(condition) {
   let result = [];
   console.log("DATABASE reading testList...");
-  let object = await invoke('read_testlist', {condition: condition});
+  let object = await invoke('read_testlist', {dbPath: DBPATH, condition: condition});
   if (Array.isArray(object)) {
     result.push(...object);
   } else {
@@ -16,7 +18,7 @@ export const readTestList = async function(condition) {
 export const readDictionary = async function(table) {
   console.log("DATABASE reading dictionary...");
   let result = [];
-  let object = await invoke('read_dictionary', {table: table});
+  let object = await invoke('read_dictionary', {dbPath: DBPATH, table: table});
   if (Array.isArray(object)) {
     result.push(...object);
   } else {
@@ -29,7 +31,7 @@ export const readDictionary = async function(table) {
 export const readRecord = async function(rec_id) {
   console.log("DATABASE reading test record...");
   let result = [];
-  let object = await invoke('read_record', {recId: rec_id});
+  let object = await invoke('read_record', {dbPath: DBPATH, recId: rec_id});
   if (Array.isArray(object)) {
     result.push(...object);
   } else {
@@ -41,7 +43,7 @@ export const readRecord = async function(rec_id) {
 
 export const updateRecord = async function(new_record) {
   console.log("DATABASE updating test record...");
-  let result = await invoke('write_record', {record: new_record});
+  let result = await invoke('write_record', {dbPath: DBPATH, record: new_record});
   console.log("DATABASE updating test record...done! Result %o", result);
   return result;
 }
@@ -49,7 +51,7 @@ export const updateRecord = async function(new_record) {
 export const deleteRecord = async function(record) {
   console.log("DATABASE deleting test record...");
   console.log("deleteRecord %o", record);
-  let result = await invoke('delete_dictionary', {table: "Tests", dict: record});
+  let result = await invoke('delete_dictionary', {dbPath: DBPATH, table: "Tests", dict: record});
   console.log("DATABASE deleting test record...done! Result %o", result);
   return result;
 }

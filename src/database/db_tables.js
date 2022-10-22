@@ -1,3 +1,4 @@
+export const DBPATH = '/home/aesmadiv/Develop/Projects/DB/seal.sqlite'
 export const RECORD_SEARCH_COLUMNS = [
   { col: 1, row: 1, name: "datetest", label: "Дата испытания"},
   { col: 1, row: 3, name: "customer", label: "Заказчик"},
@@ -29,6 +30,7 @@ export const RECORD_COLUMNS = [
   { col: 4, row: 3, name: "oilshavs", label: "Масло, стружка"},
   { col: 4, row: 4, name: "oilkv",    label: "Масло, диэл.прочность" },
   { col: 1, row: 9, name: "comments", label: "Примечания"},
+  { col: 0, row: 0, name: "rawdata",  label: "Данные испытания"},
 ];
 
 export const DICT_COLUMNS = {

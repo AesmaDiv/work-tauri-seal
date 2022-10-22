@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { Box, InputBase, Select, MenuItem, IconButton, Stack } from '@mui/material';
+import { Box, InputBase, Select, MenuItem, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { default as Bksp } from '@mui/icons-material/Backspace';
 import { RECORD_SEARCH_COLUMNS } from '../../database/db_tables';
@@ -14,6 +14,7 @@ const Search = styled('div')(({ theme }) => ({
   },
   marginLeft: 0,
   width: '100%',
+  height: '40px',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
@@ -39,9 +40,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: '7ch',
       '&:focus': {
-        width: '20ch',
+        width: '14ch',
       },
     },
   },
@@ -77,7 +78,7 @@ export default function SearchBar({onSubmit}) {
         name='search_key'
         value={search.key}
         onChange={_handleChange}
-        sx={{ color: 'black', width: 150}}
+        sx={{ color: 'black', width: 150, height: 40}}
         inputProps={{ 'aria-label': 'Without label' }}
       >
         {[
@@ -88,10 +89,9 @@ export default function SearchBar({onSubmit}) {
       </Select>
     );
   }
-
   const _createSearch = () => {
     return (
-      <Search size='small'>
+      <Search>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
@@ -110,7 +110,9 @@ export default function SearchBar({onSubmit}) {
   }
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', color: 'white' }}>
+    <Box sx={{
+      display: 'flex', flexDirection: 'row', justifyContent: 'space-around', color: 'white' }}
+    >
       {_createSelect()}
       {_createSearch()}
     </Box>

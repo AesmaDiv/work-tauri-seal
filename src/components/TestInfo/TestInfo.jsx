@@ -27,7 +27,9 @@ export default function TestInfo() {
   }
 
   const _createForm = () => {
-    let result = RECORD_COLUMNS.map(item => 
+    let result = RECORD_COLUMNS
+    .filter(item => item.col > 0)
+    .map(item => 
       <DataField
         key={item.name}
         data={item}
@@ -48,7 +50,7 @@ export default function TestInfo() {
       <form className={cls.datafields} onSubmit={onSubmit}>
         {_createForm()}
       </form>
-      <pre>{JSON.stringify(context, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(context, null, 2)}</pre> */}
     </div>
   );
 }

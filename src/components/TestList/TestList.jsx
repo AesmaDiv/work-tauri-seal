@@ -12,12 +12,12 @@ import SearchBar from './SearchBar';
 
 const ROWS_PER_PAGE = 50;
 const columns = [
-  { width: 80,  sortable: true,   name: 'id',        label: '№'},
-  { width: 230, sortable: true,   name: 'datetest',  label: 'Дата испытания'},
+  // { width: 80,  sortable: true,   name: 'id',        label: '№'},
+  { width: 180, sortable: true,   name: 'datetest',  label: 'Дата испытания'},
   { width: 160, sortable: false,  name: 'ordernum',  label: 'Наряд-заказ №'},
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
-
+const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function TestList() {
   const {flagUpdate, loadContext} = useTestContext();
@@ -97,7 +97,8 @@ export default function TestList() {
             .map(column => 
               <TableCell key={column.name} 
                 sx={{
-                  color: 'white', backgroundColor: 'rgb(60,60,60)', width: column.width}}
+                  color: 'white', backgroundColor: 'rgb(60,60,60)',
+                  width: column.width}}
               >
                 {column.label}
               </TableCell>
@@ -114,11 +115,11 @@ export default function TestList() {
   }
   const _createOptions = () => {
     return (
-      <Stack direction='row' sx={{ justifyContent: 'space-between', pt: 1 }}>
+      <Stack direction='row' sx={{ maxWidth: {full_width}, justifyContent: 'space-between', pt: 1 }}>
         <SearchBar onSubmit={_handleSearch}/>
         <Stack direction='row'>
-          <IconButton onClick={e => _handlePage('bkwrd')}><Bwrd/></IconButton>
-          <IconButton onClick={e => _handlePage('frwrd')}><Fwrd/></IconButton>
+          <IconButton sx={{width: 20}} onClick={e => _handlePage('bkwrd')}><Bwrd/></IconButton>
+          <IconButton sx={{width: 20}} onClick={e => _handlePage('frwrd')}><Fwrd/></IconButton>
         </Stack>
       </Stack>
     );
@@ -127,10 +128,11 @@ export default function TestList() {
   console.log("***TEST-LIST RENDER***");
   return (
     <Box sx={{
-      p: '10px', border: '1px solid white', display: 'flex', flexDirection: 'column',
-     
+      display: 'flex', flexDirection: 'column', m: '10px', p: '10px', width: {full_width},
+      border: '1px solid white', borderRadius: '4px', /*boxShadow: '5px 5px 5px black'*/
     }}>
-      <TableContainer sx={{flex: 1, color: 'white', background: 'linear-gradient(#e66465, #9198e5)'}}>
+      <TableContainer sx={{flex: 1, color: 'white', 
+        background: 'linear-gradient(rgb(60,60,60), 90%, rgb(30,30,30)),100%'}}>
         <Table stickyHeader aria-label="sticky table" size='small'>
           {_createHeaders()}
           {_createList()}

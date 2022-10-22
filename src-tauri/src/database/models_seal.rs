@@ -54,6 +54,7 @@ dbtable!(
     // vibr2   : String,
     // vibr3   : String,
     // vibr4   : String,
-    comments: String
+    comments: String,
+    rawdata: Vec<u8>
   }
 );

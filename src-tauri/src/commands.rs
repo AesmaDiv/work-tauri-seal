@@ -8,37 +8,37 @@ pub fn logging(message: String) {
 }
 
 #[tauri::command]
-pub fn read_testlist(condition: &str) -> Vec<mdl::TLRow> {
-  db::get_testlist(condition)
+pub fn read_testlist(db_path: &str, condition: &str) -> Vec<mdl::TLRow> {
+  db::get_testlist(db_path, condition)
 }
 
 #[tauri::command]
-pub fn read_record(rec_id: i32) -> Vec<mdl::Tests> {
-  db::get_record(rec_id)
+pub fn read_record(db_path: &str, rec_id: i32) -> Vec<mdl::Tests> {
+  db::get_record(db_path, rec_id)
 }
 
 #[tauri::command]
-pub fn read_dictionary(table: &str) -> Vec<mdl::Dictionary> {
-  db::get_dict(table)
+pub fn read_dictionary(db_path: &str, table: &str) -> Vec<mdl::Dictionary> {
+  db::get_dict(db_path, table)
 }
 
 #[tauri::command]
-pub fn write_record(record: mdl::Tests) -> bool {
-  db::set_record(&record)
+pub fn write_record(db_path: &str, record: mdl::Tests) -> bool {
+  db::set_record(db_path, &record)
 }
 
 #[tauri::command]
-pub fn write_dictionary(table: &str, dict: mdl::Dictionary) -> bool {
-  db::set_dict(table, &dict)
+pub fn write_dictionary(db_path: &str, table: &str, dict: mdl::Dictionary) -> bool {
+  db::set_dict(db_path, table, &dict)
 }
 
 #[tauri::command]
-pub fn delete_record(record: mdl::Tests) -> bool {
+pub fn delete_record(db_path: &str, record: mdl::Tests) -> bool {
   println!("{:?}", record);
-  db::del_record(&record)
+  db::del_record(db_path, &record)
 }
 
 #[tauri::command]
-pub fn delete_dictionary(table: &str, dict: mdl::Dictionary) -> bool {
-  db::del_dict(table, &dict)
+pub fn delete_dictionary(db_path: &str, table: &str, dict: mdl::Dictionary) -> bool {
+  db::del_dict(db_path, table, &dict)
 }
