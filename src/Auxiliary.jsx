@@ -1,7 +1,7 @@
-import { useTestContext } from "./contexts/TestContext"
+import { useRecordContext } from "./contexts/RecordContext"
 
 export default function Auxiliary() {
-  const {context} = useTestContext();
+  const {context} = useRecordContext();
 
 
   return (

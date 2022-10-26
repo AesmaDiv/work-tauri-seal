@@ -9,11 +9,11 @@ export default function AccordionWrapper({direction, children}) {
 
   const _createComponent = (item) =>
     <Accordion key={item.key} expanded={is_expanded === item.key}
-      onClick={e => setExpanded(is_expanded !== item.key ? item.key : default_key)}
       sx={{
       backgroundColor: 'rgb(60,60,60)', color: 'white', border: '1px solid white',
       /* boxShadow: '3px 3px 5px black' */}}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon/>}
+        onClick={e => setExpanded(is_expanded !== item.key ? item.key : default_key)}>
         <Typography>{item.props.title}</Typography>
       </AccordionSummary>
       <AccordionDetails>

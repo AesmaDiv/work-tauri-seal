@@ -1,0 +1,32 @@
+.press_root {
+  width: 100%;
+  height: 575px;
+}
+.press_controls {
+  display: flex;
+  flex-direction: column;
+  width: 20%; 
+  height: 100%;
+  justify-content: space-between;
+}
+.press_controls_data, .press_controls_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.press_controls_buttons {
+  gap: 10px;
+  flex: grow;
+}
+.press_btn_start, .press_btn_stop {
+  margin-bottom: 5px;
+  padding-bottom: 0px;
+  width: 50%;
+  height: 60px;
+  background-color: #1976d2;
+  color: white;
+}
+.press_btn_save {
+  margin-bottom: 41px;
+  padding-bottom: 0px;
+}

@@ -1,5 +1,5 @@
 import { React, useRef, useEffect, useState } from 'react';
-import { useTestContext } from '../../contexts/TestContext';
+import { useRecordContext } from '../../contexts/RecordContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
 import { Box, Stack } from '@mui/system';
@@ -8,6 +8,8 @@ import { TableContainer, IconButton } from '@mui/material';
 import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
 import SearchBar from './SearchBar';
+
+import cls from './TestList.module.css';
 
 
 const ROWS_PER_PAGE = 50;
@@ -20,7 +22,7 @@ const columns = [
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function TestList() {
-  const {flagUpdate, loadContext} = useTestContext();
+  const {flagUpdate, loadContext} = useRecordContext();
   const [list, setList] = useState([]);
 
   const lastId = useRef(0);
@@ -28,11 +30,11 @@ export default function TestList() {
   const page = useRef(0);
 
   async function refreshList() {
-    console.log("TEST-LIST reading list from DB...");
+    // console.log("TEST-LIST reading list from DB...");
     let condition = search.current;
     condition += lastId.current ? ` ID<=${lastId.current} ` : ` ID>0`;
     condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
-    console.log("Search conditions %o", condition);
+    // console.log("Search conditions %o", condition);
     let result = await readTestList(condition);
     lastId.current = result[0].id;
     setList(result);
@@ -41,7 +43,6 @@ export default function TestList() {
   useEffect(() => {refreshList();}, [flagUpdate]);
 
   const _handleSelect = async (row) => {
-    console.log("Selected row %o", row);
     await loadContext(row.id);
     // if (event.ctrlKey) {
     //   if (await window.confirm(`Do you really want to remove record № ${row.item.id}`)) {
@@ -65,7 +66,7 @@ export default function TestList() {
   }
 
   const _createRow = (data, onSelect) => {
-    console.log("*** TEST-LIST ROW CREATE");
+    // console.log("*** TEST-LIST ROW CREATE");
     return (
       <TableRow hover tabIndex={-1} key={data.id} onClick={e => onSelect(data)}
         sx={{
@@ -88,7 +89,7 @@ export default function TestList() {
     )
   }
   const _createHeaders = () => {
-    console.log("*** TEST-LIST HEADERS CREATE");
+    // console.log("*** TEST-LIST HEADERS CREATE");
     return (
       <TableHead>
         <TableRow>
@@ -108,7 +109,7 @@ export default function TestList() {
     );
   }
   const _createList = () => {
-    console.log("*** TEST-LIST CREATE");
+    // console.log("*** TEST-LIST CREATE");
     return (
       <TableBody>{list.map((row) => _createRow(row, _handleSelect))}</TableBody>
     );
@@ -127,12 +128,8 @@ export default function TestList() {
 
   console.log("***TEST-LIST RENDER***");
   return (
-    <Box sx={{
-      display: 'flex', flexDirection: 'column', m: '10px', p: '10px', width: {full_width},
-      border: '1px solid white', borderRadius: '4px', /*boxShadow: '5px 5px 5px black'*/
-    }}>
-      <TableContainer sx={{flex: 1, color: 'white', 
-        background: 'linear-gradient(rgb(60,60,60), 90%, rgb(30,30,30)),100%'}}>
+    <Box className={cls.testlist_root}>
+      <TableContainer className={cls.testlist_container}>
         <Table stickyHeader aria-label="sticky table" size='small'>
           {_createHeaders()}
           {_createList()}

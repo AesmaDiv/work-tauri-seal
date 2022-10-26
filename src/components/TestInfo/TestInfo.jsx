@@ -1,14 +1,13 @@
 import { Button } from '@mui/material';
 import { RECORD_COLUMNS } from '../../database/db_tables';
-import { useTestContext } from '../../contexts/TestContext';
-import DataField from './DataField';
+import { useRecordContext } from '../../contexts/RecordContext';
+import DataField from '../DataField/DataField';
 import cls from './TestInfo.module.css';
-import { useEffect, useRef } from 'react';
 // import { getCurrentDate } from '../../aux/aux';
 
 
 export default function TestInfo() {
-  const {context, updateContext} = useTestContext();
+  const {context, updateContext} = useRecordContext();
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -35,6 +34,10 @@ export default function TestInfo() {
         data={item}
         value={context[item.name]}
         full={item.name === 'comments'}
+        inputProps={{
+          InputProps: { style: { color: '#ffc653'} },
+          InputLabelProps: { style: { color: 'white' } }
+        }}
       />
     );
     result.push(
