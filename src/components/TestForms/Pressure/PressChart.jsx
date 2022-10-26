@@ -3,13 +3,17 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
+import { usePointsContext } from '../../../contexts/PointsContext';
 
-export default function PressCharts({points, limits, animation}) {
+
+export default function PressCharts({limits}) {
+  const {points} = usePointsContext();
+
   const props = {
     width: "100%", height: "50%",
-    animation: animation
+    animation: 200
   }
-  console.log("--- PRESS CHARTS RENDER");
+  console.log("--- PRESSURE CHARTS RENDER");
   return (
     <Stack direction='column' sx={{width: '80%', height: '100%'}}>
       <PChart {...props} name='верхняя диафрагма' color='#88f888'
@@ -32,7 +36,7 @@ function PChart(props) {
     fill: 'white',style: { textAnchor: 'middle' }, angle: -90, offset: 18
   };
 
-  console.log("--- PRESSURE CHART RENDER %o", props?.name);
+  console.log("--- CHART RENDER %o", props?.name);
   return (
     <ResponsiveContainer width={props?.width} height={props?.height} >
       <ComposedChart

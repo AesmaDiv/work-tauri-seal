@@ -6,9 +6,16 @@ import DataField from "../../DataField/DataField";
 import { DATANAMES } from "./_config";
 
 import cls from './_style.module.css';
+import { usePointsContext } from "../../../contexts/PointsContext";
+
+const STATES = {
+  START: 'СТАРТ',
+  STOP:  'СТОП'
+}
 
 export default function PressControls(props) {
-  const [state, setState] = useState('btn_stop'); // кнопка управления испытанием
+  const {switchRunning} = usePointsContext();
+  const [state, setState] = useState(STATES.STOP); // кнопка управления испытанием
 
   /** Обработчик переключения состояния испытания */
   const _handleChangeTestMode = (_, new_state) => {
@@ -16,7 +23,7 @@ export default function PressControls(props) {
     if ((new_state !== state) && (new_state !== null)) {
       setState(new_state);
       // передача сигнала об изменении состояния испытания
-      props?.onChangeState();
+      switchRunning(new_state === STATES.START);
     }
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
@@ -40,13 +47,13 @@ export default function PressControls(props) {
       </Stack>
       <Stack className={cls.press_controls_buttons}>
         <ToggleButtonGroup exclusive value={state} onChange={_handleChangeTestMode}>
-          <ToggleButton className={cls.press_btn_start} value='btn_start'
+          <ToggleButton className={cls.press_btn_start} value={STATES.START}
             variant='contained' size='small' color="error">
-              СТАРТ
+              {STATES.START}
           </ToggleButton>
-          <ToggleButton className={cls.press_btn_start} value='btn_stop'
+          <ToggleButton className={cls.press_btn_start} value={STATES.STOP}
             variant='contained' size='small' color="info">
-              СТОП
+              {STATES.STOP}
           </ToggleButton>
         </ToggleButtonGroup>
         <Button className={cls.press_btn_save} type='submit' onClick={_handleSavePress}
