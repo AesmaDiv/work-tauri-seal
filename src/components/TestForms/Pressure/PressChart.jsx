@@ -1,39 +1,73 @@
-import React from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { usePointsContext } from '../../../contexts/PointsContext';
+import { usePressPointsContext } from '../../../contexts/Hardware/Press/PressPointsContext';
+import { addLimits, LIMITS } from '../_config';
 
+import { STYLES as CLS } from '../_styles' 
 
-export default function PressCharts({limits}) {
-  const {points} = usePointsContext();
+/** максимальные значения оси Y */
+const AXIS_MAX = {
+  top: LIMITS.top[1] + 0.5,
+  btm: LIMITS.btm[1] + 0.5,
+};
 
+/** Компонент графиков давления диафрагм */
+export default function PressCharts() {
+  const {points} = usePressPointsContext();
+
+  // точки с добавлением пределов допусков
+  const [points_top, points_btm] = [
+    addLimits(points?.press_top, LIMITS.top),
+    addLimits(points?.press_btm, LIMITS.btm)
+  ];
+
+  // общие свойства
   const props = {
-    width: "100%", height: "50%",
-    animation: 200
+    width: "100%",
+    height: "50%",
+    animation: 100
   }
   console.log("--- PRESSURE CHARTS RENDER");
   return (
-    <Stack direction='column' sx={{width: '80%', height: '100%'}}>
+    <Stack sx={CLS.charts} direction='column'>
       <PChart {...props} name='верхняя диафрагма' color='#88f888'
-        domain={[0, limits[0]]} data={points?.press_top}/>
+        domain={[0, AXIS_MAX.top]} data={points_top}/>
       <PChart {...props} name='нижняя диафрагма' color='#8888f8'
-        domain={[0, limits[1]]} data={points?.press_btm}/>
+        domain={[0, AXIS_MAX.btm]} data={points_btm}/>
     </Stack>
   );
 }
 
+/** Компонент графика давления диафрагмы */
 function PChart(props) {
-  const limit_props = { stroke: 0, fill: "#707000", type: "monotone", animationDuration: 0 };
-  const axis_props =  { stroke: '#fff', strokeWidth: 2, type: 'number' };
-  const label_x_props = { 
-    value: 'время, сек', position: 'insideBottomRight',
-    fill: 'white', offset: -2
+  // свойства для используемых компонентов
+  const props_axis =  {
+    stroke: '#fff',
+    strokeWidth: 2,
+    type: 'number'
   };
-  const label_y_props = { 
-    value: 'давление, кгс/см2', position: 'insideLeft',
-    fill: 'white',style: { textAnchor: 'middle' }, angle: -90, offset: 18
+  const props_area_limit = {
+    stroke: 0,
+    fill: "#707000",
+    type: "monotone",
+    animationDuration: 0,
+    connectNulls: true
+  };
+  const props_label_x = { 
+    value: 'время, сек',
+    position: 'insideBottomRight',
+    fill: 'white',
+    offset: -2
+  };
+  const props_label_y = { 
+    value: 'давление, кгс/см2',
+    position: 'insideLeft',
+    fill: 'white',
+    offset: 18,
+    angle: -90,
+    style: { textAnchor: 'middle' }
   };
 
   console.log("--- CHART RENDER %o", props?.name);
@@ -46,17 +80,17 @@ function PChart(props) {
         <CartesianGrid stroke='#777' strokeDasharray="5 5" />
         <Legend payload={[{ value: props.name, type: 'line', color: props.color}]} verticalAlign='top'/>
 
-        <XAxis {...axis_props} domain={[0, 180]} dataKey="x" tickCount={10}
-          label={{...label_x_props}}/>
-        <YAxis {...axis_props} domain={props.domain} tickCount={props.domain[1] / 0.5 + 1}
-          label={{...label_y_props}}/>
+        <XAxis {...props_axis} domain={[0, 180]} dataKey="x" tickCount={10}
+          label={{...props_label_x}}/>
+        <YAxis {...props_axis} domain={props.domain} tickCount={props.domain[1] / 0.5 + 1}
+          label={{...props_label_y}}/>
 
-        <Area dataKey="limit_top" {...limit_props}/>
+        <Area /* Верхний допуск */ dataKey="limit_top" {...props_area_limit}/>
 
-        <Line type="monotone" name={props.name} animationDuration={props.animation} strokeWidth={2}
-          dataKey="y" stroke={props.color} dot={false}/>
+        <Line /* Кривая графика */ type="monotone" name={props.name} animationDuration={props.animation}
+          dataKey="y" stroke={props.color} strokeWidth={2} dot={false}/>
 
-        <Area dataKey="limit_btm" {...limit_props}/>
+        <Area /* Нижний допуск */ dataKey="limit_btm" {...props_area_limit}/>
       </ComposedChart>
     </ResponsiveContainer>
   );

@@ -6,7 +6,7 @@ export default function DataField(props) {
   const [_value, setValue] = useState('');
 
   useEffect(() => {
-    setValue(props.value);
+    setValue(props?.value ? props.value : '');
   }, [props.value]);
 
   const _handleChange = (e) => {
@@ -23,7 +23,7 @@ export default function DataField(props) {
     key={props.data?.name} 
     name={props.data?.name} 
     label={props.data?.label}
-    value={_value ? _value : ''}
+    value={_value}
     size='small'
     margin='none'
       variant='outlined'

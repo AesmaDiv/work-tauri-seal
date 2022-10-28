@@ -1,35 +1,34 @@
 import { Stack } from "@mui/system";
-import { ToggleButton, ToggleButtonGroup, Button } from "@mui/material";
+import { Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import DataField from "../../DataField/DataField";
+import { usePowerValuesContext } from "../../../contexts/Hardware/Power/PowerValuesContext";
+
+import { POWER_DATANAMES } from '../_config';
+import { STYLES as CLS } from "../_styles";
 import { useHardwareContext } from "../../../contexts/Hardware/HardwareContext";
-import { usePressValuesContext } from "../../../contexts/Hardware/Press/PressValuesContext";
-
-import { PRESS_DATANAMES } from "../_config";
-import { STYLES as CLS } from '../_styles';
 
 
-/** Компонент управления испытанием давления диафрагм */
-export default function PressControls() {
+export default function PowerControls() {
   // callback переключения состояния испытания и сохранения точек
   const {is_reading, switchReading} = useHardwareContext();
-  const {values} = usePressValuesContext();
+  const {values} = usePowerValuesContext();
 
   /** Обработчик переключения состояния испытания */
   const _handleChangeTestMode = (_, new_state) => {
     (new_state !== is_reading) && (new_state !== null) && switchReading(new_state);
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
-  const _handleSavePress = (event) => {
+  const _handleSavePress = () => {
     // savePoints();
   }
 
-  console.log("--- PRESS CONTROLS RENDER");
+  console.log("--- POWER CONTROLS RENDER");
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>
         {
-        PRESS_DATANAMES.map(item => 
+        POWER_DATANAMES.map(item => 
           <DataField key={item.name} data={item} value={values[item.name]}
             inputProps={{
               InputProps: { style: { color: '#ffc653'}, readOnly: true },
@@ -56,4 +55,3 @@ export default function PressControls() {
     </Stack>
   );
 }
-

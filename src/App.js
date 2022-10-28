@@ -1,7 +1,7 @@
 import AppHeader from './components/AppBar/AppHeader';
 import TestList from './components/TestList/TestList';
 import TestInfo from './components/TestInfo/TestInfo';
-import TestPower from './components/TestForms/TestPower';
+import PowerForm from './components/TestForms/Power/PowerForm';
 import PressForm from './components/TestForms/Pressure/PressForm';
 import StatusBar from './components/StatusBar';
 import AccordionWrapper from './components/AccordionWrapper/AccordionWrapper';
@@ -25,7 +25,7 @@ function App() {
           <AccordionWrapper direction='column'>
             <TestInfo  key='key_testlist'  title='Информация об объекте'/>
             <PressForm key='key_testpress' title='Давление диафрагм'/>
-            <TestPower key='key_testpower' title='Потребляемая мощность'/>
+            <PowerForm key='key_testpower' title='Потребляемая мощность'/>
             <Auxiliary key='key_auxiliary' title='Auxuliary'/>
           </AccordionWrapper>
         </RecordProvider>
