@@ -10,17 +10,20 @@ export const POWER_DATANAMES = [
   {name: 'rpm',     label: 'Скорость, мин−1'},
   {name: 'torque',  label: 'Момент, Н*м'},
   {name: 'power',   label: 'Мощность, кВт'},
-  {name: 'temper',    label: 'Температура, °C'},
+  {name: 'temper',  label: 'Температура, °C'},
 ]
 
-export const CHART_LENGTH = 180;
-export const LIMITS = {
+export const PRESS_LIMITS = {
   top: [0.5, 2],
   btm: [1, 3]
 }
+export const POWER_LIMITS = {
+  power: 0.6,
+  temper: 120
+}
 
 /** Функция добавления информации для пределов */
-export function addLimits(array, limits) {
+export function addLimits(array, limits, length) {
   if (!array) return [];
 
   let result = [...array];
@@ -34,7 +37,7 @@ export function addLimits(array, limits) {
   } else {
     result.unshift({x: 0, ...props})
   }
-  result.push({x: CHART_LENGTH, ...props})
+  result.push({x: length, ...props})
 
   return result;
 }
