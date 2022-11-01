@@ -1,5 +1,5 @@
 import { React, useRef, useEffect, useState } from 'react';
-import { useRecordContext } from '../../contexts/RecordContext';
+import { useRecord } from '../../contexts/RecordContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
 import { Box, Stack } from '@mui/system';
@@ -22,7 +22,7 @@ const columns = [
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function TestList() {
-  const {flagUpdate, loadContext} = useRecordContext();
+  const {flagUpdate, loadContext} = useRecord();
   const [list, setList] = useState([]);
 
   const lastId = useRef(0);

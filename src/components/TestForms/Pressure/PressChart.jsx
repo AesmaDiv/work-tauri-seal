@@ -2,46 +2,49 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { usePressPointsContext } from '../../../contexts/Hardware/Press/PressPointsContext';
-import { addLimits, LIMITS } from '../_config';
+import { usePressPoints } from '../../../contexts/Hardware/PressPointsContext';
+import { addLimits, PRESS_LIMITS } from '../_config';
 
 import { STYLES as CLS } from '../_styles' 
 
+
+/** максимальное значение оси X */
+const TIME_LIMIT = 180;
 /** максимальные значения оси Y */
 const AXIS_MAX = {
-  top: LIMITS.top[1] + 0.5,
-  btm: LIMITS.btm[1] + 0.5,
+  top: PRESS_LIMITS.top[1] + 0.5,
+  btm: PRESS_LIMITS.btm[1] + 0.5,
 };
 
 /** Компонент графиков давления диафрагм */
-export default function PressCharts() {
-  const {points} = usePressPointsContext();
+export default function PressureCharts() {
+  const points = usePressPoints();
 
   // точки с добавлением пределов допусков
   const [points_top, points_btm] = [
-    addLimits(points?.press_top, LIMITS.top),
-    addLimits(points?.press_btm, LIMITS.btm)
+    addLimits(points?.press_top, PRESS_LIMITS.top, TIME_LIMIT),
+    addLimits(points?.press_btm, PRESS_LIMITS.btm, TIME_LIMIT)
   ];
 
   // общие свойства
   const props = {
     width: "100%",
     height: "50%",
-    animation: 100
+    animation: 300
   }
-  console.log("--- PRESSURE CHARTS RENDER");
+  console.log("--- PRESSURE CHARTS RENDER --- %o", points);
   return (
     <Stack sx={CLS.charts} direction='column'>
-      <PChart {...props} name='верхняя диафрагма' color='#88f888'
+      <PressChart {...props} name='верхняя диафрагма' color='#88f888'
         domain={[0, AXIS_MAX.top]} data={points_top}/>
-      <PChart {...props} name='нижняя диафрагма' color='#8888f8'
+      <PressChart {...props} name='нижняя диафрагма' color='#8888f8'
         domain={[0, AXIS_MAX.btm]} data={points_btm}/>
     </Stack>
   );
 }
 
 /** Компонент графика давления диафрагмы */
-function PChart(props) {
+function PressChart(props) {
   // свойства для используемых компонентов
   const props_axis =  {
     stroke: '#fff',

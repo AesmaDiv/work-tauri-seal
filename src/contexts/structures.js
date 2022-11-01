@@ -1,18 +1,18 @@
 /** Cтруктура данных об испытаниях */
 export class TestData {
-  constructor(test_data, press_top, press_btm) {
-    this.test_data = test_data || {};
-    this.press_top = press_top || [];
-    this.press_btm = press_btm || [];
+  constructor(power_data, press_top, press_btm) {
+    this.power_data = power_data || {};
+    this.press_top  = press_top || [];
+    this.press_btm  = press_btm || [];
   }
 }
 /** Структура данных об испытании потребляемой мощности */
 export class PowerData{
   constructor(psi, power, temp, etime) {
-    this.etime = etime;
-    this.power = power;
-    this.psi = psi;
-    this.temp = temp;
+    this.etime  = etime;
+    this.power  = power;
+    this.psi    = psi;
+    this.temp   = temp;
   }
 }
 
@@ -34,45 +34,36 @@ export function createPressPoints(array, length) {
   let result = [];
   if (array?.length && length > 0) {
     array.length = length;
-    array.map(v => v > 0 ? v * 0.070307 : 0)
-      .forEach((item, index) => {
-        result.push({x: index, y: item})
+    array.map(val => val > 0 ? val * 0.070307 : 0)
+    .forEach((item, index) => {
+      result.push({x: index, y: item})
     });
+  }
+  
+  return result;
+}
+
+/** Функция создания массива точек для графика
+ * потребляемой мощности из данных испытания */
+export function createPowerPoints(array, length) {
+  let result = [];
+  if (array?.length && length > 0) {
+    if (array.length > length) array.length = length;
+    array.filter(item => Object.values(item).some(val => val > 0))
+    .forEach(item => {
+      result.push({x: item.etime, y1: item.power, y2: item.temp})
+    })
   }
 
   return result;
 }
 
-/** Функция добавления точки со случайным значением */
-export function addRandomPoint(array) {
-  console.log("Adding random point");
-  let [num, step] = [100, 1]
-  if (array.press_top === undefined) array = { press_top: [], press_btm: [] }
-  else if (array.press_top.length > num) return array;
-  let arr1 = [...array.press_top];
-  let last = arr1.length ? arr1[arr1.length - 1] : {x: -step, y: 1.5};
-  let rnd = (Math.random() - 0.5)  * 0.5;
-  let newy = (last.y + rnd) < 0 ?
-    0 :
-    (last.y + rnd) > 2.5 ?
-      2.5 :
-      last.y + rnd;
-  arr1.push({x: last.x + step, y: newy});
-  
-  let arr2 = [...array.press_btm];
-  last = arr2.length ? arr2[arr2.length - 1] : {x: -step, y: 2};
-  rnd = (Math.random() - 0.5)  * 0.5;
-  newy = (last.y + rnd) < 0 ?
-    0 :
-    (last.y + rnd) > 2.5 ?
-      2.5 :
-      last.y + rnd;
-  arr2.push({x: last.x + step, y: newy});
-
-  return {
-    press_top: arr1,
-    press_btm: arr2
-  };
+/** Функция генерирования следующего случайного значения */
+export function generateNext(prev) {
+  let x = Math.random() - 0.5;
+  x = x < 0 ? -x : x;
+  let result = (prev + x) > 2.5 ? prev - x : prev + x;
+  return Math.round(result * 100) / 100;
 }
 
 /** Конвертация массива байт в массив float */

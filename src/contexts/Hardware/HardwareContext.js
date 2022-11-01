@@ -1,65 +1,53 @@
-import { React, useState, createContext,
-         useContext, useEffect, useRef} from 'react';
+import { useState, useEffect } from 'react';
+import { createContainer } from 'react-tracked';
+
+import { generateNext } from '../structures';
 
 
-const HardwareContext = createContext();
-export const useHardwareContext = () => { return useContext(HardwareContext) };
-
-/** Провайдер контекста для данный с измерительных приборов */
-export default function HardwareProvider({children}) {
-  const [is_reading, setReading] = useState(false);
-  const [hw_values, setHWValues] = useState({
-    rpm:        0, // скорость вращения
-    torque:     0, // момент
-    power:      0, // мощность
-    temper:     0, // температура
-    press_sys:  0, // давление в системе
-    press_top:  0, // давление верхней диафрагмы
-    press_btm:  0  // давление нижней диафрагмы
-  });
-
-  const test_time = useRef(0);
-  /** Обновление текущих точек */
-  function _refreshHardwarePoints() {
-    let timer = setTimeout(() => {
-      if (is_reading) {
-        const fnc = (val) => {
-          let x = Math.random() - 0.5;
-          x = x < 0 ? -x : x;
-          let result = (val + x) > 2.5 ? val - x : val + x;
-          return Math.round(result * 100) / 100;
-        }
-        // добавление случайной точки
-        let new_values = {
-          rpm:        fnc(hw_values.rpm),
-          torque:     fnc(hw_values.torque),
-          temper:     fnc(hw_values.temper),
-          press_sys:  fnc(hw_values.press_sys),
-          press_top:  fnc(hw_values.press_top),
-          press_btm:  fnc(hw_values.press_btm),
-        }
-        new_values.ttime = ++test_time.current;
-        new_values.power = new_values.torque * new_values.rpm / 63.025;
-        setHWValues(new_values);
-      }
-    }, 10);
-    return (() => {
-      clearTimeout(timer)
-    });
-  }
-  useEffect(() => _refreshHardwarePoints());
-
-  /** Переключение состояния испытания */
-  const switchReading = (state) => {
-    console.warn("Switching running state, %o", state);
-    !state && (() => test_time.current = 0)();
-    setReading(state);
-  }
-
-  console.log("***HARDWARE-PROVIDER RENDER***");
-  return (
-    <HardwareContext.Provider value={{hw_values, is_reading, switchReading}}>
-      {children}
-    </HardwareContext.Provider>
-  );
+const PULLING_RATE = 1000; // период обновления в мс
+const INITIAL = {
+  is_reading: false,     // статус чтения
+  ttime:      0,         // время испытания
+  rpm:        0,         // скорость вращения
+  torque:     0,         // момент
+  power:      0,         // мощность
+  temper:     0,         // температура
+  press_sys:  0,         // давление в системе
+  press_top:  0,         // давление верхней диафрагмы
+  press_btm:  0          // давление нижней диафрагмы
 }
+
+/** Провайдер данных с оборудования */
+function HardwareContext() {
+  const [hw_values, setValues] = useState(INITIAL);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      if (hw_values.is_reading) {
+        // Здесь должна быть функция чтения данных с оборудования,
+        // а пока тут добавление случайных значений
+        let new_values = {
+          ttime:      hw_values.ttime + 1,
+          rpm:        generateNext(hw_values.rpm),
+          torque:     generateNext(hw_values.torque),
+          temper:     generateNext(hw_values.temper),
+          press_sys:  generateNext(hw_values.press_sys),
+          press_top:  generateNext(hw_values.press_top),
+          press_btm:  generateNext(hw_values.press_btm),
+        }
+        new_values.power = Math.round(new_values.torque * new_values.rpm / 63.025 * 100) / 100;
+        setValues((prev) => ({...prev, ...new_values}));
+      }
+    }, PULLING_RATE);
+    return (() => clearTimeout(timer));
+  })
+
+  console.log("+++ HARDWARE PROVIDER RENDER +++");
+  return [hw_values, setValues]
+}
+
+export const {
+  Provider: HardwareProvider,
+  useTrackedState: useHardware,
+  useUpdate: updateHardware,
+} = createContainer(HardwareContext);

@@ -1,82 +1,57 @@
-import { React, createContext, useContext, useMemo, useRef} from 'react';
+import { useMemo, useRef} from 'react';
+import { createContainer } from 'react-tracked';
 
-import { TestData, getTestData, createPressPoints } from '../structures';
-import { useRecordContext } from '../RecordContext';
-import { useHardwareContext } from './HardwareContext';
-import { CHART_LENGTH } from '../../components/TestForms/_config';
-
-
-const PowerPointsContext = createContext();
-export const usePowerPointsContext = () => { return useContext(PowerPointsContext); }
-
-/** Провайдер контекста для точек */
-export default function PowerPointsProvider({children}) {
-  // контекс из провайдера значений данных БД
-  const {context} = useRecordContext();
-  // контекст из провайдера значений с приборов
-  const {power_values, is_running, switchRunning} = useHardwareContext();
+import { getTestData, createPowerPoints } from '../structures';
+import { useRecord } from '../RecordContext';
+import { useHardware } from './HardwareContext';
 
 
-  /** Точки полученые с измерительных приборов */
-  const hardware_points = useRef({
-    ttime:    [], // время
-    rpm:      [], // скорость
-    torque:   [], // момент
-    power:    [], // мощность
-    temper:   [], // темперутура
-  });
-  /** Короткая ссылка на hardware_points.current */
-  let hpc = hardware_points.current;
-  if (is_running) {
-    // если достигнут лимит точек
-    if (hpc.rpm.length > CHART_LENGTH) {
-      // прекращаем испытание
-      switchRunning(false);
-    } else {
-      // добавление точки с приборов в массив
-      Object.keys(hpc).forEach(key => {
-        hpc[key].push({
-          x: hpc[key].length,
-          y: power_values[key]
+const CHART_LENGTH = 25;
+const INITIAL = {
+  power:    [], // мощность
+};
+
+/** Провайдер точек для графика давления диафрагм */
+const PowerPointsContext = () => {
+  const {record} = useRecord();
+  const hw_values = useHardware();
+  const points = useRef({...INITIAL});
+
+  /** Точки получаемые из провайдера БД */
+  const record_points = useMemo(() => {
+    console.warn("Refreshing RECORD points");
+    const test_data = getTestData(record);
+    let power   = createPowerPoints(test_data.power_data, CHART_LENGTH);
+
+    return {power};
+  }, [record]);
+
+  /** Точки получаемые из провайдера данных с оборудования */
+  const hardware_points = useMemo(() => {
+    if (hw_values.is_reading) {
+        // если достигнут лимит точек
+      if (points.current.power.length < CHART_LENGTH) {
+        // добавление точки с приборов в массив
+        points.current.power.push({
+          x: points.current.power.length, //ttime,
+          y1: hw_values.power,
+          y2: hw_values.temper
         });
-      })
+      }
+    } else {
+      points.current = {...INITIAL};
     }
-  }
+    let power   = [...points.current.power];
 
-  let test_data = useRef(new TestData());
-  /** Точки полученные из контекста */
-  const context_points = useMemo(() => {
-    console.warn("Reseting hardware points");
-    hardware_points.current = {ttime: [], rpm: [], torque: [], power: [], temper: []};
-    console.warn("Calculating context points");
-    test_data.current = getTestData(context);
-    let rpm     = createPressPoints(test_data.current?.rpm,     CHART_LENGTH);
-    let torque  = createPressPoints(test_data.current?.torque,  CHART_LENGTH);
-    let power   = createPressPoints(test_data.current?.power,   CHART_LENGTH);
-    let temper  = createPressPoints(test_data.current?.temper,  CHART_LENGTH);
+    return {power};
+  }, [hw_values])
 
-    return {rpm, torque, power, temper};
-  }, [context]);
-
-  const savePoints = () => {
-    console.warn("Saving power consumption points");
-    // console.warn("TestData %o", test_data);
-    // test_data.current.rpm = current_points.rpm.map(el => el.y);
-    // test_data.current.torque = current_points.torque.map(el => el.y);
-    // console.warn("TestData %o", test_data);
-  }
-
-  /** точки, отправляющиеся в компонент графика для отрисовки */
-  const points = hpc.rpm.length ?
-    hpc :
-    context_points;
-  /** скорость анимации графика */
-  const animation = is_running? 0 : 200;
-
-  console.log("***POWER POINTS-PROVIDER RENDER***");
-  return (
-    <PowerPointsContext.Provider value={{points, animation, savePoints}}>
-      {children}
-    </PowerPointsContext.Provider>
-  );
+  console.log("+++ PRESS POINTS PROVIDER +++");
+  return [hw_values.is_reading ? hardware_points : record_points];
 }
+
+export const {
+  Provider: PowerPointsProvider,
+  useTrackedState: usePowerPoints,
+  useUpdate: updatePowerPoints,
+} = createContainer(PowerPointsContext);

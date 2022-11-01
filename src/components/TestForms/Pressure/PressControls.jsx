@@ -1,9 +1,8 @@
 import { Stack } from "@mui/system";
 import { ToggleButton, ToggleButtonGroup, Button } from "@mui/material";
 
+import { useHardware, updateHardware } from "../../../contexts/Hardware/HardwareContext";
 import DataField from "../../DataField/DataField";
-import { useHardwareContext } from "../../../contexts/Hardware/HardwareContext";
-import { usePressValuesContext } from "../../../contexts/Hardware/Press/PressValuesContext";
 
 import { PRESS_DATANAMES } from "../_config";
 import { STYLES as CLS } from '../_styles';
@@ -12,33 +11,39 @@ import { STYLES as CLS } from '../_styles';
 /** Компонент управления испытанием давления диафрагм */
 export default function PressControls() {
   // callback переключения состояния испытания и сохранения точек
-  const {is_reading, switchReading} = useHardwareContext();
-  const {values} = usePressValuesContext();
+  const hw_values = useHardware();
+  const changeHardware = updateHardware();
 
   /** Обработчик переключения состояния испытания */
   const _handleChangeTestMode = (_, new_state) => {
-    (new_state !== is_reading) && (new_state !== null) && switchReading(new_state);
+    (new_state !== hw_values.is_reading) &&
+    (new_state !== null) &&
+    changeHardware((prev) => ({...prev, is_reading: new_state}));
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
   const _handleSavePress = (event) => {
-    // savePoints();
+    // props?.changeActive &&
+    // props.changeActive(!props.is_active)
+    // console.warn("PressControls is_active changed");
+    // // savePoints();
   }
 
-  console.log("--- PRESS CONTROLS RENDER");
+  console.log("--- PRESS CONTROLS RENDER ---");
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>
         {
-        PRESS_DATANAMES.map(item => 
-          <DataField key={item.name} data={item} value={values[item.name]}
+        PRESS_DATANAMES.map(item => {
+          return <DataField key={item.name} data={item} value={hw_values[item.name].toString()}
             inputProps={{
               InputProps: { style: { color: '#ffc653'}, readOnly: true },
               InputLabelProps: { style: { color: 'white' }, shrink: true }
             }}/>
+          }
         )}
       </Stack>
       <Stack sx={CLS.controls_btns}>
-        <ToggleButtonGroup sx={CLS.controls_test} exclusive value={is_reading} onChange={_handleChangeTestMode}>
+        <ToggleButtonGroup sx={CLS.controls_test} exclusive value={hw_values.is_reading} onChange={_handleChangeTestMode}>
           <ToggleButton sx={[CLS.btns, CLS.btn_start]} value={true}
             variant='contained' size='small' /*color="error"*/>
               СТАРТ
