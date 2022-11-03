@@ -1,27 +1,37 @@
 import { Button } from '@mui/material';
-import { RECORD_COLUMNS } from '../../database/db_tables';
-import { useRecord } from '../../contexts/RecordContext';
 import DataField from '../DataField/DataField';
+
+import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
+// import { useRecord } from '../../contexts/RecordContext';
+import { useSealType } from '../../contexts/SealTypesContext';
+
+import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
 import cls from './TestInfo.module.css';
 // import { getCurrentDate } from '../../aux/aux';
 
 
+const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
+
 export default function TestInfo() {
-  const {record, updateContext} = useRecord();
+  // const {record, updateContext} = useRecord();
+  const record = useDatabase();
+  const manageRecord = updateDatabase()
+  const sealtypes = useSealType();
 
   const onSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
     form_data['id'] = record.id;
-    updateContext(form_data);
+    manageRecord({type: 'update', param: form_data});
   }
-  
+
   const _getFormData = (form) => {
     let data = new FormData(form);
     let result = RECORD_COLUMNS.reduce((obj, item) => {
       obj[item.name] = data.get(item.name);
       return obj;
     }, {} );
+
     return result;
   }
 
@@ -40,10 +50,26 @@ export default function TestInfo() {
         }}
       />
     );
+    let sealtype = sealtypes.find(item => item.id === record['sealtype']) || INITIAL_SEALTYPE;
+    result.push(
+      SEALTYPE_COLUMNS.map(item =>
+        <DataField
+          key={item.name}
+          data={item}
+          value={sealtype[item.name]}
+          selectItems={item.name === 'id' ? sealtypes : []}
+          inputProps={{
+            InputProps: { style: { color: '#ffc653'} },
+            InputLabelProps: { style: { color: 'white' } }
+          }}
+        />
+      )
+    )
     result.push(
       <Button key='btn-save-testinfo' type='submit' variant='contained' size='small'
         sx={{ gridColumn: 4, gridRow: 8, gridRowEnd: 10, mt: "1px", mb: "41px", pb: 0}}
       >Сохранить</Button>)
+
     return result;
   }
 

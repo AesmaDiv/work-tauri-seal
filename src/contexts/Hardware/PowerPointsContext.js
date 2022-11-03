@@ -2,7 +2,7 @@ import { useMemo, useRef} from 'react';
 import { createContainer } from 'react-tracked';
 
 import { getTestData, createPowerPoints } from '../structures';
-import { useRecord } from '../RecordContext';
+import { useDatabase } from '../DatabaseContext';
 import { useHardware } from './HardwareContext';
 
 
@@ -13,13 +13,12 @@ const INITIAL = {
 
 /** Провайдер точек для графика давления диафрагм */
 const PowerPointsContext = () => {
-  const {record} = useRecord();
+  const record = useDatabase();
   const hw_values = useHardware();
   const points = useRef({...INITIAL});
 
   /** Точки получаемые из провайдера БД */
   const record_points = useMemo(() => {
-    console.warn("Refreshing RECORD points");
     const test_data = getTestData(record);
     let power   = createPowerPoints(test_data.power_data, CHART_LENGTH);
 

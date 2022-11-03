@@ -6,7 +6,13 @@
 pub mod commands;
 pub mod database;
 
+
 fn main() {
+  // database::processor_dta::process_dtas(
+  //   "./../assets/SEALTYPE/",
+  //   "./../assets/seal.sqlite"
+  // );
+
   let context = tauri::generate_context!();
   tauri::Builder::default()
     .menu(if cfg!(target_os = "linux") {
@@ -19,6 +25,7 @@ fn main() {
       commands::read_testlist,
       commands::read_record,
       commands::read_dictionary,
+      commands::read_types,
       commands::write_record,
       commands::write_dictionary,
       commands::delete_record,

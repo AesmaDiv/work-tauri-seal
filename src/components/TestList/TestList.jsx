@@ -1,5 +1,6 @@
 import { React, useRef, useEffect, useState } from 'react';
-import { useRecord } from '../../contexts/RecordContext';
+
+import { updateDatabase } from '../../contexts/DatabaseContext';
 import { readTestList } from '../../database/DatabaseHelper';
 
 import { Box, Stack } from '@mui/system';
@@ -22,9 +23,10 @@ const columns = [
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function TestList() {
-  const {flagUpdate, loadContext} = useRecord();
+  const manageRecord = updateDatabase();
   const [list, setList] = useState([]);
 
+  const selected = useRef(0);
   const lastId = useRef(0);
   const search = useRef('');
   const page = useRef(0);
@@ -40,10 +42,11 @@ export default function TestList() {
     setList(result);
   }
 
-  useEffect(() => {refreshList();}, [flagUpdate]);
+  useEffect(() => {refreshList();}, []);
 
   const _handleSelect = async (row) => {
-    await loadContext(row.id);
+    selected.current = row.id;
+    manageRecord({type: 'load', param: row.id})
     // if (event.ctrlKey) {
     //   if (await window.confirm(`Do you really want to remove record № ${row.item.id}`)) {
     //     await deleteContext(row.item);
@@ -65,13 +68,16 @@ export default function TestList() {
     refreshList();
   }
 
-  const _createRow = (data, onSelect) => {
+  const _createRow = (data) => {
     // console.log("*** TEST-LIST ROW CREATE");
     return (
-      <TableRow hover tabIndex={-1} key={data.id} onClick={e => onSelect(data)}
+      <TableRow hover tabIndex={-1} key={data.id}
+        selected={data.id === selected.current}
+        onClick={e => _handleSelect(data)}
         sx={{
           '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },
           '&.MuiTableRow-root:focus': { backgroundColor: '#1976d2' },
+          '&.Mui-selected': { backgroundColor: '#1464ac' },
         }}
       >
         {columns
@@ -111,7 +117,7 @@ export default function TestList() {
   const _createList = () => {
     // console.log("*** TEST-LIST CREATE");
     return (
-      <TableBody>{list.map((row) => _createRow(row, _handleSelect))}</TableBody>
+      <TableBody>{list.map((row) => _createRow(row))}</TableBody>
     );
   }
   const _createOptions = () => {

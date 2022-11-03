@@ -20,6 +20,8 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.4", features = ["api-all"] }
 rusqlite = { version = "0.27.0", features = ["bundled"] }
 rusqlite_helper = {path = "./rusqlite_helper"}
+encoding_rs = { version = "^0.8.31" }
+encoding_rs_io = { version = "^0.1.7" }
 
 [features]
 # by default Tauri runs in production mode

@@ -1,13 +1,15 @@
 extern crate rusqlite_helper;
 // pub mod models_tcs;
 pub mod models_seal;
+pub mod processor_dta;
+
 use std::fmt::Debug;
 
 use rusqlite_helper::reading::{read_where, read_table, read_table_where};
 use rusqlite_helper::writing::{write, write_table};
 use rusqlite_helper::deleting::{delete, delete_table};
 // use models_tcs::{Tests, TLRow, Dictionary};
-use models_seal::{Tests, TLRow, Dictionary};
+use models_seal::{Tests, TLRow, Dictionary, SType};
 
 
 pub fn get_testlist(db_path: &str, condition: &str) -> Vec<TLRow> {
@@ -41,6 +43,16 @@ pub fn del_dict(db_path: &str, table: &str, dict: &Dictionary) -> bool {
   let result = delete_table::<Dictionary>(db_path, table, dict);
   _check_usize(result, "Dictionary delete")
 }
+
+pub fn get_type(db_path: &str, table: &str) -> Vec<SType> {
+  let result = read_table::<SType>(db_path, &table);
+  _check_vec::<SType>(result, format!("sealtype {}", &table).as_str())
+}
+pub fn set_type(db_path: &str, table: &str, record: &SType) -> bool {
+  let result = write_table::<SType>(db_path, table, record);
+  _check_usize(result, "SealType write")
+}
+
 
 fn _check_usize(result_to_check: Result<usize, rusqlite::Error>, message: &str) -> bool {
   if result_to_check.is_ok() {

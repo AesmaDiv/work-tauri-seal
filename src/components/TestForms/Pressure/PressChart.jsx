@@ -32,7 +32,7 @@ export default function PressureCharts() {
     height: "50%",
     animation: 300
   }
-  console.log("--- PRESSURE CHARTS RENDER --- %o", points);
+  console.log("--- PRESSURE CHARTS RENDER ---");
   return (
     <Stack sx={CLS.charts} direction='column'>
       <PressChart {...props} name='верхняя диафрагма' color='#88f888'

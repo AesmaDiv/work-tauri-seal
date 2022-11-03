@@ -1,7 +1,7 @@
 import { useRef, useMemo } from 'react';
 import { createContainer } from 'react-tracked';
 
-import { useRecord } from '../RecordContext';
+import { useDatabase } from '../DatabaseContext';
 import { useHardware} from './HardwareContext';
 import { getTestData, createPressPoints } from '../structures';
 
@@ -13,13 +13,12 @@ const INITIAL = {
 
 /** Провайдер точек для графика давления диафрагм */
 const PressPointsContext = () => {
-  const {record} = useRecord();
+  const record = useDatabase();
   const hw_values = useHardware();
   const points = useRef({...INITIAL});
 
   /** Точки получаемые из провайдера БД */
   const record_points = useMemo(() => {
-    console.warn("Refreshing RECORD points");
     const test_data = getTestData(record);
     let press_top = createPressPoints(test_data?.press_top, CHART_LENGTH);
     let press_btm = createPressPoints(test_data?.press_btm, CHART_LENGTH);

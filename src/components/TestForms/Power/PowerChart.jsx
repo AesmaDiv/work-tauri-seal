@@ -1,10 +1,10 @@
-import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
+import { ComposedChart, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
 
 import { usePowerPoints } from '../../../contexts/Hardware/PowerPointsContext';
-import { addLimits, POWER_LIMITS } from '../_config';
+import { POWER_LIMITS } from '../_config';
 
-import { STYLES as CLS } from '../_styles' 
+// import { STYLES as CLS } from '../_styles' 
 
 
 /** максимальное значение оси X */
@@ -31,7 +31,7 @@ export default function PowerConsumptionCharts() {
     height: "100%",
     animation: 100
   }
-  console.log("--- POWER CONSUMPTION CHARTS RENDER --- %o", points);
+  console.log("--- POWER CONSUMPTION CHARTS RENDER ---");
   return (
     <PowerChart {...props} name='потребляемая мощность' color='#88f888'
       domain={[0, AXIS_MAX.temper]} data={points.power}/>
@@ -51,13 +51,13 @@ function PowerChart(props) {
     type: 'number',
     tickCount: 13,
   };
-  const props_area_limit = {
-    stroke: 0,
-    fill: "#707000",
-    type: "monotone",
-    animationDuration: 0,
-    connectNulls: true
-  };
+  // const props_area_limit = {
+  //   stroke: 0,
+  //   fill: "#707000",
+  //   type: "monotone",
+  //   animationDuration: 0,
+  //   connectNulls: true
+  // };
   const props_label_x = { 
     value: 'время, сек',
     position: 'insideBottomRight',

@@ -36,7 +36,7 @@ macro_rules! dbtable {
 
     #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
     pub struct $name {
-      $($fname: Option<$ftype>), *
+      $(pub $fname: Option<$ftype>), *
     }
 
     impl $name {

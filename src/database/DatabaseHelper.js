@@ -15,6 +15,19 @@ export const readTestList = async function(condition) {
   return result;
 }
 
+export const readSealTypes = async function(condition) {
+  let result = [];
+  // console.log("DATABASE reading testList...");
+  let object = await invoke('read_types', {dbPath: DBPATH, table: "SealTypes"});
+  if (Array.isArray(object)) {
+    result.push(...object);
+  } else {
+    // console.error("Data is not an array of TestListRows.");
+  }
+  // console.log("DATABASE reading testlist...done! Items count %o", result.length);
+  return result;
+}
+
 export const readDictionary = async function(table) {
   // console.log("DATABASE reading dictionary...");
   let result = [];
@@ -30,15 +43,9 @@ export const readDictionary = async function(table) {
 
 export const readRecord = async function(rec_id) {
   // console.log("DATABASE reading test record...");
-  let result = [];
   let object = await invoke('read_record', {dbPath: DBPATH, recId: rec_id});
-  if (Array.isArray(object)) {
-    result.push(...object);
-  } else {
-    // console.error("DATABASE Error: Data is not an array of TestRecords.");
-  }
   // console.log("DATABASE reading test record...done! Items count %o", result.length);
-  return result;
+  return (object.length > 0) ? object[0] : {};
 }
 
 export const updateRecord = async function(new_record) {

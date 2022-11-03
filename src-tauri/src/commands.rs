@@ -23,6 +23,11 @@ pub fn read_dictionary(db_path: &str, table: &str) -> Vec<mdl::Dictionary> {
 }
 
 #[tauri::command]
+pub fn read_types(db_path: &str, table: &str) -> Vec<mdl::SType> {
+  db::get_type(db_path, table)
+}
+
+#[tauri::command]
 pub fn write_record(db_path: &str, record: mdl::Tests) -> bool {
   db::set_record(db_path, &record)
 }

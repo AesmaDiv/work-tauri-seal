@@ -1,7 +1,7 @@
-import { useRecord } from "./contexts/RecordContext"
+import { useDatabase } from "./contexts/DatabaseContext";
 
 export default function Auxiliary() {
-  const {record} = useRecord();
+  const record = useDatabase();
 
 
   return (

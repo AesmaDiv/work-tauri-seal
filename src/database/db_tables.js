@@ -1,11 +1,16 @@
-export const DBPATH = '/home/aesmadiv/Develop/Projects/DB/seal.sqlite'
+export const DBPATH = '/home/aesmadiv/Develop/Projects/Tauri/work-tauri-seal/assets/seal.sqlite' //'/home/aesmadiv/Develop/Projects/DB/seal.sqlite'
 export const RECORD_SEARCH_COLUMNS = [
   { col: 1, row: 1, name: "datetest", label: "Дата испытания"},
   { col: 1, row: 3, name: "customer", label: "Заказчик"},
   { col: 1, row: 4, name: "ordernum", label: "Наряд-заказ" },
-  { col: 1, row: 6, name: "producer", label: "Производитель" },
   { col: 1, row: 7, name: "serial",   label: "Заводской номер" },
-  { col: 1, row: 8, name: "sealtype", label: "Тип ГЗ"},
+  { col: 1, row: 6, name: "producer", label: "Производитель" },
+]
+export const SEALTYPE_COLUMNS = [
+  { col: 1, row: 8, name: "id", label: "Тип ГЗ"},
+  { col: 2, row: 6, name: "pwrlimit", label: "Предел мощности"},
+  { col: 2, row: 7, name: "tmplimit", label: "Предел температуры"},
+  { col: 2, row: 8, name: "thrlimit", label: "Предел нагрузки"},
 ]
 export const RECORD_COLUMNS = [
   ...RECORD_SEARCH_COLUMNS,
@@ -15,9 +20,6 @@ export const RECORD_COLUMNS = [
   { col: 2, row: 2, name: "lease",    label: "Куст"},
   { col: 2, row: 3, name: "well",     label: "Скважина"},
   { col: 2, row: 4, name: "daysrun",  label: "Суточный пробег" },
-  { col: 2, row: 6, name: "pwrlimit", label: "Предел мощности"},
-  { col: 2, row: 7, name: "tmplimit", label: "Предел температуры"},
-  { col: 2, row: 8, name: "thrlimit", label: "Предел нагрузки"},
   { col: 3, row: 1, name: "head",     label: "Состояние головки" },
   { col: 3, row: 2, name: "base",     label: "Состояние основания" },
   { col: 3, row: 3, name: "coupling", label: "Наличие муфты" },
