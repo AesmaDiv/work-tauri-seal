@@ -2,6 +2,7 @@ use super::database as db;
 // use super::database::models_tcs as mdl;
 use super::database::models_seal as mdl;
 
+
 #[tauri::command]
 pub fn logging(message: String) {
   println!("Logging:: {:?}", message);
