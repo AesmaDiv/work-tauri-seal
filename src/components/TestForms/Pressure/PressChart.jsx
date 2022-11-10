@@ -3,7 +3,8 @@ import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
 import { usePoints } from '../../../contexts/PointsContext';
-import { addLimits, PRESS_LIMITS } from '../_config';
+import { PRESS_LIMITS } from '../_config';
+import { addLimits } from '../_functions';
 
 import { STYLES as CLS } from '../_styles' 
 
