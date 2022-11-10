@@ -22,22 +22,20 @@ export const POWER_LIMITS = {
   temper: 120
 }
 
-/** Функция добавления информации для пределов */
-export function addLimits(array, limits, length) {
-  if (!array) return [];
-
-  let result = [...array];
-  const props = {
-    limit_top: [limits[1], limits[1] + 0.5],
-    limit_btm: [0, limits[0]]
+/** Cтруктура данных об испытаниях */
+export class TestData {
+  constructor(power_data, press_top, press_btm) {
+    this.power_data = power_data || {};
+    this.press_top  = press_top || [];
+    this.press_btm  = press_btm || [];
   }
-  let first = result.findIndex(el => el.x === 0);
-  if (first >= 0) {
-    result[first] = {...result[first], ...props};
-  } else {
-    result.unshift({x: 0, ...props})
+}
+/** Структура данных об испытании потребляемой мощности */
+export class PowerData{
+  constructor(psi, power, temp, etime) {
+    this.etime  = etime;
+    this.power  = power;
+    this.psi    = psi;
+    this.temp   = temp;
   }
-  result.push({x: length, ...props})
-
-  return result;
 }
