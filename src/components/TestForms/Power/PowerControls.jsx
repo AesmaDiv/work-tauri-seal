@@ -6,7 +6,8 @@ import DataField from "../../DataField/DataField";
 
 import { POWER_DATANAMES } from '../_config';
 import { STYLES as CLS } from "../_styles";
-import { useHardware, updateHardware } from "../../../contexts/Hardware/HardwareContext";
+import { useHardware, updateHardware } from "../../../contexts/HardwareContext";
+import { useEffect } from "react";
 
 
 export default function PowerControls() {
@@ -28,7 +29,7 @@ export default function PowerControls() {
     // // savePoints();
   }
 
-  console.log("--- PRESS CONTROLS RENDER ---");
+  console.log("--- Power Consumption CONTROLS RENDER ---");
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>

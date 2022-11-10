@@ -2,7 +2,7 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { usePressPoints } from '../../../contexts/Hardware/PressPointsContext';
+import { usePoints } from '../../../contexts/PointsContext';
 import { addLimits, PRESS_LIMITS } from '../_config';
 
 import { STYLES as CLS } from '../_styles' 
@@ -18,7 +18,7 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PressureCharts() {
-  const points = usePressPoints();
+  const points = usePoints();
 
   // точки с добавлением пределов допусков
   const [points_top, points_btm] = [
@@ -32,7 +32,7 @@ export default function PressureCharts() {
     height: "50%",
     animation: 300
   }
-  console.log("--- PRESSURE CHARTS RENDER ---");
+  console.log("--- Pressure CHARTS RENDER ---");
   return (
     <Stack sx={CLS.charts} direction='column'>
       <PressChart {...props} name='верхняя диафрагма' color='#88f888'

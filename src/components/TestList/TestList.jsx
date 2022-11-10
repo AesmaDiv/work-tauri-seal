@@ -11,6 +11,7 @@ import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
 import SearchBar from './SearchBar';
 
 import cls from './TestList.module.css';
+import { useRecordContext } from '../../contexts/RecordContext';
 
 
 const ROWS_PER_PAGE = 50;
@@ -23,7 +24,8 @@ const columns = [
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function TestList() {
-  const manageRecord = updateDatabase();
+  // const manageRecord = updateDatabase();
+  const {read} = useRecordContext();
   const [list, setList] = useState([]);
 
   const selected = useRef(0);
@@ -44,15 +46,18 @@ export default function TestList() {
 
   useEffect(() => {refreshList();}, []);
 
-  const _handleSelect = async (row) => {
+  const _handleSelect = async (event, row) => {
+    // console.log("%o", event);
     selected.current = row.id;
-    manageRecord({type: 'load', param: row.id})
-    // if (event.ctrlKey) {
-    //   if (await window.confirm(`Do you really want to remove record № ${row.item.id}`)) {
-    //     await deleteContext(row.item);
-    //     setCurrent("");
-    //   };
-    // }
+    console.warn("TestList record changed");
+    // manageRecord({type: 'load', param: row.id})
+    read(row.id);
+    if (event.ctrlKey) {
+      if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
+        // await deleteContext(row.item);
+        // setCurrent("");
+      };
+    }
   }
   const _handlePage = (name) => {
     if (name === 'bkwrd' && page.current === 0) return;
@@ -73,7 +78,7 @@ export default function TestList() {
     return (
       <TableRow hover tabIndex={-1} key={data.id}
         selected={data.id === selected.current}
-        onClick={e => _handleSelect(data)}
+        onClick={e => _handleSelect(e, data)}
         sx={{
           '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },
           '&.MuiTableRow-root:focus': { backgroundColor: '#1976d2' },

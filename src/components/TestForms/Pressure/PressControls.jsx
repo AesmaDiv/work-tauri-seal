@@ -1,7 +1,7 @@
 import { Stack } from "@mui/system";
 import { ToggleButton, ToggleButtonGroup, Button } from "@mui/material";
 
-import { useHardware, updateHardware } from "../../../contexts/Hardware/HardwareContext";
+import { useHardware, updateHardware } from "../../../contexts/HardwareContext";
 import DataField from "../../DataField/DataField";
 
 import { PRESS_DATANAMES } from "../_config";
@@ -28,7 +28,7 @@ export default function PressControls() {
     // // savePoints();
   }
 
-  console.log("--- PRESS CONTROLS RENDER ---");
+  console.log("--- Pressure CONTROLS RENDER ---");
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>

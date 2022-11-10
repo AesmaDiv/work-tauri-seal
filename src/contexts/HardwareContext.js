@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createContainer } from 'react-tracked';
 
-import { generateNext } from '../structures';
-
 
 const PULLING_RATE = 1000; // период обновления в мс
 const INITIAL = {
@@ -16,7 +14,6 @@ const INITIAL = {
   press_top:  0,         // давление верхней диафрагмы
   press_btm:  0          // давление нижней диафрагмы
 }
-
 /** Провайдер данных с оборудования */
 function HardwareContext() {
   const [hw_values, setValues] = useState(INITIAL);
@@ -26,17 +23,9 @@ function HardwareContext() {
       if (hw_values.is_reading) {
         // Здесь должна быть функция чтения данных с оборудования,
         // а пока тут добавление случайных значений
-        let new_values = {
-          ttime:      hw_values.ttime + 1,
-          rpm:        generateNext(hw_values.rpm),
-          torque:     generateNext(hw_values.torque),
-          temper:     generateNext(hw_values.temper),
-          press_sys:  generateNext(hw_values.press_sys),
-          press_top:  generateNext(hw_values.press_top),
-          press_btm:  generateNext(hw_values.press_btm),
-        }
-        new_values.power = Math.round(new_values.torque * new_values.rpm / 63.025 * 100) / 100;
-        setValues((prev) => ({...prev, ...new_values}));
+        generateRandomHWValues(hw_values).then(
+          result => setValues((prev) => ({...prev, ...result}))
+        )
       }
     }, PULLING_RATE);
     return (() => clearTimeout(timer));
@@ -51,3 +40,28 @@ export const {
   useTrackedState: useHardware,
   useUpdate: updateHardware,
 } = createContainer(HardwareContext);
+
+
+/** Функция генерирования случайных значений для эмуляции работы оборудования */
+async function generateRandomHWValues(hw_values) {
+  let result = {
+    ttime:      hw_values.ttime + 1,
+    rpm:        _generateNextValue(hw_values.rpm),
+    torque:     _generateNextValue(hw_values.torque),
+    temper:     _generateNextValue(hw_values.temper),
+    press_sys:  _generateNextValue(hw_values.press_sys),
+    press_top:  _generateNextValue(hw_values.press_top),
+    press_btm:  _generateNextValue(hw_values.press_btm),
+  }
+  result.power = Math.round(result.torque * result.rpm / 63.025 * 100) / 100;
+
+  return result;
+}
+
+/** Функция генерирования следующего случайного значения */
+function _generateNextValue(prev) {
+  let x = Math.random() - 0.5;
+  x = x < 0 ? -x : x;
+  let result = (prev + x) > 2.5 ? prev - x : prev + x;
+  return Math.round(result * 100) / 100;
+}

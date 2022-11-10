@@ -1,7 +1,7 @@
 import { ComposedChart, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
 
-import { usePowerPoints } from '../../../contexts/Hardware/PowerPointsContext';
+import { usePoints } from '../../../contexts/PointsContext';
 import { POWER_LIMITS } from '../_config';
 
 // import { STYLES as CLS } from '../_styles' 
@@ -17,7 +17,7 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PowerConsumptionCharts() {
-  const points = usePowerPoints();
+  const points = usePoints();
 
   // точки с добавлением пределов допусков
   // const [power, temper] = [
@@ -31,10 +31,10 @@ export default function PowerConsumptionCharts() {
     height: "100%",
     animation: 100
   }
-  console.log("--- POWER CONSUMPTION CHARTS RENDER ---");
+  console.log("--- Power Consumption CHARTS RENDER ---");
   return (
     <PowerChart {...props} name='потребляемая мощность' color='#88f888'
-      domain={[0, AXIS_MAX.temper]} data={points.power}/>
+      domain={[0, AXIS_MAX.temper]} data={points}/>
   );
 }
 

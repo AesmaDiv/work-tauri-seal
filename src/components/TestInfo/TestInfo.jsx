@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import DataField from '../DataField/DataField';
 
-import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
-// import { useRecord } from '../../contexts/RecordContext';
+// import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
+import { useRecordContext } from '../../contexts/RecordContext';
 import { useSealType } from '../../contexts/SealTypesContext';
 
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
@@ -13,16 +13,18 @@ import cls from './TestInfo.module.css';
 const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
 
 export default function TestInfo() {
-  // const {record, updateContext} = useRecord();
-  const record = useDatabase();
-  const manageRecord = updateDatabase()
+  const {record, update} = useRecordContext();
+  // const record = useDatabase();
+  // const manageRecord = updateDatabase()
+
   const sealtypes = useSealType();
 
   const onSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
     form_data['id'] = record.id;
-    manageRecord({type: 'update', param: form_data});
+    // manageRecord({type: 'update', param: form_data});
+    update(form_data);
   }
 
   const _getFormData = (form) => {

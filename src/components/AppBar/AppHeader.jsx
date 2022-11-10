@@ -1,21 +1,13 @@
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Typography, Button, IconButton, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { styled } from '@mui/system';
 
 
 const _HEIGHT = 50;
 const _BCKCOLOR = '#1976d2';
-const drawerWidth = 200;
-
-
-
-
 
 export default function AppHeader({children}) {
   const [drawer_state, setDrawerState] = useState(false);
-
-
 
   const _onMenuClick = () => {
     console.log("AppBar menu clicked");
