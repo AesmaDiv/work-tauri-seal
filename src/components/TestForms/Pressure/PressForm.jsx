@@ -1,10 +1,11 @@
 import { Stack } from "@mui/system";
 
-import PressControls from "./PressControls";
+import FormControls from "../FromControls";
 import PressureCharts from "./PressChart";
 import { HardwareProvider } from "../../../contexts/HardwareContext";
 import { PointsProvider } from "../../../contexts/PointsContext";
 
+import { PRESS_DATANAMES } from "../_config";
 import * as props from './PressProps';
 import { STYLES as CLS } from '../_styles';
 
@@ -15,7 +16,7 @@ export default function PressForm() {
   return (
     <Stack direction='row' sx={CLS.root}>
       <HardwareProvider>
-        <PressControls />
+        <FormControls data_fields={PRESS_DATANAMES}/>
         <PointsProvider {...props}>
           <PressureCharts />
         </PointsProvider>

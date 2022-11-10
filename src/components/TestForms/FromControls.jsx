@@ -1,15 +1,13 @@
 import { Stack } from "@mui/system";
-import { ToggleButton, ToggleButtonGroup, Button } from "@mui/material";
+import { Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
-import { useHardware, updateHardware } from "../../../contexts/HardwareContext";
-import DataField from "../../DataField/DataField";
+import DataField from "../DataField/DataField";
+import { useHardware, updateHardware } from "../../contexts/HardwareContext";
 
-import { PRESS_DATANAMES } from "../_config";
-import { STYLES as CLS } from '../_styles';
+import { STYLES as CLS } from "./_styles";
 
 
-/** Компонент управления испытанием давления диафрагм */
-export default function PressControls() {
+export default function FormControls({data_fields}) {
   // callback переключения состояния испытания и сохранения точек
   const hw_values = useHardware();
   const changeHardware = updateHardware();
@@ -28,12 +26,12 @@ export default function PressControls() {
     // // savePoints();
   }
 
-  console.log("--- Pressure CONTROLS RENDER ---");
+  console.log("--- FORM CONTROLS RENDER ---");
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>
         {
-        PRESS_DATANAMES.map(item => {
+        data_fields.map(item => {
           return <DataField key={item.name} data={item} value={hw_values[item.name].toString()}
             inputProps={{
               InputProps: { style: { color: '#ffc653'}, readOnly: true },
@@ -61,4 +59,3 @@ export default function PressControls() {
     </Stack>
   );
 }
-
