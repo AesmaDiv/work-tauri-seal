@@ -1,4 +1,4 @@
-import { TestData, PowerData } from "./_config";
+import { RecordData, PowerData } from "./_config";
 
 /** Функция добавления информации для пределов */
 export function addLimits(array, limits, length) {
@@ -21,15 +21,15 @@ export function addLimits(array, limits, length) {
 }
 
 /** Функция парсинга массива байт из БД в структуру данных об испытании */
-export async function getTestData(rawdata) {
+export async function getRecordData(rawdata) {
   const floats = _bytesToFloats(rawdata);
 
   return (floats) ?
-    new TestData(
+    new RecordData(
       _floatsToPowerData(floats.splice(0, 20 * 4)),
       floats.splice(0, 300),
       floats.splice(0, 300)
-    ) : new TestData();
+    ) : new RecordData();
 }
 
 /** Функция создания массива точек для графика

@@ -1,4 +1,4 @@
-import { getTestData, createPressPoints } from "../_functions";
+import { getRecordData, createPressPoints } from "../_functions";
 
 export const NAME = "Pressure";
 export const LIMIT = 180;
@@ -6,8 +6,9 @@ export const INITIAL = {
   press_top: [],  // давление верхней диафрагмы
   press_btm: []   // давление нижней диафрагмы
 }
+export const TRACKED_STATE = 'press_test';
 export async function refreshDB(raw) {
-  const test_data = await getTestData(raw);
+  const test_data = await getRecordData(raw);
   let   press_top = await createPressPoints(test_data?.press_top, LIMIT);
   let   press_btm = await createPressPoints(test_data?.press_btm, LIMIT);
 
@@ -25,5 +26,6 @@ export async function refreshHW(points, hw_values) {
     x: press_btm.length, //ttime,
     y: hw_values.press_btm
   });
+
   return {press_top, press_btm};
 }

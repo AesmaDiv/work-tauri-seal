@@ -8,25 +8,25 @@ use std::fmt::Debug;
 use rusqlite_helper::reading::{read_where, read_table, read_table_where};
 use rusqlite_helper::writing::{write, write_table};
 use rusqlite_helper::deleting::{delete, delete_table};
-// use models_tcs::{Tests, TLRow, Dictionary};
-use models_seal::{Tests, TLRow, Dictionary, SType};
+// use models_tcs::{Records, TLRow, Dictionary};
+use models_seal::{Records, TLRow, Dictionary, SType};
 
 
 pub fn get_testlist(db_path: &str, condition: &str) -> Vec<TLRow> {
-  let result = read_table_where::<TLRow>(db_path, "Tests", condition);
-  _check_vec::<TLRow>(result, "TestList")
+  let result = read_table_where::<TLRow>(db_path, "Records", condition);
+  _check_vec::<TLRow>(result, "RecordList")
 }
 
-pub fn get_record(db_path: &str, rec_id: i32) -> Vec<Tests> {
+pub fn get_record(db_path: &str, rec_id: i32) -> Vec<Records> {
   let cond = format!("ID={}", rec_id);
-  let result = read_where::<Tests>(db_path, cond.as_str());
-  _check_vec::<Tests>(result, format!("Record {}", &rec_id).as_str())
+  let result = read_where::<Records>(db_path, cond.as_str());
+  _check_vec::<Records>(result, format!("Record {}", &rec_id).as_str())
 }
-pub fn set_record(db_path: &str, record: &Tests) -> bool {
+pub fn set_record(db_path: &str, record: &Records) -> bool {
   let result = write(db_path, record);
   _check_usize(result, "Record write")
 }
-pub fn del_record(db_path: &str, record: &Tests) -> bool {
+pub fn del_record(db_path: &str, record: &Records) -> bool {
   let result = delete(db_path, record);
   _check_usize(result, "Record delete")
 }

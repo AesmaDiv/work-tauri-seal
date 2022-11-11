@@ -2,7 +2,7 @@ import { Stack } from "@mui/system";
 
 import FormControls from "../FromControls";
 import PressureCharts from "./PressChart";
-import { HardwareProvider } from "../../../contexts/HardwareContext";
+// import { HardwareProvider } from "../../../contexts/HardwareContext";
 import { PointsProvider } from "../../../contexts/PointsContext";
 
 import { PRESS_DATANAMES } from "../_config";
@@ -15,12 +15,10 @@ export default function PressForm() {
   console.log("--- Pressure FORM RENDER ---");
   return (
     <Stack direction='row' sx={CLS.root}>
-      <HardwareProvider>
-        <FormControls data_fields={PRESS_DATANAMES}/>
-        <PointsProvider {...props}>
-          <PressureCharts />
-        </PointsProvider>
-      </HardwareProvider>
+      <PointsProvider {...props}>
+        <FormControls tracked_state={props.TRACKED_STATE} data_fields={PRESS_DATANAMES}/>
+        <PressureCharts />
+      </PointsProvider>
     </Stack>
   );
 }

@@ -23,7 +23,7 @@ export const POWER_LIMITS = {
 }
 
 /** Cтруктура данных об испытаниях */
-export class TestData {
+export class RecordData {
   constructor(power_data, press_top, press_btm) {
     this.power_data = power_data || {};
     this.press_top  = press_top || [];

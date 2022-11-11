@@ -6,13 +6,13 @@ import { useRecordContext } from '../../contexts/RecordContext';
 import { useSealType } from '../../contexts/SealTypesContext';
 
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
-import cls from './TestInfo.module.css';
+import cls from './RecordInfo.module.css';
 // import { getCurrentDate } from '../../aux/aux';
 
 
 const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
 
-export default function TestInfo() {
+export default function RecordInfo() {
   const {record, update} = useRecordContext();
   // const record = useDatabase();
   // const manageRecord = updateDatabase()

@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { DBPATH } from './db_tables';
 
 
-export const readTestList = async function(condition) {
+export const readRecordList = async function(condition) {
   let result = [];
   let object = await invoke('read_testlist', {dbPath: DBPATH, condition: condition});
   if (Array.isArray(object)) {
@@ -37,6 +37,6 @@ export const updateRecord = async function(new_record) {
 }
 
 export const deleteRecord = async function(record) {
-  let result = await invoke('delete_dictionary', {dbPath: DBPATH, table: "Tests", dict: record});
+  let result = await invoke('delete_dictionary', {dbPath: DBPATH, table: "Records", dict: record});
   return result;
 }

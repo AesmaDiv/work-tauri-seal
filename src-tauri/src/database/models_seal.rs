@@ -32,7 +32,7 @@ dbtable!(
   }
 );
 dbtable!(
-  struct Tests {
+  struct Records {
     id        : i32, 
     datetest  : String,
     daterecv  : String,

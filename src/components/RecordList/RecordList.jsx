@@ -1,17 +1,15 @@
-import { React, useRef, useEffect, useState } from 'react';
-
-import { updateDatabase } from '../../contexts/DatabaseContext';
-import { readTestList } from '../../database/DatabaseHelper';
-
+import { React, useRef, useEffect, useState, startTransition } from 'react';
 import { Box, Stack } from '@mui/system';
 import { Table, TableHead, TableBody, TableRow, TableCell} from '@mui/material';
 import { TableContainer, IconButton } from '@mui/material';
 import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
-import SearchBar from './SearchBar';
 
-import cls from './TestList.module.css';
+import SearchBar from './SearchBar';
 import { useRecordContext } from '../../contexts/RecordContext';
+import { readRecordList } from '../../database/DatabaseHelper';
+
+import cls from './RecordList.module.css';
 
 
 const ROWS_PER_PAGE = 50;
@@ -23,35 +21,36 @@ const columns = [
 ];
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
-export default function TestList() {
+export default function RecordList() {
   // const manageRecord = updateDatabase();
   const {read} = useRecordContext();
   const [list, setList] = useState([]);
+  const [selected, setSelected] = useState('');
 
-  const selected = useRef(0);
   const lastId = useRef(0);
   const search = useRef('');
   const page = useRef(0);
 
-  async function refreshList() {
-    // console.log("TEST-LIST reading list from DB...");
-    let condition = search.current;
-    condition += lastId.current ? ` ID<=${lastId.current} ` : ` ID>0`;
-    condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
-    // console.log("Search conditions %o", condition);
-    let result = await readTestList(condition);
-    lastId.current = result[0].id;
-    setList(result);
+  function _refreshList() {
+    (async() => {
+      let condition = search.current;
+      condition += lastId.current ? ` ID<=${lastId.current} ` : ` ID>0`;
+      condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
+      let result = await readRecordList(condition);
+      lastId.current = result[0].id;
+
+      return result;
+    })().then(result => startTransition(() => setList(result)));
   }
 
-  useEffect(() => {refreshList();}, []);
+  useEffect(() => _refreshList(), []);
 
   const _handleSelect = async (event, row) => {
     // console.log("%o", event);
-    selected.current = row.id;
-    console.warn("TestList record changed");
     // manageRecord({type: 'load', param: row.id})
-    read(row.id);
+    startTransition(() => read(row.id));
+    setSelected(row.id)
+    console.warn("RecordList record changed");
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
         // await deleteContext(row.item);
@@ -63,21 +62,20 @@ export default function TestList() {
     if (name === 'bkwrd' && page.current === 0) return;
     page.current = page.current + (name === 'bkwrd' ? -1 : 1); 
     lastId.current = page.current ? lastId.current  - ROWS_PER_PAGE * page.current : 0;
-    refreshList();
+    _refreshList();
   }
   const _handleSearch = (params) => {
     const {key, val} = params;
     search.current = [key, val].every(i => i) ?
       ` ${key} Like '%${val}%' And` :
       '';
-    refreshList();
+    _refreshList();
   }
 
   const _createRow = (data) => {
-    // console.log("*** TEST-LIST ROW CREATE");
     return (
       <TableRow hover tabIndex={-1} key={data.id}
-        selected={data.id === selected.current}
+        selected={data.id === selected}
         onClick={e => _handleSelect(e, data)}
         sx={{
           '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },
@@ -86,7 +84,6 @@ export default function TestList() {
         }}
       >
         {columns
-          // .filter(column => column.name !== 'id')
           .map((column) => {
             const cell_val = data[column.name]
             const cell_key = `${column.name}-${cell_val}`

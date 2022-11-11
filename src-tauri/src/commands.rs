@@ -14,7 +14,7 @@ pub fn read_testlist(db_path: &str, condition: &str) -> Vec<mdl::TLRow> {
 }
 
 #[tauri::command]
-pub fn read_record(db_path: &str, rec_id: i32) -> Vec<mdl::Tests> {
+pub fn read_record(db_path: &str, rec_id: i32) -> Vec<mdl::Records> {
   db::get_record(db_path, rec_id)
 }
 
@@ -29,7 +29,7 @@ pub fn read_types(db_path: &str, table: &str) -> Vec<mdl::SType> {
 }
 
 #[tauri::command]
-pub fn write_record(db_path: &str, record: mdl::Tests) -> bool {
+pub fn write_record(db_path: &str, record: mdl::Records) -> bool {
   db::set_record(db_path, &record)
 }
 
@@ -39,7 +39,7 @@ pub fn write_dictionary(db_path: &str, table: &str, dict: mdl::Dictionary) -> bo
 }
 
 #[tauri::command]
-pub fn delete_record(db_path: &str, record: mdl::Tests) -> bool {
+pub fn delete_record(db_path: &str, record: mdl::Records) -> bool {
   println!("{:?}", record);
   db::del_record(db_path, &record)
 }

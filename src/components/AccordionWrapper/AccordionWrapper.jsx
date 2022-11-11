@@ -1,30 +1,44 @@
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-export default function AccordionWrapper({direction, children}) {
-  const default_key = children?.length ? children[0].props.accordion_key : '';
-  const [is_expanded, setExpanded] = useState(default_key);
+import { updateHardware } from "../../contexts/HardwareContext";
 
+
+/** Оборачиватель в разворачиваемые группы */
+export default function AccordionWrapper({direction, children}) {
+  const changeHardware = updateHardware();
+  const default_key = children?.length ? children[0].props.accordion_key : '';
+  const [expanded_key, setExpanded] = useState(default_key);
+
+  /** Обработчик выбора группы */
+  const _handleSelect = (item) => {
+    if (item.props.accordion_key === expanded_key) return;
+    // в зависимости от того, выбрана группа с испытанием или нет
+    // запускаем или останавливаем чтение с оборудования
+    let new_state = ['key_testpress', 'key_testpower'].includes(item.props.accordion_key);
+    startTransition(() => changeHardware(
+      (prev) => (
+        {...prev, is_reading: new_state}
+      )
+    ));
+    // разворачиваем выбранную группу
+    setExpanded(item.props.accordion_key);
+  }
+
+  /** Оборачивание переданного компонента в разворачиваемую группу */
   const _createComponent = (item) =>
     <Accordion 
       key={item.props.accordion_key}
-      expanded={is_expanded === item.props.accordion_key}
-      sx={{
-        backgroundColor: 'rgb(60,60,60)', color: 'white', border: '1px solid white',
-        /* boxShadow: '3px 3px 5px black' */}}
-      >
-      <AccordionSummary 
-        expandIcon={<ExpandMoreIcon/>}
-        onClick={e => setExpanded(
-          is_expanded !== item.props.accordion_key ? item.props.accordion_key : default_key
-        )}>
-        <Typography>{item.props.accordion_title}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        {item}
-      </AccordionDetails>
+      expanded={expanded_key === item.props.accordion_key}
+      sx={{ backgroundColor: 'rgb(60,60,60)', color: 'white', border: '1px solid white'}}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon/>} onClick={e => _handleSelect(item)}>
+          <Typography>{item.props.accordion_title}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {item}
+        </AccordionDetails>
     </Accordion>
 
 

@@ -2,21 +2,30 @@ import { Stack } from "@mui/system";
 import { Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import DataField from "../DataField/DataField";
-import { useHardware, updateHardware } from "../../contexts/HardwareContext";
+import { useHardware } from "../../contexts/HardwareContext";
+import { useTesting, updateTesting } from "../../contexts/TestingContext";
 
 import { STYLES as CLS } from "./_styles";
 
 
-export default function FormControls({data_fields}) {
-  // callback переключения состояния испытания и сохранения точек
+/** Универсальный компонент для управления испытанием
+ * @param tracked_state имя отслеживаемого флага испытания
+ * @param data_fields список параметров для полей отображения значений вида
+ * - [.. ,{name: 'имя', label: 'заголовок'}, ..]
+ */
+export default function FormControls({tracked_state, data_fields}) {
+  // данные с оборудования
   const hw_values = useHardware();
-  const changeHardware = updateHardware();
+  // состояние испытания и callback переключения
+  const states = useTesting();
+  const manageStates = updateTesting();
 
   /** Обработчик переключения состояния испытания */
-  const _handleChangeTestMode = (_, new_state) => {
-    (new_state !== hw_values.is_reading) &&
+  const _handleChangeRecordMode = (_, new_state) => {
+    (hw_values.is_reading) &&
     (new_state !== null) &&
-    changeHardware((prev) => ({...prev, is_reading: new_state}));
+    (new_state !== states[tracked_state]) &&
+    manageStates({type: tracked_state, param: new_state});
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
   const _handleSavePress = (event) => {
@@ -41,7 +50,9 @@ export default function FormControls({data_fields}) {
         )}
       </Stack>
       <Stack sx={CLS.controls_btns}>
-        <ToggleButtonGroup sx={CLS.controls_test} exclusive value={hw_values.is_reading} onChange={_handleChangeTestMode}>
+        <ToggleButtonGroup exclusive sx={CLS.controls_test}
+          value={states[tracked_state]} onChange={_handleChangeRecordMode}>
+
           <ToggleButton sx={[CLS.btns, CLS.btn_start]} value={true}
             variant='contained' size='small' /*color="error"*/>
               СТАРТ
@@ -50,6 +61,7 @@ export default function FormControls({data_fields}) {
             variant='contained' size='small' /*color="info"*/>
               СТОП
           </ToggleButton>
+
         </ToggleButtonGroup>
         <Button sx={CLS.btn_save} type='submit' onClick={_handleSavePress}
           variant='contained' size='small'>
