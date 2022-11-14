@@ -3,10 +3,6 @@ export const STYLES = {
     width: '100%',
     height: '575px',
   },
-  charts: {
-    width: '80%',
-    height: '100%',
-  },
   controls: {
     minWidth: '250px',
     height: '100%',

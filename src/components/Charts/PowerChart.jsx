@@ -1,8 +1,8 @@
 import { ComposedChart, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
 
-import { usePoints } from '../../../contexts/PointsContext';
-import { POWER_LIMITS } from '../_config';
+import { usePoints } from '../../contexts/PointsContext';
+import { POWER_LIMITS } from '../../configs/cfg_power';
 
 // import { STYLES as CLS } from '../_styles' 
 
@@ -25,16 +25,11 @@ export default function PowerConsumptionCharts() {
   //   addLimits(points?.temper, LIMITS.btm)
   // ];
 
-  // общие свойства
-  const props = {
-    width: "80%",
-    height: "100%",
-    animation: 100
-  }
   console.log("--- Power Consumption CHARTS RENDER ---");
   return (
-    <PowerChart {...props} name='потребляемая мощность' color='#88f888'
-      domain={[0, AXIS_MAX.temper]} data={points}/>
+    <PowerChart sx={{width: '80%', height: '100%', animation: '100'}}
+      name='потребляемая мощность' color='#88f888'
+      domain={[0, AXIS_MAX.temper]} data={points.power}/>
   );
 }
 

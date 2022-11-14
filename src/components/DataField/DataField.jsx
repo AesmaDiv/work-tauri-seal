@@ -8,7 +8,7 @@ export default function DataField(props) {
 
   useEffect(() => {
     setValue(props.value || '');
-  }, [props.value])
+  }, [props])
 
   const _handleChange = (evt) => {
     let new_value = evt.target.value;

@@ -1,4 +1,4 @@
-import { React, useRef, useEffect, useState, startTransition } from 'react';
+import { React, useRef, useEffect, useState, startTransition, useTransition } from 'react';
 import { Box, Stack } from '@mui/system';
 import { Table, TableHead, TableBody, TableRow, TableCell} from '@mui/material';
 import { TableContainer, IconButton } from '@mui/material';
@@ -26,6 +26,7 @@ export default function RecordList() {
   const {read} = useRecordContext();
   const [list, setList] = useState([]);
   const [selected, setSelected] = useState('');
+  const [is_reading, startReading] = useTransition();
 
   const lastId = useRef(0);
   const search = useRef('');
@@ -46,9 +47,7 @@ export default function RecordList() {
   useEffect(() => _refreshList(), []);
 
   const _handleSelect = async (event, row) => {
-    // console.log("%o", event);
-    // manageRecord({type: 'load', param: row.id})
-    startTransition(() => read(row.id));
+    read(row.id);
     setSelected(row.id)
     console.warn("RecordList record changed");
     if (event.ctrlKey) {
@@ -85,8 +84,8 @@ export default function RecordList() {
       >
         {columns
           .map((column) => {
-            const cell_val = data[column.name]
-            const cell_key = `${column.name}-${cell_val}`
+            const cell_val = is_reading ? 'loading' : data[column.name];
+            const cell_key = `${column.name}-${cell_val}`;
             return (
               <TableCell key={cell_key} sx={{width: column.width, color: 'white' }}>
                 {cell_val}

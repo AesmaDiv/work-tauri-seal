@@ -13,7 +13,7 @@ import { STYLES as CLS } from "./_styles";
  * @param data_fields список параметров для полей отображения значений вида
  * - [.. ,{name: 'имя', label: 'заголовок'}, ..]
  */
-export default function FormControls({tracked_state, data_fields}) {
+export default function TestingFormControls({name, tracked_state, data_fields}) {
   // данные с оборудования
   const hw_values = useHardware();
   // состояние испытания и callback переключения
@@ -35,7 +35,7 @@ export default function FormControls({tracked_state, data_fields}) {
     // // savePoints();
   }
 
-  console.log("--- FORM CONTROLS RENDER ---");
+  console.log(`--- ${name} CONTROLS RENDER ---`);
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>

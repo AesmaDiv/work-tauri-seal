@@ -1,4 +1,4 @@
-import { useContext, useState, startTransition } from "react";
+import { useContext, useState, useTransition, startTransition } from "react";
 import { createContext } from "react";
 
 import { readRecord, updateRecord, deleteRecord } from "../database/DatabaseHelper";
@@ -9,10 +9,11 @@ export const useRecordContext = () => useContext(RecordContext);
 
 export default function RecordProvider({children}) {
   const [record, setRecord] = useState({});
+  const [is_reading, startReading] = useTransition();
 
   const read = (recId) => {
     console.warn("RecordContext load");
-    readRecord(recId).then(result => startTransition(() => setRecord(result)));
+    readRecord(recId).then(result => startReading(() => setRecord(result)));
     // readRecord(recId).then(result => setRecord(result));
   }
   const update = (rec) => {
@@ -27,7 +28,7 @@ export default function RecordProvider({children}) {
   }
 
   return (
-    <RecordContext.Provider value={{record, raw: record.rawdata, read, update, remove}}>
+    <RecordContext.Provider value={{record, raw: record.rawdata, is_reading, read, update, remove}}>
       {children}
     </RecordContext.Provider>
   )

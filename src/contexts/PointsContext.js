@@ -14,7 +14,7 @@ import { useTesting } from './TestingContext';
  * @param refreshDB ассинхронная функция получения точек из БД
  * @param refreshHW ассинхронная функция получения точек с оборудования
  */
-const PointsContext = ({NAME, LIMIT, INITIAL, TRACKED_STATE, refreshDB, refreshHW}) => {
+const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, refreshHW}) => {
   const {raw} = useRecordContext();
   const hw_values = useHardware();
   const states = useTesting();
@@ -22,23 +22,24 @@ const PointsContext = ({NAME, LIMIT, INITIAL, TRACKED_STATE, refreshDB, refreshH
 
   /** Точки получаемые из провайдера БД */
   useEffect (() => {
-    console.warn("PointsContext useEffect rawdata");
-    refreshDB(raw).then(result => setPoints(result));
+    console.warn("PointsContext useEffect rawdata", NAME);
+    refreshDB(raw).then(result => setPoints(result))
   }, [raw])
+
 
   /** Точки получаемые из провайдера данных с оборудования */
   useEffect(() => {
     console.warn("PointsContext useEffect hw_values");
     if (hw_values.is_reading && states[TRACKED_STATE]) {
       // если достигнут лимит точек
-      if (Object.keys(INITIAL).every(k => points[k].length < LIMIT)) {
+      if (Object.keys(INITIAL).every(k => points[k].length < POINTS_MAX)) {
         refreshHW(points, hw_values).then(result => setPoints(result));
       }
     }
   }, [...Object.keys(INITIAL).map(k => hw_values[k])]);
 
   useEffect(() => {
-    console.warn("PointsContext useEffect is_reading");
+    console.warn("PointsContext useEffect is_reading ->", states[TRACKED_STATE]);
     if (hw_values.is_reading && states[TRACKED_STATE]) setPoints({...INITIAL});
   }, [states[TRACKED_STATE]]);
 

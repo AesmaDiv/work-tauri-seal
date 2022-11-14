@@ -2,11 +2,9 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { usePoints } from '../../../contexts/PointsContext';
-import { PRESS_LIMITS } from '../_config';
-import { addLimits } from '../_functions';
-
-import { STYLES as CLS } from '../_styles' 
+import { usePoints } from '../../contexts/PointsContext';
+import { PRESS_LIMITS } from '../../configs/cfg_press';
+import { addLimits } from '../../shared/functions';
 
 
 /** максимальное значение оси X */
@@ -35,7 +33,7 @@ export default function PressureCharts() {
   }
   console.log("--- Pressure CHARTS RENDER ---");
   return (
-    <Stack sx={CLS.charts} direction='column'>
+    <Stack sx={{width: '80%', height: '100%'}} direction='column'>
       <PressChart {...props} name='верхняя диафрагма' color='#88f888'
         domain={[0, AXIS_MAX.top]} data={points_top}/>
       <PressChart {...props} name='нижняя диафрагма' color='#8888f8'

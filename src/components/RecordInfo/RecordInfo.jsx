@@ -3,7 +3,7 @@ import DataField from '../DataField/DataField';
 
 // import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
 import { useRecordContext } from '../../contexts/RecordContext';
-import { useSealType } from '../../contexts/SealTypesContext';
+import { SealTypeProvider, useSealType } from '../../contexts/SealTypesContext';
 
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
 import cls from './RecordInfo.module.css';
@@ -12,13 +12,24 @@ import cls from './RecordInfo.module.css';
 
 const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
 
+
 export default function RecordInfo() {
+
+  console.log("***TEST-INFO RENDER***");
+  return (
+    <SealTypeProvider>
+      <RecordForm />
+    </SealTypeProvider>
+  )
+}
+
+function RecordForm() {
   const {record, update} = useRecordContext();
   // const record = useDatabase();
   // const manageRecord = updateDatabase()
-
+  
   const sealtypes = useSealType();
-
+  
   const onSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
@@ -26,17 +37,17 @@ export default function RecordInfo() {
     // manageRecord({type: 'update', param: form_data});
     update(form_data);
   }
-
+  
   const _getFormData = (form) => {
     let data = new FormData(form);
     let result = RECORD_COLUMNS.reduce((obj, item) => {
       obj[item.name] = data.get(item.name);
       return obj;
     }, {} );
-
+  
     return result;
   }
-
+  
   const _createForm = () => {
     let result = RECORD_COLUMNS
     .filter(item => item.col > 0)
@@ -71,17 +82,15 @@ export default function RecordInfo() {
       <Button key='btn-save-testinfo' type='submit' variant='contained' size='small'
         sx={{ gridColumn: 4, gridRow: 8, gridRowEnd: 10, mt: "1px", mb: "41px", pb: 0}}
       >Сохранить</Button>)
-
+  
     return result;
   }
 
-  console.log("***TEST-INFO RENDER***");
   return (
     <div className={cls.main}>
       <form className={cls.datafields} onSubmit={onSubmit}>
         {_createForm()}
       </form>
-      {/* <pre>{JSON.stringify(context, null, 2)}</pre> */}
     </div>
   );
 }
