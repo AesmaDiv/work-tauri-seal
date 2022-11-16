@@ -23,10 +23,7 @@ pub fn get_record(db_path: &str, rec_id: i32) -> Vec<Records> {
   _check_vec::<Records>(result, format!("Record {}", &rec_id).as_str())
 }
 pub fn set_record(db_path: &str, record: &Records) -> bool {
-  let mut fixed_record = record.clone();
-  let fixed_str = fixed_record.test_press.unwrap_or(String::from("default")).replace('\"'," ");
-  fixed_record.test_press = Some(fixed_str);
-  // println!("{:?}", fixed_record);
+  let fixed_record = _fix_test_points(record);
   let result = write(db_path, &fixed_record);
   _check_usize(result, "Record write")
 }
@@ -83,5 +80,18 @@ fn _check_vec<T: Debug>(result_to_check: Result<Vec<T>, rusqlite::Error>, messag
 fn _floats_to_bytes(floats: Vec<f32>) -> Vec<u8> {
   let mut result = Vec::new();
   floats.iter().for_each(|x| { result.extend(x.to_le_bytes().iter()) });
+  return result;
+}
+fn _fix_test_points(record: &Records) -> Records {
+  let mut result = record.clone();
+  if let Some(mut fixed_test_press) = result.test_press {
+    fixed_test_press = fixed_test_press.replace('\"'," ");
+    result.test_press = Some(fixed_test_press);
+  }
+  if let Some(mut fixed_test_power) = result.test_power {
+    fixed_test_power = fixed_test_power.replace('\"'," ");
+    result.test_power = Some(fixed_test_power);
+  }
+
   return result;
 }

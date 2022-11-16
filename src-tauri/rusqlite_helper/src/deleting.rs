@@ -15,6 +15,5 @@ pub fn delete_table<T: super::DBTable<T>>(db_path: &str, table: &str, record: &T
     table,
     2
   );
-  println!("delete {}", &sql);
   super::aux::execute(db_path, &sql, [])
 }

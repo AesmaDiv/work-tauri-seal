@@ -59,11 +59,12 @@ export async function getRecordData(rawdata) {
 }
 /** Функция создания массива точек для графика
  * давления диафрагмы из данных испытания */
-export async function createPressPoints(array, length) {
+export async function createPressPoints(array, length, from_raw = false ) {
   let result = [];
+  let coef = from_raw ? 0.070307 : 1;
   if (array?.length && length > 0) {
     array.length = length;
-    array.map(val => val > 0 ? val * 0.070307 : 0)
+    array.map(val => val > 0 ? val * coef : 0)
     .forEach((item, index) => {
       result.push({x: index, y: item})
     });

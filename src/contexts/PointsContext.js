@@ -7,10 +7,7 @@ import { useDatabase, updateDatabase } from './DatabaseContext';
 import { useHardware } from './HardwareContext';
 import { useTesting } from './TestingContext';
 
-import { createObj } from '../shared/functions';
 
-
-const tracked_hw = 'press_top';
 /** Провайдер точек для графиков испытаний
  * @param NAME      имя провайдера (для отображения в консоли)
  * @param INITIAL   объект для инициализации значения для точек
@@ -26,34 +23,38 @@ const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, ref
   const states = useTesting();
   const [points, setPoints] = useState(INITIAL);
 
-
-  const managePoints = useCallback(action => {
-   action.type === 'save' && manageRecord('save_points', points);
-  }, []);
-
   /** отслеживаемое поле БД */
-  const tracked_db = record.rawdata;
+  const tracked_db = [record.rawdata, record[TRACKED_STATE]];
   /** отслеживаемые поля значений с оборудования */
   const tracked_hw   = Object.keys(INITIAL).map(k => hw_values[k]);
   /** отслеживаемый флаг состояния испытания */
   const tracked_read = states[TRACKED_STATE];
   /** отслеживаемый размер массива точек */
-  const tracked_size = Object.keys(INITIAL).every(k => points[k].length < POINTS_MAX);
+  const tracked_size = points[Object.keys(INITIAL)[0]]?.length < POINTS_MAX;
+
+  /** Функция передачи провайдеру БД комманды на сохранение точек,
+   *  Передаётся в качестве callback в дочерние компоненты */
+  const managePoints = action => 
+    action === 'save points' &&
+    manageRecord('save points', {...points});
 
   /** Точки получаемые из провайдера БД */
   useEffect (() => {
-    console.warn("PointsContext DB record changed", NAME);
-    refreshDB(tracked_db).then(result => setPoints(result))
-  }, [tracked_db])
+    // console.warn("PointsContext DB record changed", NAME);
+    refreshDB(tracked_db).then(result => {
+      console.warn("->", result);
+      setPoints(result)
+    })
+  }, [...tracked_db])
 
   /** Точки получаемые из провайдера данных с оборудования */
   useEffect(() => {
+    // console.warn("PointsContext HW values changed", NAME);
     hw_values.is_reading &&
     tracked_read &&
     tracked_size &&
     refreshHW(points, hw_values).then(result => setPoints(result));
 
-    console.warn("PointsContext HW values changed", NAME);
   }, [...tracked_hw]);
 
   useEffect(() => {

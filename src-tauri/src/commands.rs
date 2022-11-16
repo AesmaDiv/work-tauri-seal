@@ -40,7 +40,6 @@ pub fn write_dictionary(db_path: &str, table: &str, dict: mdl::Dictionary) -> bo
 
 #[tauri::command]
 pub fn delete_record(db_path: &str, record: mdl::Records) -> bool {
-  println!("{:?}", record);
   db::del_record(db_path, &record)
 }
 

@@ -18,13 +18,26 @@ export const PressProps = {
     press_top: [],  // давление верхней диафрагмы
     press_btm: []   // давление нижней диафрагмы
   },
-  TRACKED_STATE: 'press_test',
-  refreshDB: async(raw) => {
-    const test_data = await getRecordData(raw);
-    let press_top = await createPressPoints(test_data?.press_top, PressProps.POINTS_MAX);
-    let press_btm = await createPressPoints(test_data?.press_btm, PressProps.POINTS_MAX);
+  TRACKED_STATE: 'test_press',
+  refreshDB: async(tracked) => {
+    let [raw, json] = tracked;
+    try {
+      const from_raw = !json?.length;
+      let points_data = from_raw ?
+        await getRecordData(raw) :
+        JSON.parse(
+          json
+            .replace('press_top', '"press_top"')
+            .replace('press_btm', '"press_btm"')
+        );
+      let press_top = await createPressPoints(points_data?.press_top, PressProps.POINTS_MAX, from_raw);
+      let press_btm = await createPressPoints(points_data?.press_btm, PressProps.POINTS_MAX, from_raw);
 
-    return {press_top, press_btm};
+      return {press_top, press_btm};
+    } catch (err) {
+      console.warn(`!!! ERROR:: ${PressProps.NAME} points reading failed:`, err);
+      return PressProps.INITIAL;
+    }
   },
   refreshHW: async (points, hw_values) => {
     let press_top = [...points.press_top];

@@ -58,7 +58,6 @@ fn read_dta(_path: &str) -> Vec<String>{
       let result = buffer.split('\n')
         .map(|s| s.to_string())
         .collect::<Vec<String>>();
-      // println!("{:#?}", result);
 
       return result;
     }
@@ -90,7 +89,6 @@ fn parse_type(lines: Vec<String>) -> Option<SType> {
       do_thrust : Some(if "1" == clean_lines[8].to_string() {true} else {false}),
       rotation  : Some(clean_lines[9].to_string().parse().unwrap_or(0)),
     };
-    // println!("{:#?}", result);
 
     return Some(result);
   }

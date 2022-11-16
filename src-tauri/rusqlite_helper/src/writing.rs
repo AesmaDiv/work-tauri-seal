@@ -15,6 +15,5 @@ pub fn write_table<T: super::DBTable<T>>(db_path: &str, table: &str, record: &T)
     table,
     if sql.starts_with("Update") { 1 } else { 2 }
   );
-  println!("{}", sql);
   super::aux::execute(db_path, &sql, [])
 }

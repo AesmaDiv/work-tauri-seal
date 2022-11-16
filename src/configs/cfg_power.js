@@ -16,12 +16,24 @@ export const PowerProps = {
   NAME: "Power Consumption",
   POINTS_MAX: 25,
   INITIAL: { power: [] }, // мощность
-  TRACKED_STATE: 'power_test',
-  refreshDB: async(raw) => {
-    const test_data = await getRecordData(raw);
-    let power = await createPowerPoints(test_data.power_data, PowerProps.POINTS_MAX);
+  TRACKED_STATE: 'test_power',
+  refreshDB: async(tracked) => {
+    try {
+      const [raw, json] = tracked;
+      let points_data = json?.length ?
+        JSON.parse(
+          json
+            .replace('press_top', '"press_top"')
+            .replace('press_btm', '"press_btm"')
+        ) :
+        await getRecordData(raw);
+      let power = await createPowerPoints(points_data?.power_top, PowerProps.POINTS_MAX);
 
-    return {power};
+      return {power};
+    } catch (err) {
+      console.warn(`!!! ERROR:: ${PowerProps.NAME} points reading failed:`, err);
+      return PowerProps.INITIAL;
+    }
   },
   refreshHW: async(points, hw_values) => {
     let power = [...points];

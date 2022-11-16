@@ -4,19 +4,19 @@ import { createContainer } from 'react-tracked';
 
 /** Флаги управления испытаниями */
 const FLAGS = {
-  press_test: false,
-  power_test: false
+  test_press: false,
+  test_power: false
 };
 /** Провайдер данных из Базы данных */
 function TestingContext() {
   const [states, manageStates] = useReducer((state, action) => {
     console.warn(`Testing state changes: ${action.type} -> ${action.param}`);
     switch (action.type) {
-      case 'press_test': {
-        return {...state, press_test: action.param};
+      case 'test_press': {
+        return {...state, test_press: action.param};
       }
-      case 'power_test': {
-        return {...state, power_test: action.param};
+      case 'test_power': {
+        return {...state, test_power: action.param};
       }
       default:{
         throw new Error();

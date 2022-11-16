@@ -33,7 +33,7 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
   /** Обработчик кнопки сохранения испытания давления диафрагм */
   const _handleSave = (event) => {
     // если запущен тест - не сохранять
-    states[tracked_state] || managePoints({type: 'save'});
+    states[tracked_state] || managePoints('save points');
   }
 
   console.log(`--- ${name} CONTROLS RENDER ---`);
