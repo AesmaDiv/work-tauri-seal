@@ -15,6 +15,7 @@ import { PressProps, PRESS_DATANAMES } from './configs/cfg_press';
 import { PowerProps, POWER_DATANAMES } from './configs/cfg_power';
 
 import './App.css';
+import { DatabaseProvider } from './contexts/DatabaseContext';
 
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
         <div style={{width: 600}}>Some item</div>
       </AppHeader>
       <section className="App-body">
-        <RecordProvider>
+        {/* <RecordProvider> */}
+        <DatabaseProvider>
           <RecordList/>
           <HardwareProvider>
             <TestingProvider>
@@ -41,7 +43,8 @@ function App() {
               </AccordionWrapper>
             </TestingProvider>
           </HardwareProvider>
-        </RecordProvider>
+        </DatabaseProvider>
+        {/* </RecordProvider> */}
       </section>
       <footer className="App-footer">
         <StatusBar />

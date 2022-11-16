@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useState } from 'react';
 import { createContainer } from 'react-tracked';
 
 import { readRecord, updateRecord, deleteRecord } from '../database/DatabaseHelper';
@@ -8,38 +8,32 @@ const INITIAL = {};
 
 /** Провайдер данных из Базы данных */
 function DatabaseContext() {
-  const [record, manageRecord] = useReducer((state, action) => {
-    switch (action.type) {
-      case 'load': {
+  const [record, setRecord] = useState(INITIAL);
+  
+  const manageRecord = (action, param) => {
+    switch (action) {
+      case 'read': {
         console.warn("DatabaseContext load");
-        readRecord(action.param).then(result => {
-          manageRecord({
-            type: 'loaded',
-            param: result
-          });
-        });
-        return state;
-      }
-      case 'loaded': {
-        console.warn("DatabaseContext loaded");
-        return action.param;
+        readRecord(param).then(result => setRecord(result));
+        break;
       }
       case 'update': {
         console.warn("DatabaseContext update");
-        updateRecord(action.param).then(() => {});
-        return state;
+        // let modified = {...record, ...param}
+        updateRecord(param).then(() => manageRecord('read', param.id));
+        break;
       }
       case 'delete': {
         console.warn("DatabaseContext delete");
-        deleteRecord(action.param).then(() =>  {});
-        return INITIAL;
+        deleteRecord(param).then(() =>  setRecord(INITIAL));
+        break;
       }
       default:{
         console.warn("DatabaseContext default");
         throw new Error();
       }
     }
-  }, INITIAL);
+  };
 
   console.log("+++ DATABASE PROVIDER RENDER +++");
   return [record, manageRecord]

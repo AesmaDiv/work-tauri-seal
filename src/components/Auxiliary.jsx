@@ -1,7 +1,9 @@
-import { useRecordContext } from "../contexts/RecordContext";
+// import { useRecordContext } from "../contexts/RecordContext";
+import { useDatabase } from "../contexts/DatabaseContext";
 
 export default function Auxiliary() {
-  const {record} = useRecordContext();
+  // const {record} = useRecordContext();
+  const record = useDatabase();
 
   return (
     <div  style={{ width: '100%', height: '400px', overflow: 'scroll' }}>

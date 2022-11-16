@@ -14,7 +14,7 @@ export const PRESS_LIMITS = {
 export const PressProps = {
   NAME: "Pressure",
   POINTS_MAX: 180,
-  INITIAL: {
+  INITIAL: { 
     press_top: [],  // давление верхней диафрагмы
     press_btm: []   // давление нижней диафрагмы
   },

@@ -15,9 +15,7 @@ export const POWER_LIMITS = {
 export const PowerProps = {
   NAME: "Power Consumption",
   POINTS_MAX: 25,
-  INITIAL: {
-    power: [], // мощность
-  },
+  INITIAL: { power: [] }, // мощность
   TRACKED_STATE: 'power_test',
   refreshDB: async(raw) => {
     const test_data = await getRecordData(raw);

@@ -23,7 +23,11 @@ pub fn get_record(db_path: &str, rec_id: i32) -> Vec<Records> {
   _check_vec::<Records>(result, format!("Record {}", &rec_id).as_str())
 }
 pub fn set_record(db_path: &str, record: &Records) -> bool {
-  let result = write(db_path, record);
+  let mut fixed_record = record.clone();
+  let fixed_str = fixed_record.test_press.unwrap_or(String::from("default")).replace('\"'," ");
+  fixed_record.test_press = Some(fixed_str);
+  // println!("{:?}", fixed_record);
+  let result = write(db_path, &fixed_record);
   _check_usize(result, "Record write")
 }
 pub fn del_record(db_path: &str, record: &Records) -> bool {
@@ -75,4 +79,9 @@ fn _check_vec<T: Debug>(result_to_check: Result<Vec<T>, rusqlite::Error>, messag
     println!("Loading {} failed: {:?}", message, result_to_check.unwrap_err());
     Vec::new()
   }
+}
+fn _floats_to_bytes(floats: Vec<f32>) -> Vec<u8> {
+  let mut result = Vec::new();
+  floats.iter().for_each(|x| { result.extend(x.to_le_bytes().iter()) });
+  return result;
 }

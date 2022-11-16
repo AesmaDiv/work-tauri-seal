@@ -75,6 +75,7 @@ macro_rules! dbtable {
       fn generate_update(&self, pk_name: &str) -> String {
         let (id, pairs): (Vec<_>, Vec<_>) = Self::get_pairs(&self)
           .into_iter()
+          .filter(|x| x[1] != "NULL")
           .partition(|x| x[0] == pk_name);
         format!(
           "Update {} Set {} Where {}",

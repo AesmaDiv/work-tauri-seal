@@ -1,12 +1,16 @@
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { createContainer } from 'react-tracked';
 
-import { useRecordContext } from './RecordContext';
+// import { useRecordContext } from './RecordContext';
+import { useDatabase, updateDatabase } from './DatabaseContext';
 import { useHardware } from './HardwareContext';
 import { useTesting } from './TestingContext';
 
+import { createObj } from '../shared/functions';
 
+
+const tracked_hw = 'press_top';
 /** Провайдер точек для графиков испытаний
  * @param NAME      имя провайдера (для отображения в консоли)
  * @param INITIAL   объект для инициализации значения для точек
@@ -15,36 +19,53 @@ import { useTesting } from './TestingContext';
  * @param refreshHW ассинхронная функция получения точек с оборудования
  */
 const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, refreshHW}) => {
-  const {raw} = useRecordContext();
+  // const {raw, save} = useRecordContext();
+  const record = useDatabase();
+  const manageRecord = updateDatabase();
   const hw_values = useHardware();
   const states = useTesting();
   const [points, setPoints] = useState(INITIAL);
 
+
+  const managePoints = useCallback(action => {
+   action.type === 'save' && manageRecord('save_points', points);
+  }, []);
+
+  /** отслеживаемое поле БД */
+  const tracked_db = record.rawdata;
+  /** отслеживаемые поля значений с оборудования */
+  const tracked_hw   = Object.keys(INITIAL).map(k => hw_values[k]);
+  /** отслеживаемый флаг состояния испытания */
+  const tracked_read = states[TRACKED_STATE];
+  /** отслеживаемый размер массива точек */
+  const tracked_size = Object.keys(INITIAL).every(k => points[k].length < POINTS_MAX);
+
   /** Точки получаемые из провайдера БД */
   useEffect (() => {
-    console.warn("PointsContext useEffect rawdata", NAME);
-    refreshDB(raw).then(result => setPoints(result))
-  }, [raw])
-
+    console.warn("PointsContext DB record changed", NAME);
+    refreshDB(tracked_db).then(result => setPoints(result))
+  }, [tracked_db])
 
   /** Точки получаемые из провайдера данных с оборудования */
   useEffect(() => {
-    console.warn("PointsContext useEffect hw_values");
-    if (hw_values.is_reading && states[TRACKED_STATE]) {
-      // если достигнут лимит точек
-      if (Object.keys(INITIAL).every(k => points[k].length < POINTS_MAX)) {
-        refreshHW(points, hw_values).then(result => setPoints(result));
-      }
-    }
-  }, [...Object.keys(INITIAL).map(k => hw_values[k])]);
+    hw_values.is_reading &&
+    tracked_read &&
+    tracked_size &&
+    refreshHW(points, hw_values).then(result => setPoints(result));
+
+    console.warn("PointsContext HW values changed", NAME);
+  }, [...tracked_hw]);
 
   useEffect(() => {
-    console.warn("PointsContext useEffect is_reading ->", states[TRACKED_STATE]);
-    if (hw_values.is_reading && states[TRACKED_STATE]) setPoints({...INITIAL});
-  }, [states[TRACKED_STATE]]);
+    hw_values.is_reading &&
+    tracked_read &&
+    setPoints(INITIAL);
+
+    console.warn("PointsContext HW values reading ->", tracked_read);
+  }, [tracked_read]);
 
   console.log(`+++ ${NAME} POINTS PROVIDER +++`);
-  return [points, setPoints];
+  return [points, managePoints];
 }
 
 export const {

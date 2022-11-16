@@ -6,7 +6,8 @@ import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
 
 import SearchBar from './SearchBar';
-import { useRecordContext } from '../../contexts/RecordContext';
+// import { useRecordContext } from '../../contexts/RecordContext';
+import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
 import { readRecordList } from '../../database/DatabaseHelper';
 
 import cls from './RecordList.module.css';
@@ -22,11 +23,11 @@ const columns = [
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 
 export default function RecordList() {
-  // const manageRecord = updateDatabase();
-  const {read} = useRecordContext();
+  const record = useDatabase();
+  const manageRecord = updateDatabase();
+  // const {read, record, is_reading} = useRecordContext();
   const [list, setList] = useState([]);
   const [selected, setSelected] = useState('');
-  const [is_reading, startReading] = useTransition();
 
   const lastId = useRef(0);
   const search = useRef('');
@@ -44,12 +45,14 @@ export default function RecordList() {
     })().then(result => startTransition(() => setList(result)));
   }
 
-  useEffect(() => _refreshList(), []);
+  useEffect(() => _refreshList(), [record.id]);
 
   const _handleSelect = async (event, row) => {
-    read(row.id);
+    if (row.id === selected) return;
+    
+    // read(row.id);
+    manageRecord('read', row.id);
     setSelected(row.id)
-    console.warn("RecordList record changed");
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
         // await deleteContext(row.item);
@@ -84,7 +87,7 @@ export default function RecordList() {
       >
         {columns
           .map((column) => {
-            const cell_val = is_reading ? 'loading' : data[column.name];
+            const cell_val = data[column.name];
             const cell_key = `${column.name}-${cell_val}`;
             return (
               <TableCell key={cell_key} sx={{width: column.width, color: 'white' }}>

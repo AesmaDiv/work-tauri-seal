@@ -4,7 +4,6 @@ import { Stack, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { updateHardware } from "../../contexts/HardwareContext";
-import { useRecordContext } from "../../contexts/RecordContext";
 
 
 const READING_ALOWED = true;
@@ -14,7 +13,6 @@ export default function AccordionWrapper({direction, children}) {
   const changeHardware = updateHardware();
   const default_key = children?.length ? children[0].props.accordion_key : '';
   const [expanded_key, setExpanded] = useState(default_key);
-  const {is_reading} = useRecordContext();
 
   /** Обработчик выбора группы */
   const _handleSelect = (item) => {
@@ -44,7 +42,6 @@ export default function AccordionWrapper({direction, children}) {
         <AccordionSummary sx={{width: '100%'}} expandIcon={<ExpandMoreIcon/>} onClick={e => _handleSelect(item)}>
           <Stack sx={{width: '100%', justifyContent: 'space-between', alignItems: 'baseline'}} direction={'row'}>
             <Typography>{item.props.accordion_title}</Typography>
-            {is_expanded && is_reading && <LinearProgress sx={{width: '50px', height: '3px'}}/>}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>

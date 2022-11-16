@@ -5,7 +5,7 @@
 /// Функция удаления указанной записи из связанной таблицы БД
 pub fn delete<T: super::DBTable<T>>(db_path: &str, record: &T) -> Result<usize, rusqlite::Error> {
   let sql = record.generate_delete("id");
-  super::aux::execute(db_path, &sql)
+  super::aux::execute(db_path, &sql, [])
 }
 /// Функция удаления указанной записи из указанной таблицы БД
 pub fn delete_table<T: super::DBTable<T>>(db_path: &str, table: &str, record: &T) -> Result<usize, rusqlite::Error> {
@@ -16,5 +16,5 @@ pub fn delete_table<T: super::DBTable<T>>(db_path: &str, table: &str, record: &T
     2
   );
   println!("delete {}", &sql);
-  super::aux::execute(db_path, &sql)
+  super::aux::execute(db_path, &sql, [])
 }

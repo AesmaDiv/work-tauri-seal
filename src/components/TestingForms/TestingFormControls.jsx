@@ -6,6 +6,7 @@ import { useHardware } from "../../contexts/HardwareContext";
 import { useTesting, updateTesting } from "../../contexts/TestingContext";
 
 import { STYLES as CLS } from "./_styles";
+import { updatePoints } from "../../contexts/PointsContext";
 
 
 /** Универсальный компонент для управления испытанием
@@ -16,6 +17,8 @@ import { STYLES as CLS } from "./_styles";
 export default function TestingFormControls({name, tracked_state, data_fields}) {
   // данные с оборудования
   const hw_values = useHardware();
+  // callback сохранения точек
+  const managePoints = updatePoints();
   // состояние испытания и callback переключения
   const states = useTesting();
   const manageStates = updateTesting();
@@ -28,11 +31,9 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
     manageStates({type: tracked_state, param: new_state});
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
-  const _handleSavePress = (event) => {
-    // props?.changeActive &&
-    // props.changeActive(!props.is_active)
-    // console.warn("PressControls is_active changed");
-    // // savePoints();
+  const _handleSave = (event) => {
+    // если запущен тест - не сохранять
+    states[tracked_state] || managePoints({type: 'save'});
   }
 
   console.log(`--- ${name} CONTROLS RENDER ---`);
@@ -63,7 +64,7 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
           </ToggleButton>
 
         </ToggleButtonGroup>
-        <Button sx={CLS.btn_save} type='submit' onClick={_handleSavePress}
+        <Button sx={CLS.btn_save} type='submit' onClick={_handleSave}
           variant='contained' size='small'>
             Сохранить
           </Button>

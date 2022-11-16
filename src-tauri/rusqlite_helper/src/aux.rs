@@ -1,4 +1,4 @@
-use rusqlite::{Connection, Error};
+use rusqlite::{Connection, Error, Params};
 
 
 /// Функция получения имени поля Primary key
@@ -14,10 +14,10 @@ pub fn get_pk_name(dbpath: &str, table: &str) -> String {
   result.unwrap_or(String::new())
 }
 /// Функция выполнения запроса к БД
-pub fn execute(db_path: &str, sql: &str) -> Result<usize, Error> {
+pub fn execute<P: Params>(db_path: &str, sql: &str, params: P) -> Result<usize, Error> {
   // подключение к БД
   let connection = Connection::open(db_path)?;
-  connection.execute(sql, [])
+  connection.execute(sql, params)
 }
 /// Функция транспонилования 2-мерного массива строк
 pub fn transpose(arr: &Vec<[String; 2]>) -> Vec<Vec<String>> {

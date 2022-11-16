@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import DataField from '../DataField/DataField';
 
-// import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
-import { useRecordContext } from '../../contexts/RecordContext';
+// import { useRecordContext } from '../../contexts/RecordContext';
+import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
 import { SealTypeProvider, useSealType } from '../../contexts/SealTypesContext';
 
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
@@ -24,9 +24,9 @@ export default function RecordInfo() {
 }
 
 function RecordForm() {
-  const {record, update} = useRecordContext();
-  // const record = useDatabase();
-  // const manageRecord = updateDatabase()
+  // const {record, update} = useRecordContext();
+  const record = useDatabase();
+  const manageRecord = updateDatabase()
   
   const sealtypes = useSealType();
   
@@ -34,8 +34,8 @@ function RecordForm() {
     event.preventDefault();
     let form_data = _getFormData(event.target);
     form_data['id'] = record.id;
-    // manageRecord({type: 'update', param: form_data});
-    update(form_data);
+    // update(form_data);
+    manageRecord('update', form_data);
   }
   
   const _getFormData = (form) => {
