@@ -5,8 +5,9 @@ import { TableContainer, IconButton } from '@mui/material';
 import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
 
+import { invoke } from '@tauri-apps/api/tauri';
+
 import SearchBar from './SearchBar';
-// import { useRecordContext } from '../../contexts/RecordContext';
 import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
 import { readRecordList } from '../../database/DatabaseHelper';
 
@@ -25,7 +26,6 @@ const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
 export default function RecordList() {
   const record = useDatabase();
   const manageRecord = updateDatabase();
-  // const {read, record, is_reading} = useRecordContext();
   const [list, setList] = useState([]);
   const [selected, setSelected] = useState('');
 
@@ -48,9 +48,6 @@ export default function RecordList() {
   useEffect(() => _refreshList(), [record.id]);
 
   const _handleSelect = async (event, row) => {
-    if (row.id === selected) return;
-    
-    // read(row.id);
     manageRecord('read', row.id);
     setSelected(row.id)
     if (event.ctrlKey) {
@@ -99,7 +96,6 @@ export default function RecordList() {
     )
   }
   const _createHeaders = () => {
-    // console.log("*** TEST-LIST HEADERS CREATE");
     return (
       <TableHead>
         <TableRow>
@@ -119,7 +115,6 @@ export default function RecordList() {
     );
   }
   const _createList = () => {
-    // console.log("*** TEST-LIST CREATE");
     return (
       <TableBody>{list.map((row) => _createRow(row))}</TableBody>
     );

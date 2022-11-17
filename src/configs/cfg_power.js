@@ -1,4 +1,4 @@
-import { getRecordData, createPowerPoints } from "../database/DatabaseHelper";
+import { getRecordData, createPowerPoints } from "../database/db_funcs";
 
 
 export const POWER_DATANAMES = [

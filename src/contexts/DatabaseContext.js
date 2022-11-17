@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createContainer } from 'react-tracked';
 
 import { readRecord, updateRecord, deleteRecord } from '../database/DatabaseHelper';
-import { addPressDataToRecord, addPowerDataToRecord } from '../shared/functions';
+import { addPressDataToRecord, addPowerDataToRecord } from '../database/db_funcs';
 
 
 const INITIAL = {};

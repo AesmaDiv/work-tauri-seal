@@ -20,26 +20,7 @@ export function roundArray(floats, decnum) {
   return result;
 }
 
-export function addPressDataToRecord(record, press_data) {
-  let press_top = _extractFloat(press_data.press_top, 'y');
-  let press_btm = _extractFloat(press_data.press_btm, 'y');
 
-  let result = {press_top, press_btm};
-  record.test_press = JSON.stringify(result);
-
-  return record;
-}
-
-export function addPowerDataToRecord(record, power_data) {
-  let time   = _extractFloat(power_data.power, 'x');
-  let power  = _extractFloat(power_data.power, 'y1');
-  let temper = _extractFloat(power_data.power, 'y2');
- 
-  let result = {time, power, temper};
-  record.test_power = JSON.stringify(result);
-
-  return record;
-}
 /** Функция генерирования случайных значений для давления диафрагм */
 export function generateRandomPressValues() {
   let count = 0;
@@ -95,7 +76,3 @@ function _generateNextValue(prev) {
   let result = (prev + x) > 2.5 ? prev - x : prev + x;
   return Math.round(result * 100) / 100;
 }
-
-function _extractFloat (arr, key) {
-  return arr.map(el => key in el ? Math.round(el[key] * 10000.0) / 10000.0 : -1);
-};

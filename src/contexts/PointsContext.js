@@ -42,7 +42,6 @@ const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, ref
   useEffect (() => {
     // console.warn("PointsContext DB record changed", NAME);
     refreshDB(tracked_db).then(result => {
-      console.warn("->", result);
       setPoints(result)
     })
   }, [...tracked_db])
@@ -58,11 +57,11 @@ const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, ref
   }, [...tracked_hw]);
 
   useEffect(() => {
+    // console.warn("PointsContext HW values reading ->", tracked_read);
     hw_values.is_reading &&
     tracked_read &&
     setPoints(INITIAL);
 
-    console.warn("PointsContext HW values reading ->", tracked_read);
   }, [tracked_read]);
 
   console.log(`+++ ${NAME} POINTS PROVIDER +++`);

@@ -4,7 +4,7 @@ import { Stack } from '@mui/system';
 
 import { usePoints } from '../../contexts/PointsContext';
 import { PRESS_LIMITS } from '../../configs/cfg_press';
-import { addLimits } from '../../shared/functions';
+import { addLimits } from '../../shared/funcs_common';
 
 
 /** максимальное значение оси X */

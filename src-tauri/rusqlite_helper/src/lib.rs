@@ -1,11 +1,11 @@
 // ************************************************************************** //
 //                           НЕ ТРОГАТЬ ТО ЧТО НИЖЕ                           //
 // ************************************************************************** //
-
 pub mod aux;
 pub mod reading;
 pub mod writing;
 pub mod deleting;
+
 
 pub trait DBTable<T> {
   /// имена полей
@@ -44,14 +44,21 @@ macro_rules! dbtable {
       fn get_pairs(&self) -> Vec<[String; 2]> {
         vec![$([
           String::from(stringify!($fname)),
-          format!("{:?}", self.$fname)
-          .replace("Some(", "")
-          .replace(")", "")
-          .replace("\"", "'")
-          .replace("None", "NULL")
+          if let Some(val) = &self.$fname {
+            format!("{:?}", val)
+          } else {
+            "NULL".to_string()
+          }
+          // format!("{}", self.$fname)
+          // .replace("Some(\"", "")
+          // .replace(")", "")
+          // .replace("\"", "'")
+          // .replace("None", "NULL")
         ],)*]
       }
     }
+
+
 
     impl $crate::DBTable<$name> for $name {
       const NAMES: &'static [&'static str] = &[$(stringify!($fname)),*];
@@ -115,3 +122,4 @@ macro_rules! dbtable {
     }
   };
 }
+

@@ -2,7 +2,7 @@ import { useContext, useState, useTransition, startTransition, useCallback } fro
 import { createContext } from "react";
 
 import { readRecord, updateRecord, deleteRecord } from "../database/DatabaseHelper";
-import { addPressDataToRecord, addPowerDataToRecord } from "../shared/functions";
+import { addPressDataToRecord, addPowerDataToRecord } from "../database/db_funcs";
 
 
 const RecordContext = createContext();

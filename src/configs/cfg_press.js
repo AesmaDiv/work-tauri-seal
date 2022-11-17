@@ -1,4 +1,4 @@
-import { getRecordData, createPressPoints } from "../database/DatabaseHelper";
+import { getRecordData, createPressPoints } from "../database/db_funcs";
 
 
 export const PRESS_DATANAMES = [
@@ -24,12 +24,8 @@ export const PressProps = {
     try {
       const from_raw = !json?.length;
       let points_data = from_raw ?
-        await getRecordData(raw) :
-        JSON.parse(
-          json
-            .replace('press_top', '"press_top"')
-            .replace('press_btm', '"press_btm"')
-        );
+        await getRecordData(raw) : 
+        JSON.parse(json.replaceAll("#", '"'));
       let press_top = await createPressPoints(points_data?.press_top, PressProps.POINTS_MAX, from_raw);
       let press_btm = await createPressPoints(points_data?.press_btm, PressProps.POINTS_MAX, from_raw);
 

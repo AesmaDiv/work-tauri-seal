@@ -5,7 +5,8 @@ use super::database::models_seal as mdl;
 
 #[tauri::command]
 pub fn logging(message: String) {
-  println!("Logging:: {:?}", message);
+  let msg = format!("Logging:: {}", message);
+  println!("{}", msg);
 }
 
 #[tauri::command]

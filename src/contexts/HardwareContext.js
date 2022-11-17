@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createContainer } from 'react-tracked';
-import { generateRandomHWValues } from '../shared/functions';
+import { generateRandomHWValues } from '../shared/funcs_common';
 
 
 const PULLING_RATE = 1000; // период обновления в мс
