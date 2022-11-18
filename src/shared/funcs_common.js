@@ -56,15 +56,20 @@ export function addLimits(array, limits, length) {
 /** Функция генерирования случайных значений для эмуляции работы оборудования */
 export async function generateRandomHWValues(hw_values) {
   let result = {
-    ttime:      hw_values.ttime + 1,
-    rpm:        _generateNextValue(hw_values.rpm),
-    torque:     _generateNextValue(hw_values.torque),
-    temper:     _generateNextValue(hw_values.temper),
-    press_sys:  _generateNextValue(hw_values.press_sys),
-    press_top:  _generateNextValue(hw_values.press_top),
-    press_btm:  _generateNextValue(hw_values.press_btm),
+    test_press: {
+      time:       hw_values.test_press.time + 1,
+      press_sys:  _generateNextValue(hw_values.test_press.press_sys),
+      press_top:  _generateNextValue(hw_values.test_press.press_top),
+      press_btm:  _generateNextValue(hw_values.test_press.press_btm),
+    },
+    test_power: {
+      time:       hw_values.test_power.time + 1,
+      rpm:        _generateNextValue(hw_values.test_power.rpm),
+      torque:     _generateNextValue(hw_values.test_power.torque),
+      temper:     _generateNextValue(hw_values.test_power.temper),
+    },
   }
-  result.power = Math.round(result.torque * result.rpm / 63.025 * 100) / 100;
+  result.test_power.power = Math.round(result.test_power.torque * result.test_power.rpm / 63.025 * 100) / 100;
 
   return result;
 }

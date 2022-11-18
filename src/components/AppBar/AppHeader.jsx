@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Box, AppBar, Toolbar, Typography, Button, IconButton, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useEffect } from 'react';
 
 
 const _HEIGHT = 50;
@@ -13,6 +14,11 @@ export default function AppHeader({children}) {
     console.log("AppBar menu clicked");
     setDrawerState(!drawer_state);
   }
+
+  const _onButtonClick = () => {
+    console.warn("AppBar buttonCliked");
+  }
+
   return (
     <Box>
       <AppBar position="static" sx={{height: _HEIGHT, zIndex: 10}}>
@@ -28,24 +34,24 @@ export default function AppHeader({children}) {
           <MenuIcon sx={{zIndex: 4}} />
           </IconButton>
           <Typography variant="h7" component="div" sx={{ flexGrow: 1 }}>
-            News
+            ООО «ЛУКОЙЛ ЭПУ Сервис» г.Когалым
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={_onButtonClick}>Login</Button>
         </Toolbar>
-      <Drawer
-        variant='temporary'
-        classes={{
-          root: {paddingTop: 100, zIndex: 4}
-        }}
-        elevation={16}
-        anchor='left'
-        open={drawer_state}
-        onClose={() => {}}
-        onClick={() => setDrawerState(false)}
-        PaperProps={{style: {backgroundColor: _BCKCOLOR, paddingTop: _HEIGHT, zIndex: 2}}}
-        >
-        {children}
-      </Drawer>
+        <Drawer
+          variant='temporary'
+          classes={{
+            root: {paddingTop: 100, zIndex: 4}
+          }}
+          elevation={16}
+          anchor='left'
+          open={drawer_state}
+          onClose={() => {}}
+          onClick={() => setDrawerState(false)}
+          PaperProps={{style: {backgroundColor: _BCKCOLOR, paddingTop: _HEIGHT, zIndex: 2}}}
+          >
+          {children}
+        </Drawer>
       </AppBar>
     </Box>
   );

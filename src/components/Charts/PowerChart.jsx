@@ -25,7 +25,8 @@ export default function PowerConsumptionCharts() {
   //   addLimits(points?.temper, LIMITS.btm)
   // ];
 
-  console.log("--- Power Consumption CHARTS RENDER ---");
+  console.log("%c --- CHARTS RENDER %c Power Consumption ---", 'color: #9999ff', 'color: red');
+  // console.warn(points);
   return (
     <PowerChart sx={{width: '80%', height: '100%', animation: '100'}}
       name='потребляемая мощность' color='#88f888'
@@ -65,7 +66,7 @@ function PowerChart(props) {
     style: { textAnchor: 'middle' }
   };
 
-  console.log("--- CHART RENDER %o", props?.name);
+  console.log("%c --- CHART RENDER %o", 'color: #bbbbff', props?.name);
   return (
     <ResponsiveContainer width={props?.width} height={props?.height} >
       <ComposedChart

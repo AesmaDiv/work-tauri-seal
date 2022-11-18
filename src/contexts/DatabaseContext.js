@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { createContainer } from 'react-tracked';
 
 import { readRecord, updateRecord, deleteRecord } from '../database/DatabaseHelper';
@@ -11,26 +11,26 @@ const INITIAL = {};
 function DatabaseContext() {
   const [record, setRecord] = useState(INITIAL);
   
-  const manageRecord = (action, param) => {
+  const manageRecord = useCallback((action, param) => {
     switch (action) {
       case 'read': {
-        console.warn("DatabaseContext load");
+        console.warn("DatabaseProvider record read");
         readRecord(param).then(result => setRecord(result));
         break;
       }
       case 'update': {
-        console.warn("DatabaseContext update");
+        console.warn("DatabaseProvider record update");
         // let modified = {...record, ...param}
         updateRecord(param).then(() => manageRecord('read', param.id));
         break;
       }
       case 'delete': {
-        console.warn("DatabaseContext delete");
+        console.warn("DatabaseProvider record delete");
         deleteRecord(param).then(() =>  setRecord(INITIAL));
         break;
       }
       case 'save points': {
-        console.warn("DataContext saving points", param);
+        console.warn("DataProvider record saving points", param);
         if ('press_top' in param && 'press_btm' in param) {
           manageRecord('update', addPressDataToRecord({id: record.id}, param));
         } else if ('power' in param) {
@@ -44,9 +44,9 @@ function DatabaseContext() {
         throw new Error();
       }
     }
-  };
+  },[]);
 
-  console.log("+++ DATABASE PROVIDER RENDER +++");
+  console.log("%c +++ DATABASE PROVIDER RENDER +++", 'color: #55aa55');
   return [record, manageRecord]
 }
 

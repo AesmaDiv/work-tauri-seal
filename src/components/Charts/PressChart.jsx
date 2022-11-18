@@ -31,7 +31,8 @@ export default function PressureCharts() {
     height: "50%",
     animation: 300
   }
-  console.log("--- Pressure CHARTS RENDER ---");
+  console.log("%c --- CHARTS RENDER %c Pressure ---", 'color: #9999ff', 'color: green');
+  // console.warn(points);
   return (
     <Stack sx={{width: '80%', height: '100%'}} direction='column'>
       <PressChart {...props} name='верхняя диафрагма' color='#88f888'
@@ -72,7 +73,7 @@ function PressChart(props) {
     style: { textAnchor: 'middle' }
   };
 
-  console.log("--- CHART RENDER %o", props?.name);
+  console.log("%c --- CHART RENDER %o", 'color: #bbbbff', props?.name);
   return (
     <ResponsiveContainer width={props?.width} height={props?.height} >
       <ComposedChart

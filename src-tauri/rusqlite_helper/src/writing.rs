@@ -5,7 +5,6 @@
 /// Функция записи в связанную таблицу БД содержимого переданной структуры
 pub fn write<T: super::DBTable<T>>(db_path: &str, record: &T) -> Result<usize, rusqlite::Error> {
   let sql = record.generate_write("id");
-  println!("{sql}");
   super::aux::execute(db_path, &sql, [])
 }
 /// Функция записи в указанную таблицу БД содержимого переданной структуры

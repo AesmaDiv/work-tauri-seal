@@ -15,7 +15,7 @@ const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
 
 export default function RecordInfo() {
 
-  console.log("***TEST-INFO RENDER***");
+  console.log("*** RECORD-INFO RENDER ***");
   return (
     <SealTypeProvider>
       <RecordForm />

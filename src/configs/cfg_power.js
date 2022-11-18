@@ -2,7 +2,7 @@ import { getRecordData, createPowerPoints } from "../database/db_funcs";
 
 
 export const POWER_DATANAMES = [
-  {name: 'ttime',   label: 'Время испытания'},
+  {name: 'time',   label: 'Время испытания'},
   {name: 'rpm',     label: 'Скорость, мин−1'},
   {name: 'torque',  label: 'Момент, Н*м'},
   {name: 'power',   label: 'Мощность, кВт'},
@@ -21,13 +21,13 @@ export const PowerProps = {
     try {
       const [raw, json] = tracked;
       let points_data = json?.length ?
-        JSON.parse(
-          json
-            .replace('press_top', '"press_top"')
-            .replace('press_btm', '"press_btm"')
+      JSON.parse(
+        json
+        .replace('press_top', '"press_top"')
+        .replace('press_btm', '"press_btm"')
         ) :
         await getRecordData(raw);
-      let power = await createPowerPoints(points_data?.power_top, PowerProps.POINTS_MAX);
+      let power = await createPowerPoints(points_data?.power_data, PowerProps.POINTS_MAX);
 
       return {power};
     } catch (err) {

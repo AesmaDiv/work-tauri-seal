@@ -46,7 +46,7 @@ pub fn del_dict(db_path: &str, table: &str, dict: &Dictionary) -> bool {
 
 pub fn get_type(db_path: &str, table: &str) -> Vec<SType> {
   let result = read_table::<SType>(db_path, &table);
-  _check_vec::<SType>(result, format!("sealtype {}", &table).as_str())
+  _check_vec::<SType>(result, &table)
 }
 pub fn set_type(db_path: &str, table: &str, record: &SType) -> bool {
   let result = write_table::<SType>(db_path, table, record);
@@ -75,9 +75,4 @@ fn _check_vec<T: Debug>(result_to_check: Result<Vec<T>, rusqlite::Error>, messag
     println!("Loading {} failed: {:?}", message, result_to_check.unwrap_err());
     Vec::new()
   }
-}
-fn _floats_to_bytes(floats: Vec<f32>) -> Vec<u8> {
-  let mut result = Vec::new();
-  floats.iter().for_each(|x| { result.extend(x.to_le_bytes().iter()) });
-  return result;
 }

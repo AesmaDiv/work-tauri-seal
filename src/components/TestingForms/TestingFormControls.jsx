@@ -36,13 +36,15 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
     states[tracked_state] || managePoints('save points');
   }
 
-  console.log(`--- ${name} CONTROLS RENDER ---`);
+  const color = name === "Pressure" ? "green" : "red";
+  console.log(`%c --- CONTROLS RENDER %c ${name} ---`, 'color: #7777ff', `color: ${color}`);
   return (
     <Stack direction="column" sx={CLS.controls}>
       <Stack direction="column" sx={CLS.controls_data}>
         {
         data_fields.map(item => {
-          return <DataField key={item.name} data={item} value={hw_values[item.name].toString()}
+          return <DataField key={item.name} data={item}
+            value={hw_values[tracked_state][item.name].toString()}
             inputProps={{
               InputProps: { style: { color: '#ffc653'}, readOnly: true },
               InputLabelProps: { style: { color: 'white' }, shrink: true }
