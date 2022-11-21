@@ -1,22 +1,25 @@
 import { useState, useRef } from 'react';
-import { Box, AppBar, Toolbar, Typography, Button, IconButton, Drawer } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, IconButton, FormControlLabel } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect } from 'react';
 
+
+import { Android12Switch } from './_styles';
+import { updateTesting } from '../../contexts/TestingContext';
 
 const _HEIGHT = 50;
 const _BCKCOLOR = '#1976d2';
 
 export default function AppHeader({children}) {
-  const [drawer_state, setDrawerState] = useState(false);
+  const manageStates = updateTesting();
 
   const _onMenuClick = () => {
     console.log("AppBar menu clicked");
-    setDrawerState(!drawer_state);
   }
 
-  const _onButtonClick = () => {
+  const _handleChange = (event) => {
     console.warn("AppBar buttonCliked");
+    manageStates({type: 'reading', param: event.target.checked})
   }
 
   return (
@@ -36,22 +39,8 @@ export default function AppHeader({children}) {
           <Typography variant="h7" component="div" sx={{ flexGrow: 1 }}>
             ООО «ЛУКОЙЛ ЭПУ Сервис» г.Когалым
           </Typography>
-          <Button color="inherit" onClick={_onButtonClick}>Login</Button>
+          <FormControlLabel control={<Android12Switch onChange={_handleChange} />} label="Adam" />
         </Toolbar>
-        <Drawer
-          variant='temporary'
-          classes={{
-            root: {paddingTop: 100, zIndex: 4}
-          }}
-          elevation={16}
-          anchor='left'
-          open={drawer_state}
-          onClose={() => {}}
-          onClick={() => setDrawerState(false)}
-          PaperProps={{style: {backgroundColor: _BCKCOLOR, paddingTop: _HEIGHT, zIndex: 2}}}
-          >
-          {children}
-        </Drawer>
       </AppBar>
     </Box>
   );

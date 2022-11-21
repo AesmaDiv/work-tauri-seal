@@ -42,7 +42,7 @@ const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, ref
   /** Точки получаемые из провайдера данных с оборудования */
   useEffect(() => {
     console.warn(`PointProvider HW values changed ${NAME}`);
-    hw_values.is_reading &&
+    states.is_reading &&
     tracked_rd && tracked_sz &&
     refreshHW(points, tracked_hw).then(result => setPoints(result));    
   }, [tracked_hw]);
@@ -56,7 +56,7 @@ const PointsContext = ({NAME, POINTS_MAX, INITIAL, TRACKED_STATE, refreshDB, ref
   /** Запуск испытания - сброс точек */
   useEffect(() => {
     console.warn(`PointProvider ${NAME} reading changed -> ${tracked_rd}`);
-    hw_values.is_reading &&
+    states.is_reading &&
     tracked_rd &&
     setPoints(INITIAL);
   }, [tracked_rd]);

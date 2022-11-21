@@ -1,32 +1,22 @@
 import { useState, startTransition } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, LinearProgress } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { updateHardware } from "../../contexts/HardwareContext";
 
 
-const READING_ALOWED = true;
-
 /** Оборачиватель в разворачиваемые группы */
 export default function AccordionWrapper({direction, children}) {
-  const changeHardware = updateHardware();
   const default_key = children?.length ? children[0].props.accordion_key : '';
   const [expanded_key, setExpanded] = useState(default_key);
+  const manageHardware = updateHardware();
 
   /** Обработчик выбора группы */
   const _handleSelect = (item) => {
     if (item.props.accordion_key === expanded_key) return;
-    // в зависимости от того, выбрана группа с испытанием или нет
-    // запускаем или останавливаем чтение с оборудования
     let new_state = ['key_testpress', 'key_testpower'].includes(item.props.accordion_key);
-    if (READING_ALOWED) {
-      startTransition(() => changeHardware(
-        (prev) => (
-          {...prev, is_reading: new_state}
-        )
-      ));
-    }
+    manageHardware((prev) => ({...prev, in_reading: new_state }));
     // разворачиваем выбранную группу
     setExpanded(item.props.accordion_key);
   }

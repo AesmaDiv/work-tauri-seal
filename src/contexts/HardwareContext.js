@@ -5,19 +5,21 @@ import { generateRandomHWValues } from '../shared/funcs_common';
 
 const PULLING_RATE = 1000; // период обновления в мс
 const INITIAL = {
-  is_reading: false,  // статус чтения
-  test_press: {       // ДАВЛЕНИЕ ДИАФРАГМ
-    time:       0,    // время испытания
-    press_sys:  0,    // давление в системе
-    press_top:  0,    // давление верхней диафрагмы
-    press_btm:  0,    // давление нижней диафрагмы
+  is_reading:   false,  // статус чтения
+  test_press: {         // ДАВЛЕНИЕ ДИАФРАГМ
+    is_testing: false,
+    time:       0,      // время испытания
+    press_sys:  0,      // давление в системе
+    press_top:  0,      // давление верхней диафрагмы
+    press_btm:  0,      // давление нижней диафрагмы
   },
-  test_power: {       // ПОТРЕБЛЯЕМАЯ МОЩНОСТЬ
+  test_power: {         // ПОТРЕБЛЯЕМАЯ МОЩНОСТЬ
+    is_testing: false,
     time:       0,
-    rpm:        0,    // скорость вращения
-    torque:     0,    // момент
-    temper:     0,    // температура
-    power:      0,    // мощность
+    rpm:        0,      // скорость вращения
+    torque:     0,      // момент
+    temper:     0,      // температура
+    power:      0,      // мощность
   },
 }
 

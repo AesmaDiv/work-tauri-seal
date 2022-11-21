@@ -4,6 +4,7 @@ import { createContainer } from 'react-tracked';
 
 /** Флаги управления испытаниями */
 const FLAGS = {
+  is_reading: false,
   test_press: false,
   test_power: false
 };
@@ -12,6 +13,9 @@ function TestingContext() {
   const [states, manageStates] = useReducer((state, action) => {
     console.warn(`Testing state changes: ${action.type} -> ${action.param}`);
     switch (action.type) {
+      case 'reading': {
+        return {...state, is_reading: action.param};
+      }
       case 'test_press': {
         return {...state, test_press: action.param};
       }
