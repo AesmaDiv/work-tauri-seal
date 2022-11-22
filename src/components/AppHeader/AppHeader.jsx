@@ -1,25 +1,24 @@
-import { useState, useRef } from 'react';
 import { Box, AppBar, Toolbar, Typography, IconButton, FormControlLabel } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useEffect } from 'react';
 
 
 import { Android12Switch } from './_styles';
-import { updateTesting } from '../../contexts/TestingContext';
+import { useDispatch } from 'react-redux';
+
+import { switchReading } from '../../redux/testingReducer';
 
 const _HEIGHT = 50;
 const _BCKCOLOR = '#1976d2';
 
 export default function AppHeader({children}) {
-  const manageStates = updateTesting();
-
+  const dispatch = useDispatch();
   const _onMenuClick = () => {
     console.log("AppBar menu clicked");
   }
 
   const _handleChange = (event) => {
-    console.warn("AppBar buttonCliked");
-    manageStates({type: 'reading', param: event.target.checked})
+    console.warn("AppBar buttonCliked", event.target.checked);
+    dispatch(switchReading(event.target.checked));
   }
 
   return (

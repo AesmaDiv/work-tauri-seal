@@ -1,16 +1,16 @@
-import { React, useRef, useEffect, useState, startTransition } from 'react';
+import { React, useRef, useEffect, useState } from 'react';
 import { Box, Stack } from '@mui/system';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, IconButton} from '@mui/material';
 import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
-
-import { invoke } from '@tauri-apps/api/tauri';
+import { useDispatch, useSelector } from 'react-redux';
+import { readRecord } from '../../redux/recordReducer';
 
 import SearchBar from './SearchBar';
-import { useDatabase, updateDatabase } from '../../contexts/DatabaseContext';
-import { readRecordList } from '../../database/DatabaseHelper';
+import { helperReadRecordList } from '../../database/DatabaseHelper';
 
 import cls from './RecordList.module.css';
+import { useCallback } from 'react';
 
 
 const ROWS_PER_PAGE = 50;
@@ -21,38 +21,35 @@ const columns = [
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
-const getListFromDB = async () => {
-  
-}
+
 
 export default function RecordList() {
-  const manageRecord = updateDatabase();
   const [list, setList] = useState([]);
-  const [current, setCurrent] = useState(0);
-
   const last_id = useRef(0);
   const search = useRef('');
   const page = useRef(0);
 
-  useEffect(() => _refreshList(), []);
+  const {is_updated, record} = useSelector(state => state.recordReducer);
+  const dispatch = useDispatch();
 
-  function _refreshList() {
+  useEffect(() => _refreshList(), [is_updated]);
+
+  const _refreshList = useCallback(() => {
     console.warn("Refreshing test list");
     (async() => {
       let condition = search.current;
       condition += last_id.current ? ` ID<=${last_id.current} ` : ` ID>0`;
       condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
-      let result = await readRecordList(condition);
+      let result = await helperReadRecordList(condition);
       last_id.current = result[0].id;
 
       return result;
     })().then(result => setList(result));
-  }
+  },[]);
 
   const _handleSelect = async (event, row) => {
     console.warn("Record List select", row.id);
-    manageRecord('read', row.id);
-    setCurrent(row.id);
+    dispatch(readRecord(row.id));
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
         // await deleteContext(row.item);
@@ -77,7 +74,7 @@ export default function RecordList() {
   const _createRow = (data) => {
     return (
       <TableRow hover tabIndex={-1} key={data.id}
-        selected={data.id === current}
+        selected={data.id === record.id}
         onClick={e => _handleSelect(e, data)}
         sx={{
           '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },

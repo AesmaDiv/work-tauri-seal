@@ -1,8 +1,8 @@
 import { ComposedChart, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
+import { useSelector } from 'react-redux';
 
-import { usePoints } from '../../contexts/PointsContext';
-import { POWER_LIMITS } from '../../configs/cfg_power';
+import { POWER_LIMITS } from '../../../configs/cfg_power';
 
 // import { STYLES as CLS } from '../_styles' 
 
@@ -17,7 +17,7 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PowerConsumptionCharts() {
-  const points = usePoints();
+  const points = useSelector(state => state.pointsReducer.test_power);
 
   // точки с добавлением пределов допусков
   // const [power, temper] = [

@@ -2,9 +2,9 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { usePoints } from '../../contexts/PointsContext';
-import { PRESS_LIMITS } from '../../configs/cfg_press';
-import { addLimits } from '../../shared/funcs_common';
+import { useSelector } from 'react-redux';
+import { PRESS_LIMITS } from '../../../configs/cfg_press';
+import { addLimits } from '../../../shared/funcs_common';
 
 
 /** максимальное значение оси X */
@@ -17,10 +17,10 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PressureCharts() {
-  const points = usePoints();
+  const points = useSelector(state => state.pointsReducer.test_press)
 
   // точки с добавлением пределов допусков
-  const [points_top, points_btm] = [
+  const [press_top, press_btm] = [
     addLimits(points?.press_top, PRESS_LIMITS.top, TIME_LIMIT),
     addLimits(points?.press_btm, PRESS_LIMITS.btm, TIME_LIMIT)
   ];
@@ -36,9 +36,9 @@ export default function PressureCharts() {
   return (
     <Stack sx={{width: '80%', height: '100%'}} direction='column'>
       <PressChart {...props} name='верхняя диафрагма' color='#88f888'
-        domain={[0, AXIS_MAX.top]} data={points_top}/>
+        domain={[0, AXIS_MAX.top]} data={press_top}/>
       <PressChart {...props} name='нижняя диафрагма' color='#8888f8'
-        domain={[0, AXIS_MAX.btm]} data={points_btm}/>
+        domain={[0, AXIS_MAX.btm]} data={press_btm}/>
     </Stack>
   );
 }

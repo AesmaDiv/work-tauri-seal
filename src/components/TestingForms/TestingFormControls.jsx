@@ -1,12 +1,15 @@
+import { useSelector, useDispatch } from "react-redux";
 import { Stack } from "@mui/system";
 import { Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import DataField from "../DataField/DataField";
 import { useHardware } from "../../contexts/HardwareContext";
-import { useTesting, updateTesting } from "../../contexts/TestingContext";
+import { switchTesting } from "../../redux/testingReducer";
+import { resetPoints } from "../../redux/pointsReducer";
+import { writePoints } from "../../redux/recordReducer";
 
 import { STYLES as CLS } from "./_styles";
-import { updatePoints } from "../../contexts/PointsContext";
+import { useEffect } from "react";
 
 
 /** Универсальный компонент для управления испытанием
@@ -17,23 +20,32 @@ import { updatePoints } from "../../contexts/PointsContext";
 export default function TestingFormControls({name, tracked_state, data_fields}) {
   // данные с оборудования
   const hw_values = useHardware();
-  // callback сохранения точек
-  const managePoints = updatePoints();
   // состояние испытания и callback переключения
-  const states = useTesting();
-  const manageStates = updateTesting();
+  const is_reading = useSelector(state => state.testingReducer.is_reading);
+  const is_testing = useSelector(state => state.testingReducer[tracked_state]);
+  const points = useSelector(state => state.pointsReducer[tracked_state]);
+  // const record = useSelector(state => state.recordReducer.record);
+
+  const dispatch = useDispatch();
+
 
   /** Обработчик переключения состояния испытания */
   const _handleChangeRecordMode = (_, new_state) => {
-    (hw_values.is_reading) &&
-    (new_state !== null) &&
-    (new_state !== states[tracked_state]) &&
-    manageStates({type: tracked_state, param: new_state});
+    if (is_reading && new_state !== null && new_state !== is_testing) {
+      new_state && dispatch(resetPoints(tracked_state));
+      dispatch(switchTesting({
+        state_name: tracked_state,
+        state_value: new_state
+      }));
+    }
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
   const _handleSave = (event) => {
     // если запущен тест - не сохранять
-    states[tracked_state] || managePoints('save points');
+    is_testing || dispatch(writePoints({
+      state_name: tracked_state,
+      state_value: points
+    }));
   }
 
   const color = name === "Pressure" ? "green" : "red";
@@ -54,7 +66,7 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
       </Stack>
       <Stack sx={CLS.controls_btns}>
         <ToggleButtonGroup exclusive sx={CLS.controls_test}
-          value={states[tracked_state]} onChange={_handleChangeRecordMode}>
+          value={is_testing} onChange={_handleChangeRecordMode}>
 
           <ToggleButton sx={[CLS.btns, CLS.btn_start]} value={true}
             variant='contained' size='small' /*color="error"*/>

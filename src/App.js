@@ -1,21 +1,16 @@
-import AppHeader from './components/AppBar/AppHeader';
+import AppHeader from './components/AppHeader/AppHeader';
 import RecordList from './components/RecordList/RecordList';
 import RecordInfo from './components/RecordInfo/RecordInfo';
 import TestingForm from './components/TestingForms/TestingForm';
 import StatusBar from './components/StatusBar';
 import AccordionWrapper from './components/AccordionWrapper/AccordionWrapper';
 import Auxiliary from './components/Auxiliary';
-import { DatabaseProvider } from './contexts/DatabaseContext';
 import { HardwareProvider } from './contexts/HardwareContext';
-import { TestingProvider } from './contexts/TestingContext';
 
-import PressureCharts from './components/Charts/PressChart';
-import PowerConsumptionCharts from './components/Charts/PowerChart';
 import { PressProps, PRESS_DATANAMES } from './configs/cfg_press';
 import { PowerProps, POWER_DATANAMES } from './configs/cfg_power';
 
 import './App.css';
-import { PointsProvider } from './contexts/PointsContext';
 
 
 function App() {
@@ -26,9 +21,7 @@ function App() {
         <div style={{width: 600}}>Some item</div>
       </AppHeader>
       <section className="App-body">
-        <DatabaseProvider>
           <RecordList/>
-          <TestingProvider>
           <HardwareProvider>
             <AccordionWrapper direction='column'>
               <RecordInfo  accordion_key='key_testinfo'  accordion_title='Информация об объекте'/>
@@ -37,8 +30,6 @@ function App() {
               <Auxiliary   accordion_key='key_auxiliary' accordion_title='Auxuliary'/>
             </AccordionWrapper>
           </HardwareProvider>
-          </TestingProvider>
-        </DatabaseProvider>
       </section>
       <footer className="App-footer">
         <StatusBar />

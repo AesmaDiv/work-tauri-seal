@@ -41,25 +41,31 @@ export async function createPowerPoints(array, length) {
 
   return result;
 }
-export function addPressDataToRecord(record, press_data) {
-  let press_top = _extractFloat(press_data.press_top, 'y');
-  let press_btm = _extractFloat(press_data.press_btm, 'y');
-
-  let result = {press_top, press_btm};
-  record.test_press = JSON.stringify(result).replaceAll('"',"#");
-
-  return record;
+export function serializePoints(data_name, points_data) {
+  switch (data_name) {
+    case 'test_press':
+      return _serializePressPoints(points_data);
+    case 'test_power':
+      return _serializePowerPoints(points_data);
+    default:
+      console.error(`!!! ERROR:: Serializing ${data_name} points failed`)
+  }
 }
 
-export function addPowerDataToRecord(record, power_data) {
+const _serializePressPoints = (points_data) => {
+  let press_top = _extractFloat(points_data.press_top, 'y');
+  let press_btm = _extractFloat(points_data.press_btm, 'y');
+  let result = JSON.stringify({ press_top, press_btm }).replaceAll('"',"#");
+
+  return result;
+}
+const _serializePowerPoints = (power_data) => {
   let time   = _extractFloat(power_data.power, 'x');
   let power  = _extractFloat(power_data.power, 'y1');
   let temper = _extractFloat(power_data.power, 'y2');
- 
-  let result = {time, power, temper};
-  record.test_power = JSON.stringify(result).replace('"', "#");
+  let result = JSON.stringify({time, power, temper}).replace('"', "#");
 
-  return record;
+  return result;
 }
 /** Парсинг массива float в структуру данных об потребляемой мощности */
 const _floatsToPowerData = (floats) => {
@@ -94,5 +100,6 @@ const _bytesToFloats = (rawdata) => {
   return result;
 }
 const _extractFloat = (arr, key) => {
+  console.warn(arr, key);
   return arr.map(el => key in el ? Math.round(el[key] * 10000.0) / 10000.0 : -1);
 };

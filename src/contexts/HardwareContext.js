@@ -1,20 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { createContainer } from 'react-tracked';
 import { generateRandomHWValues } from '../shared/funcs_common';
+import { resetPoints, updatePress, updatePower } from '../redux/pointsReducer';
 
 
 const PULLING_RATE = 1000; // период обновления в мс
 const INITIAL = {
-  is_reading:   false,  // статус чтения
   test_press: {         // ДАВЛЕНИЕ ДИАФРАГМ
-    is_testing: false,
     time:       0,      // время испытания
     press_sys:  0,      // давление в системе
     press_top:  0,      // давление верхней диафрагмы
     press_btm:  0,      // давление нижней диафрагмы
   },
   test_power: {         // ПОТРЕБЛЯЕМАЯ МОЩНОСТЬ
-    is_testing: false,
     time:       0,
     rpm:        0,      // скорость вращения
     torque:     0,      // момент
@@ -25,16 +24,24 @@ const INITIAL = {
 
 /** Провайдер данных с оборудования */
 function HardwareContext() {
+  const dispatch = useDispatch();
+  const { is_reading, test_press, test_power } = useSelector(state => state.testingReducer);
   const [hw_values, setValues] = useState(INITIAL);
 
   useEffect(() => {
+    if (is_reading) {
+      test_press && dispatch(updatePress(hw_values.test_press));
+      test_power && dispatch(updatePower(hw_values.test_power));
+    }
+  }, [hw_values]);
+
+  useEffect(() => {
     let timer = setTimeout(() => {
-      if (hw_values.is_reading) {
+      if (is_reading) {
         // Здесь должна быть функция чтения данных с оборудования,
         // а пока тут добавление случайных значений
-        generateRandomHWValues(hw_values).then(
-          result => setValues((prev) => ({...prev, ...result}))
-        )
+        generateRandomHWValues(hw_values)
+          .then(result => setValues((prev) => ({...prev, ...result})));
       }
     }, PULLING_RATE);
     return (() => clearTimeout(timer));

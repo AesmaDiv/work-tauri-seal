@@ -1,9 +1,8 @@
-// import { useRecordContext } from "../contexts/RecordContext";
-import { useDatabase } from "../contexts/DatabaseContext";
+import { useSelector } from "react-redux";
+
 
 export default function Auxiliary() {
-  // const {record} = useRecordContext();
-  const record = useDatabase();
+  const record = useSelector(state => state.recordReducer.record);
 
   return (
     <div  style={{ width: '100%', height: '400px', overflow: 'scroll' }}>
