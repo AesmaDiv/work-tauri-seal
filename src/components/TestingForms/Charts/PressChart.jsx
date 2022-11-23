@@ -17,7 +17,7 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PressureCharts() {
-  const points = useSelector(state => state.pointsReducer.test_press)
+  const points = useSelector(state => state.recordReducer.points.test_press)
 
   // точки с добавлением пределов допусков
   const [press_top, press_btm] = [

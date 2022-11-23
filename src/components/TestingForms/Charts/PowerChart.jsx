@@ -17,7 +17,7 @@ const AXIS_MAX = {
 
 /** Компонент графиков давления диафрагм */
 export default function PowerConsumptionCharts() {
-  const points = useSelector(state => state.pointsReducer.test_power);
+  const points = useSelector(state => state.recordReducer.points.test_power);
 
   // точки с добавлением пределов допусков
   // const [power, temper] = [
@@ -30,7 +30,7 @@ export default function PowerConsumptionCharts() {
   return (
     <PowerChart sx={{width: '80%', height: '100%', animation: '100'}}
       name='потребляемая мощность' color='#88f888'
-      domain={[0, AXIS_MAX.temper]} data={points.power}/>
+      domain={[0, AXIS_MAX.temper]} data={points}/>
   );
 }
 

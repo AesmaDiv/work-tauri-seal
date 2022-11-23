@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createContainer } from 'react-tracked';
 import { generateRandomHWValues } from '../shared/funcs_common';
-import { resetPoints, updatePress, updatePower } from '../redux/pointsReducer';
+import { updatePoints } from '../redux/recordReducer';
 
 
 const PULLING_RATE = 1000; // период обновления в мс
@@ -30,8 +30,8 @@ function HardwareContext() {
 
   useEffect(() => {
     if (is_reading) {
-      test_press && dispatch(updatePress(hw_values.test_press));
-      test_power && dispatch(updatePower(hw_values.test_power));
+      const state_name = test_press ? 'test_press' : test_power ? 'test_power' : undefined;
+      state_name && dispatch(updatePoints({ state_name, state_value: hw_values[state_name]}));
     }
   }, [hw_values]);
 

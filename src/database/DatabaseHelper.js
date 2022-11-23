@@ -34,7 +34,6 @@ export const helperReadRecord = async function(rec_id) {
 }
 /** Запрос в бэкэнду - обновление записи */
 export const helperUpdateRecord = async function(new_record) {
-  console.warn("updating", new_record);
   let result = await invoke('write_record', {dbPath: DBPATH, record: new_record});
   return result;
 }

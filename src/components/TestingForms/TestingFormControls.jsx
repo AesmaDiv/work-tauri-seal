@@ -5,11 +5,10 @@ import { Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import DataField from "../DataField/DataField";
 import { useHardware } from "../../contexts/HardwareContext";
 import { switchTesting } from "../../redux/testingReducer";
-import { resetPoints } from "../../redux/pointsReducer";
+import { resetPoints } from "../../redux/recordReducer";
 import { writePoints } from "../../redux/recordReducer";
 
 import { STYLES as CLS } from "./_styles";
-import { useEffect } from "react";
 
 
 /** Универсальный компонент для управления испытанием
@@ -23,8 +22,7 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
   // состояние испытания и callback переключения
   const is_reading = useSelector(state => state.testingReducer.is_reading);
   const is_testing = useSelector(state => state.testingReducer[tracked_state]);
-  const points = useSelector(state => state.pointsReducer[tracked_state]);
-  // const record = useSelector(state => state.recordReducer.record);
+  const points = useSelector(state => state.recordReducer.points[tracked_state]);
 
   const dispatch = useDispatch();
 

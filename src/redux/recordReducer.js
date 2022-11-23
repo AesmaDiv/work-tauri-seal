@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { helperReadRecord, helperUpdateRecord } from "../database/DatabaseHelper";
-import { serializePoints, _serializePowerPoints } from "../database/db_funcs";
-
+import { refreshPressHW } from "../configs/cfg_press";
+import { refreshPowerHW } from "../configs/cfg_power";
+import { getPointsFromRecord, serializePoints} from "../database/db_funcs";
+import { INITIAL_POINTS } from "../database/db_models";
 
 const initialState = {
   is_updated: false,
-  record: {}
+  record: {},
+  points: INITIAL_POINTS
 };
 const recordSlice = createSlice({
   name: 'record',
@@ -13,31 +16,56 @@ const recordSlice = createSlice({
   reducers: {
     writePoints: (state, action) => {
       console.warn("recordSlice updating points", state.record, action);
-      let serilized = serializePoints(action.payload.state_name, action.payload.state_value)
-      state.record = {...state.record, [action.payload.state_name]: serilized};
-      // new_record[action.payload.state_name] = serilized;
-      // delete new_record.rawdata;
-      // console.warn("New Record %o", new_record);
-      // state.record[action.payload.state_name] = serilized;
-      // writeRecord(new_record);
-    }
+      const {state_name, state_value} = action.payload;
+      let serilized = serializePoints(state_name, state_value)
+      state.record[state_name] = serilized;
+      _updatePoints(current(state).record);
+    },
+    resetPoints: (state, action) => {
+      console.warn("pointsSlice reseting points", action.payload);
+      state.points[action.payload] = initialState.points[action.payload];
+    },
+    updatePoints: (state, action) => {
+      console.warn("pointsSlice updating points",action, current(state).points);
+      const {state_name, state_value} = action.payload;
+      const refreshFunc = {
+        'test_press': refreshPressHW,
+        'test_power': refreshPowerHW
+      }[state_name]
+      state.points[state_name] = refreshFunc(current(state).points[state_name], state_value);
+    },
   },
   extraReducers(builder) {
     builder
       .addCase(readRecord.fulfilled,  (state, action) => 
-        { state.record = action.payload })
+        { state.record = action.payload.record; state.points = action.payload.points })
       .addCase(writeRecord.fulfilled, (state, action) => 
-        { state.is_updated = state.is_updated ^ action.payload})
+        { state.is_updated = state.is_updated ^ action.payload })
   }
 });
 
 export const readRecord = createAsyncThunk(
-  'record/load',
-  async(rec_id) => await helperReadRecord(rec_id)
+  'record/readRecord',
+  async(rec_id) => {
+    const record = await helperReadRecord(rec_id);
+    const points = await getPointsFromRecord(record);
+
+    return { record, points };
+  }
 );
 export const writeRecord = createAsyncThunk(
-  'record/write',
+  'record/writeRecord',
   async(record) => await helperUpdateRecord(record)
 );
-export const { writePoints } = recordSlice.actions;
+export const { writePoints, resetPoints, updatePoints } = recordSlice.actions;
 export default recordSlice.reducer;
+
+const _updatePoints = (record) => {
+  console.warn("_updatePoints");
+  let new_rec = {
+    id: record.id,
+    test_press: record.test_press,
+    test_power: record.test_power
+  }
+  helperUpdateRecord(new_rec);
+}

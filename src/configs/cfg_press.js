@@ -1,4 +1,4 @@
-import { getRecordData, createPressPoints } from "../database/db_funcs";
+import { getPointsData, _createPressPoints, _deserializePoints } from "../database/db_funcs";
 
 
 export const PressProps = {
@@ -22,25 +22,26 @@ const INITIAL = {
   press_btm: []   // давление нижней диафрагмы
 }
 
-export async function refreshPressDB(record) {
-  let {rawdata, test_press} = record;
-  try {
-    const from_raw = !test_press?.length;
-    let points_data = from_raw ?
-      await getRecordData(rawdata) : 
-      JSON.parse(test_press.replaceAll("#", '"'));
-    let press_top = await createPressPoints(points_data?.press_top, POINTS_MAX, from_raw);
-    let press_btm = await createPressPoints(points_data?.press_btm, POINTS_MAX, from_raw);
+// export async function refreshPressDB(record) {
+//   try {
+//     const {rawdata, test_press} = record;
+//     const from_raw = !test_press?.length;
+//     console.warn('Getting PRESS point data from', from_raw ? 'raw' : 'json');
+//     let points_data = from_raw ?
+//       await getPointsData(rawdata) : 
+//       deserializePoints(test_press);
+//     const result = await createPressPoints(points_data, POINTS_MAX, from_raw);
 
-    return { press_top, press_btm };
-  } catch (err) {
-    console.warn(`!!! ERROR:: PressProps points reading failed:`, err);
+//     return result;
+//   } catch (err) {
+//     console.warn(`!!! ERROR:: PressProps points reading failed:`, err);
 
-    return INITIAL;
-  }
-}
+//     return INITIAL;
+//   }
+// }
 
 export function refreshPressHW(points, hw_values) {
+  console.warn("refreshPressHW", points, hw_values);
   const len = points.press_top.length;
   if (len < POINTS_MAX) {
     let press_top = [...points.press_top, { x: len, y: hw_values.press_top }];

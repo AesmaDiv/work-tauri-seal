@@ -17,7 +17,6 @@ export default function AppHeader({children}) {
   }
 
   const _handleChange = (event) => {
-    console.warn("AppBar buttonCliked", event.target.checked);
     dispatch(switchReading(event.target.checked));
   }
 

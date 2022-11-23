@@ -3,11 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import DataField from '../DataField/DataField';
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
-import { writeRecord } from '../../redux/recordReducer';
-import { readPoints } from '../../redux/pointsReducer';
+import { writeRecord, readPoints } from '../../redux/recordReducer';
 
 import cls from './RecordInfo.module.css';
-import { useEffect } from 'react';
 // import { getCurrentDate } from '../../aux/aux';
 
 const INITIAL_SEALTYPE = {id: '', pwrlimit: '', tmplimit: '', thrlimit: ''};
@@ -17,10 +15,6 @@ export default function RecordInfo() {
   const dispatch = useDispatch();
   const record = useSelector((state) => state.recordReducer.record);
 
-  useEffect(() => { 
-    dispatch(readPoints(record));
-  }, [record]);
-  
   const _handleSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
