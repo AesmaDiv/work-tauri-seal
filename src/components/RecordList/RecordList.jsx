@@ -1,16 +1,16 @@
-import { React, useRef, useEffect, useState } from 'react';
+import { React, useRef, useEffect, useState, useCallback } from 'react';
 import { Box, Stack } from '@mui/system';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, IconButton} from '@mui/material';
 import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
 import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
 import { useDispatch, useSelector } from 'react-redux';
-import { readRecord } from '../../redux/recordReducer';
 
 import SearchBar from './SearchBar';
+import { readRecord } from '../../redux/recordReducer';
+import { showMessage } from '../../redux/messageReducer';
 import { helperReadRecordList } from '../../database/DatabaseHelper';
 
 import cls from './RecordList.module.css';
-import { useCallback } from 'react';
 
 
 const ROWS_PER_PAGE = 50;
@@ -21,7 +21,6 @@ const columns = [
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
 const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
-
 
 export default function RecordList() {
   const [list, setList] = useState([]);
@@ -49,6 +48,7 @@ export default function RecordList() {
 
   const _handleSelect = async (event, row) => {
     console.warn("Record List select", row.id);
+    dispatch(showMessage({text:`Выбрана запись № ${row.id}`, severity: 'success'}));
     dispatch(readRecord(row.id));
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {

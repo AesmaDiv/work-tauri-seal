@@ -5,7 +5,7 @@ pub enum Endian {
   LITTLE
 }
 
-#[derive(std::fmt::Debug, serde::Serialize, serde::Deserialize)]
+#[derive(std::fmt::Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct Analog {
   pub slot0: [u16; 8],
   pub slot1: [u16; 8],
@@ -18,7 +18,7 @@ pub struct Analog {
 }
 
 
-#[derive(std::fmt::Debug, serde::Serialize, serde::Deserialize)]
+#[derive(std::fmt::Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct Digital {
   pub slot0: u16,
   pub slot1: u16,
@@ -43,6 +43,35 @@ impl SlotParam for Analog {
 impl SlotParam for Digital {
   const SIZE: [usize; 2] = [0x19, 0x10];
   const COMMAND: [u8; 12] = [0x0,0x0,0x0,0x0,0x0,0x6,0x1,0x1,0x0,0x0,0x0,0x80];  
+}
+
+impl Analog {
+  pub fn to_array(&self) -> [[u16; 8]; 8] {
+    [
+      self.slot0,
+      self.slot1,
+      self.slot2,
+      self.slot3,
+      self.slot4,
+      self.slot5,
+      self.slot6,
+      self.slot7,
+    ]
+  }
+}
+impl Digital {
+  pub fn to_array(&self) -> [u16; 8] {
+    [
+      self.slot0,
+      self.slot1,
+      self.slot2,
+      self.slot3,
+      self.slot4,
+      self.slot5,
+      self.slot6,
+      self.slot7,
+    ]
+  }
 }
 
 pub trait Convert {

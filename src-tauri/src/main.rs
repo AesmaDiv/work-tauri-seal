@@ -5,6 +5,7 @@
 
 pub mod commands;
 pub mod database;
+pub mod hardware;
 
 
 fn main() {
@@ -22,6 +23,7 @@ fn main() {
     })
     .invoke_handler(tauri::generate_handler![
       commands::logging,
+      commands::read_adam,
       commands::read_testlist,
       commands::read_record,
       commands::read_dictionary,

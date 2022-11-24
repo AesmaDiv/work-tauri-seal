@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "adam"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "adler"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -68,8 +75,10 @@ checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "adam",
  "encoding_rs",
  "encoding_rs_io",
+ "rand 0.8.5",
  "rusqlite",
  "rusqlite_helper",
  "serde",

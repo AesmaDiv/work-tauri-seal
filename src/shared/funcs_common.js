@@ -1,3 +1,5 @@
+import { invoke } from "@tauri-apps/api";
+
 export function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
@@ -14,12 +16,15 @@ export function createObj(keys) {
 }
 
 export function roundArray(floats, decnum) {
-  let pow = Math.pow(10, decnum);
-  let result = floats.map(x => Math.round(x * pow) / pow);
+  let result = floats.map(x => roundValue(x, decnum));
   console.log(result);
   return result;
 }
 
+export function roundValue(float, decnum) {
+  let pow = Math.pow(10, decnum);
+  return Math.round(float * pow) / pow;
+}
 
 /** Функция генерирования случайных значений для давления диафрагм */
 export function generateRandomPressValues() {
@@ -54,8 +59,31 @@ export function addLimits(array, limits, length) {
 }
 
 /** Функция генерирования случайных значений для эмуляции работы оборудования */
-export async function generateRandomHWValues(hw_values) {
+export async function getHardwareValues(hw_values) {
+  const adam_data = await invoke('read_adam', {address: '10.10.10.11:502'});
+  console.warn("ADAM DATA >>", adam_data);
   let result = {
+    test_press: {
+      time:       hw_values.test_press.time + 1,
+      press_sys:  roundValue(adam_data[0].slot0[0] * 50.0 / 65535, 4),
+      press_top:  roundValue(adam_data[0].slot0[1] * 50.0 / 65535, 4),
+      press_btm:  roundValue(adam_data[0].slot0[2] * 50.0 / 65535, 4),
+    },
+    test_power: {
+      time:       hw_values.test_power.time + 1,
+      rpm:        roundValue(adam_data[0].slot0[3] * 5.0 / 65535, 4),
+      torque:     roundValue(adam_data[0].slot0[4] * 5.0 / 65535, 4),
+      temper:     roundValue(adam_data[0].slot0[5] * 5.0 / 65535, 4),
+    },
+  }
+  result.test_power.power = Math.round(result.test_power.torque * result.test_power.rpm / 63.025 * 100) / 100;
+  console.warn("RESULT >>", result);
+
+  return result;
+}
+
+function _generateRandom(hw_values) {
+  return {
     test_press: {
       time:       hw_values.test_press.time + 1,
       press_sys:  _generateNextValue(hw_values.test_press.press_sys),
@@ -69,11 +97,7 @@ export async function generateRandomHWValues(hw_values) {
       temper:     _generateNextValue(hw_values.test_power.temper),
     },
   }
-  result.test_power.power = Math.round(result.test_power.torque * result.test_power.rpm / 63.025 * 100) / 100;
-
-  return result;
 }
-
 /** Функция генерирования следующего случайного значения */
 function _generateNextValue(prev) {
   let x = Math.random() - 0.5;

@@ -1,19 +1,32 @@
 use std::io::prelude::*;
-use std::net::{TcpStream, UdpSocket};
+use std::net::{TcpStream, UdpSocket, SocketAddr};
+use std::time::Duration;
 use models::{SlotParam, Convert, Endian};
 
 pub mod models;
 
-const TCP_ADDRESS: &str = "10.10.10.10:502";
+// const TCP_ADDRESS: &str = "10.10.10.10:502";
 const UDP_ADDRESS: &str = "10.10.10.3:5168";
+const CONNECT_TIMEOUT: u64 = 100;
 
 
-pub fn read<T: Convert  + SlotParam>(endian: Endian) -> Option<T> {
-  let data: Vec<u8> = read_data::<T>().unwrap_or(Vec::new());
-  let values: Vec<u16> = to_values(&data, endian);
-  let result: Option<T> = T::convert(values);
+pub fn read<T: Convert  + SlotParam>(address: &str, endian: Endian) -> Option<T> {
+  match read_data::<T>(address) {
+      Ok(data) => {
+        let values: Vec<u16> = to_values(&data, endian);
+        let result: Option<T> = T::convert(values);
 
-  result
+        return result;
+      },
+      Err(error) => {
+        println!(
+          "!!! Error getting {} from {address} >> {:?}",
+          std::any::type_name::<T>(),
+          error.to_string()
+        );
+        return None;
+      }
+  };
 }
 
 pub fn listen() -> std::io::Result<()> {
@@ -25,11 +38,14 @@ pub fn listen() -> std::io::Result<()> {
       println!("Message №{} => {:?}", &count, &buf);
       count += 1;
   }
+
   Ok(())
 }
 
-fn read_data<T: SlotParam>() -> std::io::Result<Vec<u8>> {
-  let mut stream = TcpStream::connect(TCP_ADDRESS)?;
+fn read_data<T: SlotParam>(address: &str) -> std::io::Result<Vec<u8>> {
+  let sock: SocketAddr = address.parse().expect("Error parsing IP address");
+  let timeout = Duration::from_millis(CONNECT_TIMEOUT);
+  let mut stream = TcpStream::connect_timeout(&sock, timeout)?;
   let mut bytes = vec![0x0; T::SIZE[0]];
   let mut result = vec![0x0; T::SIZE[1]];
   

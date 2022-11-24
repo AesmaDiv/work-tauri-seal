@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createContainer } from 'react-tracked';
-import { generateRandomHWValues } from '../shared/funcs_common';
+import { getHardwareValues } from '../shared/funcs_common';
 import { updatePoints } from '../redux/recordReducer';
 
 
-const PULLING_RATE = 1000; // период обновления в мс
+const PULLING_RATE = 250; // период обновления в мс
 const INITIAL = {
   test_press: {         // ДАВЛЕНИЕ ДИАФРАГМ
     time:       0,      // время испытания
@@ -40,7 +40,7 @@ function HardwareContext() {
       if (is_reading) {
         // Здесь должна быть функция чтения данных с оборудования,
         // а пока тут добавление случайных значений
-        generateRandomHWValues(hw_values)
+        getHardwareValues(hw_values)
           .then(result => setValues((prev) => ({...prev, ...result})));
       }
     }, PULLING_RATE);

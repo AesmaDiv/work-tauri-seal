@@ -1,5 +1,5 @@
 /** Cтруктура данных о точках испытаниях */
-export const INITIAL_POINTS = {
+export const POINTS_STRUCT = {
   test_press: {
     press_top: [],
     press_btm: [],

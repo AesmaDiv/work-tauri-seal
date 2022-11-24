@@ -1,4 +1,5 @@
 export const DBPATH = '/home/aesmadiv/Develop/Projects/Tauri/work-tauri-seal/assets/seal.sqlite' //'/home/aesmadiv/Develop/Projects/DB/seal.sqlite'
+// export const DBPATH = '/home/jhwh/Develop/Projects/Tauri/work-tauri-seal/assets/seal.sqlite' //'/home/aesmadiv/Develop/Projects/DB/seal.sqlite'
 export const RECORD_SEARCH_COLUMNS = [
   { col: 1, row: 1, name: "datetest", label: "Дата испытания"},
   { col: 1, row: 3, name: "customer", label: "Заказчик"},

@@ -3,12 +3,12 @@ import { helperReadRecord, helperUpdateRecord } from "../database/DatabaseHelper
 import { refreshPressHW } from "../configs/cfg_press";
 import { refreshPowerHW } from "../configs/cfg_power";
 import { getPointsFromRecord, serializePoints} from "../database/db_funcs";
-import { INITIAL_POINTS } from "../database/db_models";
+import { POINTS_STRUCT } from "../database/db_models";
 
 const initialState = {
   is_updated: false,
   record: {},
-  points: INITIAL_POINTS
+  points: POINTS_STRUCT
 };
 const recordSlice = createSlice({
   name: 'record',
@@ -38,7 +38,10 @@ const recordSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(readRecord.fulfilled,  (state, action) => 
-        { state.record = action.payload.record; state.points = action.payload.points })
+        {
+          state.record = action.payload.record;
+          state.points = action.payload.points;
+        })
       .addCase(writeRecord.fulfilled, (state, action) => 
         { state.is_updated = state.is_updated ^ action.payload })
   }

@@ -1,4 +1,4 @@
-import { INITIAL_POINTS } from "./db_models";
+import { POINTS_STRUCT } from "./db_models";
 
 
 /** Функция получения объекта содержащего информацию о точках испытания из полей БД.
@@ -29,7 +29,7 @@ export async function getPointsFromRecord(record) {
     return { test_press, test_power };
   } catch (err) {
     console.warn(`!!! ERROR:: points reading failed:`, err);
-    return INITIAL_POINTS;
+    return POINTS_STRUCT;
   }
 }
 /** Функция сериализации точек испытания для последующего сохранения в БД */
@@ -64,7 +64,7 @@ async function _parseRawData(rawdata) {
     }
   }
 
-  return INITIAL_POINTS;
+  return POINTS_STRUCT;
 }
 /** Функция создания массива точек для графика
  * давления диафрагмы из данных испытания */

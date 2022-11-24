@@ -1,19 +1,26 @@
 import { Box, AppBar, Toolbar, Typography, IconButton, FormControlLabel } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-
-import { Android12Switch } from './_styles';
-import { useDispatch } from 'react-redux';
+import { invoke } from '@tauri-apps/api';
 
 import { switchReading } from '../../redux/testingReducer';
+import { useDispatch } from 'react-redux';
+
+import { Android12Switch } from './_styles';
+
 
 const _HEIGHT = 50;
 const _BCKCOLOR = '#1976d2';
+
+async function read_adam() {
+  invoke('read_adam', {address: '10.10.10.11:502'}).then(result => console.log(result));
+}
 
 export default function AppHeader({children}) {
   const dispatch = useDispatch();
   const _onMenuClick = () => {
     console.log("AppBar menu clicked");
+    (async() => read_adam())();
   }
 
   const _handleChange = (event) => {

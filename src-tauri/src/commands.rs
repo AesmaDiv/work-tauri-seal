@@ -1,3 +1,7 @@
+extern crate adam;
+use adam::models::{Analog, Digital};
+
+use super::hardware as hw;
 use super::database as db;
 // use super::database::models_tcs as mdl;
 use super::database::models_seal as mdl;
@@ -7,6 +11,11 @@ use super::database::models_seal as mdl;
 pub fn logging(message: String) {
   let msg = format!("Logging:: {}", message);
   println!("{}", msg);
+}
+
+#[tauri::command]
+pub fn read_adam(address: &str) -> (Option<Analog>, Option<Digital>) {
+  hw::read_adam(address)
 }
 
 #[tauri::command]
