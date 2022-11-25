@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import DataField from '../DataField/DataField';
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
-import { writeRecord, readPoints } from '../../redux/recordReducer';
+import { writeRecord } from '../../redux/recordReducer';
 
 import cls from './RecordInfo.module.css';
 // import { getCurrentDate } from '../../aux/aux';

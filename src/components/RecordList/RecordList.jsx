@@ -3,9 +3,9 @@ import { Box } from '@mui/system';
 import { Table, TableBody, TableContainer} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { readRecord } from '../../redux/recordReducer';
+import { readRecord, deleteRecord } from '../../redux/recordReducer';
 import { showMessage } from '../../redux/messageReducer';
-import { helperReadRecordList } from '../../database/DatabaseHelper';
+import { helperReadRecordList, helperDeleteRecord } from '../../database/DatabaseHelper';
 
 import cls from './RecordList.module.css';
 import RLHeaders from './RLHeaders';
@@ -47,14 +47,16 @@ export default function RecordList() {
 
   const _handleSelect = async (event, row) => {
     console.warn("Record List select", row.id);
-    dispatch(showMessage({text:`Выбрана запись № ${row.id}`, severity: 'success'}));
-    dispatch(readRecord(row.id));
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
-        // await deleteContext(row.item);
-        // setCurrent("");
+        dispatch(deleteRecord(row));
+        console.warn("Deleting record", row);
+        _refreshList();
+        return
       };
     }
+    dispatch(showMessage({text:`Выбрана запись № ${row.id}`, severity: 'success'}));
+    dispatch(readRecord(row.id));
   }
   const _handlePage = (name) => {
     if (name === 'bkwrd' && page.current === 0) return;

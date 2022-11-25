@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
-import { helperReadRecord, helperUpdateRecord } from "../database/DatabaseHelper";
+import { helperReadRecord, helperUpdateRecord, helperDeleteRecord } from "../database/DatabaseHelper";
 import { refreshPressHW } from "../configs/cfg_press";
 import { refreshPowerHW } from "../configs/cfg_power";
 import { getPointsFromRecord, serializePoints} from "../database/db_funcs";
@@ -14,7 +14,7 @@ const recordSlice = createSlice({
   name: 'record',
   initialState,
   reducers: {
-    writePoints: (state, action) => {
+   writePoints: (state, action) => {
       console.warn("recordSlice updating points", state.record, action);
       const {state_name, state_value} = action.payload;
       let serilized = serializePoints(state_name, state_value)
@@ -38,15 +38,20 @@ const recordSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(readRecord.fulfilled,  (state, action) => 
-        {
-          state.record = action.payload.record;
-          state.points = action.payload.points;
-        })
+      {
+        state.record = action.payload.record;
+        state.points = action.payload.points;
+      })
       .addCase(writeRecord.fulfilled, (state, action) => 
-        {
-          state.record = action.payload;
-          state.is_updated = !state.is_updated;
-        })
+      {
+        state.record = action.payload;
+        state.is_updated = !state.is_updated;
+      })
+      .addCase(deleteRecord.pending, (state, action) =>
+      {
+        state.record = initialState.record;
+        state.points = initialState.points;
+      })
   }
 });
 
@@ -68,6 +73,10 @@ export const writeRecord = createAsyncThunk(
 
     return record;
   }
+);
+export const deleteRecord = createAsyncThunk(
+  'record/deleteRecord',
+  async(record) => await helperDeleteRecord(record)
 );
 export const { writePoints, resetPoints, updatePoints } = recordSlice.actions;
 export default recordSlice.reducer;
