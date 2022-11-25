@@ -50,7 +50,6 @@ export default function RecordList() {
     if (event.ctrlKey) {
       if (await window.confirm(`Do you really want to remove record № ${row.id}`)) {
         dispatch(deleteRecord(row));
-        console.warn("Deleting record", row);
         _refreshList();
         return
       };

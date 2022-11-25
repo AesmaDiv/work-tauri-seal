@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import DataField from '../DataField/DataField';
 import { RECORD_COLUMNS, SEALTYPE_COLUMNS } from '../../database/db_tables';
-import { writeRecord } from '../../redux/recordReducer';
+import { writeRecord, resetRecord } from '../../redux/recordReducer';
 
 import cls from './RecordInfo.module.css';
 // import { getCurrentDate } from '../../aux/aux';
@@ -15,6 +15,12 @@ export default function RecordInfo() {
   const dispatch = useDispatch();
   const record = useSelector((state) => state.recordReducer.record);
 
+  const _handleReset = (event) => {
+    event.preventDefault();
+    // let form_data = _getFormData(event.target);
+    // form_data['id'] = record.id;
+    dispatch(resetRecord());
+  }
   const _handleSubmit = (event) => {
     event.preventDefault();
     let form_data = _getFormData(event.target);
@@ -62,7 +68,11 @@ export default function RecordInfo() {
     //   )
     // )
     result.push(
-      <Button key='btn-save-testinfo' type='submit' variant='contained' size='small'
+      <Button key='btn-reset-testinfo' type='reset' variant='contained' size='small' color='warning'
+        sx={{ gridColumn: 4, gridRow: 6, gridRowEnd: 8, mt: "1px", mb: "41px", pb: 0}}
+      >Сброс</Button>)
+    result.push(
+      <Button key='btn-save-testinfo' type='submit' variant='contained' size='small' color='primary'
         sx={{ gridColumn: 4, gridRow: 8, gridRowEnd: 10, mt: "1px", mb: "41px", pb: 0}}
       >Сохранить</Button>)
   
@@ -72,7 +82,7 @@ export default function RecordInfo() {
   console.log("*** RECORD-INFO RENDER ***");
   return (
     <div className={cls.main}>
-      <form className={cls.datafields} onSubmit={_handleSubmit}>
+      <form className={cls.datafields} onSubmit={_handleSubmit} onReset={_handleReset}>
         {_createForm()}
       </form>
     </div>

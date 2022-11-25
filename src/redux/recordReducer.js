@@ -14,7 +14,11 @@ const recordSlice = createSlice({
   name: 'record',
   initialState,
   reducers: {
-   writePoints: (state, action) => {
+    resetRecord: (state, action) => {
+      state.record = initialState.record;
+      state.points = initialState.points;
+    },
+    writePoints: (state, action) => {
       console.warn("recordSlice updating points", state.record, action);
       const {state_name, state_value} = action.payload;
       let serilized = serializePoints(state_name, state_value)
@@ -76,9 +80,12 @@ export const writeRecord = createAsyncThunk(
 );
 export const deleteRecord = createAsyncThunk(
   'record/deleteRecord',
-  async(record) => await helperDeleteRecord(record)
+  async(record) => {
+    await helperDeleteRecord(record);
+    resetRecord();
+  }
 );
-export const { writePoints, resetPoints, updatePoints } = recordSlice.actions;
+export const { resetRecord, writePoints, resetPoints, updatePoints } = recordSlice.actions;
 export default recordSlice.reducer;
 
 const _updatePoints = (record) => {
