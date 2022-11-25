@@ -1,26 +1,27 @@
 import { React, useRef, useEffect, useState, useCallback } from 'react';
-import { Box, Stack } from '@mui/system';
-import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, IconButton} from '@mui/material';
-import { default as Bwrd } from '@mui/icons-material/ArrowBackIos';
-import { default as Fwrd } from '@mui/icons-material/ArrowForwardIos';
+import { Box } from '@mui/system';
+import { Table, TableBody, TableContainer} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
-import SearchBar from './SearchBar';
 import { readRecord } from '../../redux/recordReducer';
 import { showMessage } from '../../redux/messageReducer';
 import { helperReadRecordList } from '../../database/DatabaseHelper';
 
 import cls from './RecordList.module.css';
+import RLHeaders from './RLHeaders';
+import RLOptions from './RLOptions';
+import RLRow from './RLRow';
 
 
 const ROWS_PER_PAGE = 50;
-const columns = [
+const COLUMNS = [
   // { width: 80,  sortable: true,   name: 'id',        label: '№'},
   { width: 180, sortable: true,   name: 'datetest',  label: 'Дата испытания'},
   { width: 160, sortable: false,  name: 'ordernum',  label: 'Наряд-заказ №'},
   { width: 160, sortable: false,  name: 'serial',    label: 'Заводской №'},
 ];
-const full_width = columns.reduce((a, v) => { return a + v.width}, 0);
+const full_width = COLUMNS.reduce((a, v) => { return a + v.width}, 0);
+
 
 export default function RecordList() {
   const [list, setList] = useState([]);
@@ -31,17 +32,15 @@ export default function RecordList() {
   const {is_updated, record} = useSelector(state => state.recordReducer);
   const dispatch = useDispatch();
 
-  useEffect(() => _refreshList(), [is_updated]);
-
   const _refreshList = useCallback(() => {
     console.warn("Refreshing test list");
     (async() => {
       let condition = search.current;
-      condition += last_id.current ? ` ID<=${last_id.current} ` : ` ID>0`;
+      condition += last_id.current && record.id ? ` ID<=${last_id.current} ` : ` ID>0`;
       condition += ` Order By ID Desc Limit ${ROWS_PER_PAGE}`;
       let result = await helperReadRecordList(condition);
       last_id.current = result[0].id;
-
+      
       return result;
     })().then(result => setList(result));
   },[]);
@@ -66,82 +65,33 @@ export default function RecordList() {
   const _handleSearch = (params) => {
     const {key, val} = params;
     search.current = [key, val].every(i => i) ?
-      ` ${key} Like '%${val}%' And` :
-      '';
+    ` ${key} Like '%${val}%' And` :
+    '';
     _refreshList();
   }
 
-  const _createRow = (data) => {
-    return (
-      <TableRow hover tabIndex={-1} key={data.id}
-        selected={data.id === record.id}
-        onClick={e => _handleSelect(e, data)}
-        sx={{
-          '&.MuiTableRow-root:hover': { backgroundColor: '#505050' },
-          '&.MuiTableRow-root:focus': { backgroundColor: '#1976d2' },
-          '&.Mui-selected': { backgroundColor: '#1464ac' },
-          // '&.Mui-selected': { backgroundColor: '#ffaabb' },
-        }}
-      >
-        {columns
-          .map((column) => {
-            const cell_val = data[column.name];
-            const cell_key = `${column.name}-${cell_val}`;
-            return (
-              <TableCell key={cell_key} sx={{width: column.width, color: 'white' }}>
-                {cell_val}
-              </TableCell>
-            );
-        })}
-      </TableRow>
-    )
-  }
-  const _createHeaders = () => {
-    return (
-      <TableHead>
-        <TableRow>
-          {columns
-            // .filter(column => column.name !== 'id')
-            .map(column => 
-              <TableCell key={column.name} 
-                sx={{
-                  color: 'white', backgroundColor: 'rgb(60,60,60)',
-                  width: column.width}}
-              >
-                {column.label}
-              </TableCell>
-            )}
-        </TableRow>
-      </TableHead>
-    );
-  }
-  const _createList = () => {
-    return (
-      <TableBody>{list.map((row) => _createRow(row))}</TableBody>
-    );
-  }
-  const _createOptions = () => {
-    return (
-      <Stack direction='row' sx={{ maxWidth: {full_width}, justifyContent: 'space-between', pt: 1 }}>
-        <SearchBar onSubmit={_handleSearch}/>
-        <Stack direction='row'>
-          <IconButton sx={{width: 20}} onClick={e => _handlePage('bkwrd')}><Bwrd/></IconButton>
-          <IconButton sx={{width: 20}} onClick={e => _handlePage('frwrd')}><Fwrd/></IconButton>
-        </Stack>
-      </Stack>
-    );
-  }
+  useEffect(() => _refreshList(), [is_updated, _refreshList]);
 
   console.log("%c *** RECORD-LIST RENDER ***", 'color: #ff4fff');
   return (
     <Box className={cls.testlist_root}>
       <TableContainer className={cls.testlist_container}>
         <Table stickyHeader aria-label="sticky table" size='small'>
-          {_createHeaders()}
-          {_createList()}
+          <RLHeaders columns={COLUMNS}/> 
+          <TableBody>
+            {list.map((row) => 
+              <RLRow
+                key={row.id}
+                data={row}
+                columns={COLUMNS}
+                selected={row.id === record.id} 
+                handleSelect={_handleSelect}
+              />
+            )}
+          </TableBody>
         </Table>
       </TableContainer>
-      {_createOptions()}
+      <RLOptions handleSearch={_handleSearch} handlePage={_handlePage} fullWidth={full_width}/>
     </Box>
   );
 }

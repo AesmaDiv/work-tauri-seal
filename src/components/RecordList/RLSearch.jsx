@@ -48,7 +48,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchBar({onSubmit}) {
+export default function RLSearch({onSubmit}) {
   const clean_search = {key: '', val: ''};
   const [search, setSearch] = useState(clean_search);
 

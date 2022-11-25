@@ -31,7 +31,7 @@ pub fn process_dtas(dta_path: &str, db_path: &str) {
 }
 
 fn import_type(db_path: &str, sealtype: &SType) -> bool {
-  set_type(db_path, "SealTypes", sealtype)
+  set_type(db_path, "SealTypes", sealtype) > 0
 }
 
 fn get_paths(rel_path: &str) -> Vec<String> {

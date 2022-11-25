@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 
+import { getCurrentDate } from '../shared/funcs_common';
 import { DBPATH } from './db_tables';
 
 
@@ -33,8 +34,9 @@ export const helperReadRecord = async function(rec_id) {
   return (object.length > 0) ? object[0] : {};
 }
 /** Запрос в бэкэнду - обновление записи */
-export const helperUpdateRecord = async function(new_record) {
-  let result = await invoke('write_record', {dbPath: DBPATH, record: new_record});
+export const helperUpdateRecord = async function(record) {
+  record.datetest = getCurrentDate();
+  let result = await invoke('write_record', {dbPath: DBPATH, record: record});
   return result;
 }
 /** Запрос в бэкэнду - удаление записи */

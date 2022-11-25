@@ -15,9 +15,18 @@ pub fn get_pk_name(dbpath: &str, table: &str) -> String {
 }
 /// Функция выполнения запроса к БД
 pub fn execute<P: Params>(db_path: &str, sql: &str, params: P) -> Result<usize, Error> {
-  // подключение к БД
   let connection = Connection::open(db_path)?;
-  connection.execute(sql, params)
+  match connection.execute(sql, params) {
+    Ok(mut result) => {
+      // если это была команда вставки..
+      if sql.contains("Insert") {
+        // ..возвращаем индекс последнего вставленной записи
+        result = connection.last_insert_rowid() as usize;
+      }
+      Ok(result)
+    },
+    Err(err) => Err(err)
+  }
 }
 /// Функция транспонилования 2-мерного массива строк
 pub fn transpose(arr: &Vec<[String; 2]>) -> Vec<Vec<String>> {

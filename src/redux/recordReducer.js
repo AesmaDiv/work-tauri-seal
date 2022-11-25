@@ -43,7 +43,10 @@ const recordSlice = createSlice({
           state.points = action.payload.points;
         })
       .addCase(writeRecord.fulfilled, (state, action) => 
-        { state.is_updated = state.is_updated ^ action.payload })
+        {
+          state.record = action.payload;
+          state.is_updated = !state.is_updated;
+        })
   }
 });
 
@@ -58,7 +61,13 @@ export const readRecord = createAsyncThunk(
 );
 export const writeRecord = createAsyncThunk(
   'record/writeRecord',
-  async(record) => await helperUpdateRecord(record)
+  async(record) => { 
+    const recid = await helperUpdateRecord(record);
+    console.warn("writeRecord ID >>", recid);
+    record.id = recid;
+
+    return record;
+  }
 );
 export const { writePoints, resetPoints, updatePoints } = recordSlice.actions;
 export default recordSlice.reducer;
