@@ -1,36 +1,48 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
-import { helperReadRecord, helperUpdateRecord, helperDeleteRecord } from "../database/DatabaseHelper";
+import { helperReadRecord, helperUpdateRecord, helperDeleteRecord,
+         helperReadSealTypes, helperReadDictionary } from "../database/DatabaseHelper";
 import { refreshPressHW } from "../configs/cfg_press";
 import { refreshPowerHW } from "../configs/cfg_power";
 import { getPointsFromRecord, serializePoints} from "../database/db_funcs";
-import { POINTS_STRUCT } from "../database/db_models";
+import { POINTS_STRUCT, SEALTYPE } from "../database/db_models";
 
 const initialState = {
   is_updated: false,
   record: {},
-  points: POINTS_STRUCT
+  points: POINTS_STRUCT,
+
+  sealtypes: [],
+  // producers: [],
+  current_type: SEALTYPE,
 };
 const recordSlice = createSlice({
   name: 'record',
   initialState,
   reducers: {
-    resetRecord: (state, action) => {
+    resetRecord: (state) => {
+      // console.warn("recordReducer >> reseting record");
       state.record = initialState.record;
       state.points = initialState.points;
+      state.current_type = initialState.current_type;
+    },
+    setCurrentType: (state, action) => {
+      // console.warn("recordReducer >> setting current type", action.payload);
+      const current_type = current(state).sealtypes.find(el => el.id === action.payload);
+      state.current_type = current_type;
     },
     writePoints: (state, action) => {
-      console.warn("recordSlice updating points", state.record, action);
+      // console.warn("recordReducer >> updating points", state.record, action);
       const {state_name, state_value} = action.payload;
       let serilized = serializePoints(state_name, state_value)
       state.record[state_name] = serilized;
       _updatePoints(current(state).record);
     },
     resetPoints: (state, action) => {
-      console.warn("pointsSlice reseting points", action.payload);
+      // console.warn("recordReducer >> reseting points", action.payload);
       state.points[action.payload] = initialState.points[action.payload];
     },
     updatePoints: (state, action) => {
-      console.warn("pointsSlice updating points",action, current(state).points);
+      // console.warn("recordReducer >> updating points",action, current(state).points);
       const {state_name, state_value} = action.payload;
       const refreshFunc = {
         'test_press': refreshPressHW,
@@ -39,26 +51,35 @@ const recordSlice = createSlice({
       state.points[state_name] = refreshFunc(current(state).points[state_name], state_value);
     },
   },
-  extraReducers(builder) {
-    builder
-      .addCase(readRecord.fulfilled,  (state, action) => 
-      {
-        state.record = action.payload.record;
-        state.points = action.payload.points;
-      })
-      .addCase(writeRecord.fulfilled, (state, action) => 
-      {
-        state.record = action.payload;
-        state.is_updated = !state.is_updated;
-      })
-      .addCase(deleteRecord.pending, (state, action) =>
-      {
-        state.record = initialState.record;
-        state.points = initialState.points;
-      })
+  extraReducers(builder) { builder
+    .addCase(readDictionaries.fulfilled, (state, action) => {
+      state.sealtypes = action.payload;
+    })
+    .addCase(readRecord.fulfilled, (state, action) => 
+    {
+      // console.warn("recordReducer >> reading record");
+      state.record = action.payload.record;
+      state.points = action.payload.points;
+      state.current_type = state.sealtypes.find(el => el.id === state.record.sealtype) || SEALTYPE;
+      console.warn(current(state).current_type);
+    })
+    .addCase(writeRecord.fulfilled, (state, action) => 
+    {
+      state.record = action.payload;
+      state.is_updated = !state.is_updated;
+    })
+    .addCase(deleteRecord.pending, (state) =>
+    {
+      state.record = initialState.record;
+      state.points = initialState.points;
+    })
   }
 });
 
+export const readDictionaries = createAsyncThunk(
+  'record/readDictionaries',
+  async() => await helperReadSealTypes()
+);
 export const readRecord = createAsyncThunk(
   'record/readRecord',
   async(rec_id) => {
@@ -85,7 +106,7 @@ export const deleteRecord = createAsyncThunk(
     resetRecord();
   }
 );
-export const { resetRecord, writePoints, resetPoints, updatePoints } = recordSlice.actions;
+export const { resetRecord, setCurrentType, writePoints, resetPoints, updatePoints } = recordSlice.actions;
 export default recordSlice.reducer;
 
 const _updatePoints = (record) => {

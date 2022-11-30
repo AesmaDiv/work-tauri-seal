@@ -11,9 +11,9 @@ export async function getPointsFromRecord(record) {
     let press_json = record.test_press;
     let power_json = record.test_power;
 
-    console.warn(`getPointsFromRecord >>
-      \tPRESS comes from ${press_json ? 'json' : 'raw'}
-      \tPOWER comes from ${power_json ? 'json' : 'raw'}`);
+    // console.warn(`getPointsFromRecord >>
+    //   \tPRESS comes from ${press_json ? 'json' : 'raw'}
+    //   \tPOWER comes from ${power_json ? 'json' : 'raw'}`);
 
     const press_data = press_json ?
       JSON.parse(press_json.replaceAll("#", '"')) :

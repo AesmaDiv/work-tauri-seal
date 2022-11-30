@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextField, MenuItem } from "@mui/material";
+import { TextField, MenuItem, Tooltip } from "@mui/material";
 
 
 /** Компонент универсального поля данных */
@@ -10,8 +10,8 @@ export default function DataField(props) {
     setValue(props.value || '');
   }, [props])
 
-  const _handleChange = (evt) => {
-    let new_value = evt.target.value;
+  const _handleChange = (e) => {
+    let new_value = e.target.value;
     setValue(new_value);
     props.onValueChange && props.onValueChange(new_value);
   }
@@ -23,7 +23,9 @@ export default function DataField(props) {
   // console.log("***DATA-FIELD RENDER***");
   return (
     <TextField
-      key={props.data?.name} 
+      error={props?.required && !value}
+      required={props?.required}
+      key={props.data?.name ? 'required' : ''} 
       name={props.data?.name} 
       label={props.data?.label}
       value={value}

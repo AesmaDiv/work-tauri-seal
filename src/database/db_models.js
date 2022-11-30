@@ -11,6 +11,12 @@ export const POINTS_STRUCT = {
     thrust: [],
   },
 };
+export const SEALTYPE = {
+  id: '',
+  limit_pwr: '',
+  limit_tmp: '',
+  limit_thr: ''
+};
 // /** Структура данных об испытаниях общая */
 // export class RecordData {
 //   constructor(power_data, press_top, press_btm) {

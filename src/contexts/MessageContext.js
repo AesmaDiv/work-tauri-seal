@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from 'react';
+import { useState, useRef, useContext, createContext } from 'react';
 import { Snackbar } from '@mui/material';
 import { Alert } from '@mui/material';
 
@@ -11,14 +11,13 @@ const MessageContext = createContext();
 export const useMessageContext = () => useContext(MessageContext);
 
 export default function MessageProvider({children}) {
+  const message = useRef('Ready');
+  const severity = useRef('success');
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState({
-    text: 'Initial message',
-    severity: 'success'
-  });
 
-  const showMessage = (message, type="success") => {
-    setMessage({text: message, severity: type});
+  const showMessage = (message_props) => {
+    message.current = message_props.text;
+    severity.current = message_props.severity;
     setOpen(true);
   };
 
@@ -27,7 +26,7 @@ export default function MessageProvider({children}) {
     <MessageContext.Provider value={{showMessage}}>
       {children}
       <Snackbar open={open} onClose={() => setOpen(false)} autoHideDuration={TIMEOUT} anchorOrigin={POSITION}>
-        <Alert severity={message.severity}>{message.text}</Alert>
+        <Alert severity={severity.current}>{message.current}</Alert>
       </Snackbar>
     </MessageContext.Provider>
   )

@@ -4,6 +4,23 @@ export function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+export const nextDividingOn = (value, divider) => {
+  if (value) {
+    let exp = value.toExponential(2);
+    let pow = +exp.slice(exp.indexOf('e') + 1) - 1;
+    let val = Math.ceil(
+      +exp
+        .slice(0, 3)
+        .replace('.','') / divider
+    ) * divider * Math.pow(10, pow);
+    console.log(exp, pow, val);
+
+    return val;
+  } else {
+    return 10;
+  }
+
+}
 export function getCurrentDate() {
   return new Date().toLocaleString("ru").replace(',','');
 }
