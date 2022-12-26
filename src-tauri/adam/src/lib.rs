@@ -7,7 +7,7 @@ pub mod models;
 
 // const TCP_ADDRESS: &str = "10.10.10.10:502";
 const UDP_ADDRESS: &str = "10.10.10.3:5168";
-const CONNECT_TIMEOUT: u64 = 100;
+const CONNECT_TIMEOUT: u64 = 50;
 
 
 pub fn read<T: Convert  + SlotParam>(address: &str, endian: Endian) -> Option<T> {

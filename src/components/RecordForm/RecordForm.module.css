@@ -9,14 +9,16 @@
   color: white;
   overflow: hidden;
 }
-form {
+.datafields, .buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 36px;
+  column-gap: 20px;
+}
+.datafields {
   overflow: visible;
   height: fit-content;
-  display: grid;
-  grid-auto-rows: minmax(0px, 20px);
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(10,1fr);
-  column-gap: 20px;
+  grid-template-rows: repeat(11,1fr);
   row-gap: 20px;
   grid-auto-flow: column;
   padding-top: 10px;

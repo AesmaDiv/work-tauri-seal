@@ -13,7 +13,6 @@ export const nextDividingOn = (value, divider) => {
         .slice(0, 3)
         .replace('.','') / divider
     ) * divider * Math.pow(10, pow);
-    console.log(exp, pow, val);
 
     return val;
   } else {
@@ -25,6 +24,12 @@ export function getCurrentDate() {
   return new Date().toLocaleString("ru").replace(',','');
 }
 
+export function decimal2time(minutes_decimal) {
+  let result = new Date(null)
+  result.setSeconds(minutes_decimal * 60);
+  return result.toISOString().slice(11,19);
+}
+
 export function createObj(keys) {
   return keys.reduce((obj, key) => {
     obj[key] = []; 
@@ -34,7 +39,6 @@ export function createObj(keys) {
 
 export function roundArray(floats, decnum) {
   let result = floats.map(x => roundValue(x, decnum));
-  console.log(result);
   return result;
 }
 

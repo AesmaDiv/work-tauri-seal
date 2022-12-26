@@ -1,4 +1,4 @@
-import { getPointsData, _createPressPoints, _deserializePoints } from "../database/db_funcs";
+import { _createPressPoints, _deserializePoints } from "../database/db_funcs";
 
 
 export const POINTS_MAX = 180;
@@ -7,7 +7,7 @@ export const PressProps = {
   TRACKED_STATE: 'test_press',
 }
 export const PRESS_DATANAMES = [
-  {name: 'time',     label: 'Время испытания'},
+  {name: 'time',      label: 'Время испытания'},
   {name: 'press_sys', label: 'Давление в системе, кгс/м2'},
   {name: 'press_top', label: 'Давление верхней диафрагмы, кгс/м2'},
   {name: 'press_btm', label: 'Давление нижней диафрагмы, кгс/м2'}

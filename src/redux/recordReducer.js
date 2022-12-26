@@ -32,9 +32,9 @@ const recordSlice = createSlice({
     },
     writePoints: (state, action) => {
       // console.warn("recordReducer >> updating points", state.record, action);
-      const {state_name, state_value} = action.payload;
-      let serilized = serializePoints(state_name, state_value)
-      state.record[state_name] = serilized;
+      const points_name = action.payload;
+      let serilized = serializePoints(points_name, current(state).points[points_name])
+      state.record[points_name] = serilized;
       _updatePoints(current(state).record);
     },
     resetPoints: (state, action) => {
@@ -61,7 +61,6 @@ const recordSlice = createSlice({
       state.record = action.payload.record;
       state.points = action.payload.points;
       state.current_type = state.sealtypes.find(el => el.id === state.record.sealtype) || SEALTYPE;
-      console.warn(current(state).current_type);
     })
     .addCase(writeRecord.fulfilled, (state, action) => 
     {

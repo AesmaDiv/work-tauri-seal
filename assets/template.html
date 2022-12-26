@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=210mm, height=297mm, initial-scale=1.0"> -->
+    <style>
+        body {
+            width: 210mm;
+            height: 295mm;
+            background-color: rgb(255,255,255);
+            --border-style: 1px solid black;
+            /* border: var(--border-style); */
+            font-size: small;
+            position: relative;
+        }
+        p {
+            margin: 2px;
+            font-weight: 600;
+        }
+        /* ЗАГОЛОВОК */
+        header {
+            width: 100%;
+            height: 3%;
+            display: grid;
+            grid-template-columns: 37% 26% 37%;
+            grid-template-rows: 100%;
+            align-items: flex-start;
+        }
+        #header-pump-type {
+            justify-self: stretch;
+            text-align: start;
+        }
+        #header-title {
+            height: 100%;
+            justify-self: stretch;
+            text-align: center;
+            vertical-align: middle;
+            display: grid;
+            grid-template-columns: 20% auto;
+            column-gap: 0;
+        }
+        #header-title-logo {
+            height: 70%;
+            width: auto;
+        }
+        #header-title-company {
+            display: inline;
+            font-weight: 800;
+            font-size: 16px;
+            text-align: center;
+        }
+        #header-test-time {
+            justify-self: stretch;
+            text-align: end;
+        }
+        /* СОДЕРЖАНИЕ */
+        main {
+            width: 100%;
+            height: auto;
+            font-size: smaller;
+        }
+        #pump-info, #test-info {
+            display: grid;
+            grid-template-rows: repeat(4, auto);
+            grid-template-columns: 20% 30% 20% 30%;
+            margin-left: 5%;
+            grid-auto-flow: column;
+            justify-content: start;
+            justify-items: start;
+        }
+        #test-info {
+            grid-template-rows: repeat(7, auto);
+        }
+        #graph-container {
+            width: 100%;
+            height: 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto;
+            background-color: bisque;
+            border: 1px solid black;
+        }
+        #test-table, #delta-table, #vibr-table {
+            display: grid;
+            grid-template-columns: 50px repeat(12, calc((100% - 50px) / 12));
+            margin: 5px 0px;
+            justify-items: stretch;
+            border-bottom: var(--border-style);
+            border-right: var(--border-style);
+        }
+        .test-table{
+            border-top: var(--border-style);
+            border-left: var(--border-style);
+            padding: 0px 5px;
+        }
+        .test-table.label {
+            text-align: center;
+        }
+        .test-table.rangevalue, .test-table.nomvalue {
+            font-weight: bold;
+        }
+        .test-table.nomvalue{
+            text-decoration: underline;
+        }
+        .result-tables-container {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+        }
+        .result-table {
+            display: grid;
+            justify-items: stretch;
+            width: 49%;
+            grid-template-rows: repeat(5, auto);
+            grid-template-columns: 200px repeat(2, calc((100% - 200px) / 2));
+            grid-auto-flow: column;
+            border-bottom: var(--border-style);
+            border-right: var(--border-style);
+        }
+        #result-bottom {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        /* ОСНОВАНИЕ */
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 50%);
+            align-items: flex-start;
+            grid-auto-flow: column;
+            font-size: smaller;
+            height: 10em;
+        }
+        .signatures {
+            width: 40%;
+            margin-left: 7em;
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            grid-auto-flow: row;
+            row-gap: 4em;
+        }
+    </style>
+   <title>Document</title>
+</head>
+<body>
+    <header>
+        <div id="header-pump-type">№ {{ info_test['ID'] }}</div>
+        <div id="header-title">
+            <img id="header-title-logo" src="logo.png" alt="logo">
+            <div id="header-title-company">ЛУКОЙЛ ЭПУ СЕРВИС</div>
+        </div>
+        <div id="header-test-time">{{ info_test['DateTime'] }}</div>
+    </header>
+    <main>
+        <p>Информация по насосу:</p>
+        <div id="pump-info">
+            <span class="info-label">Производитель</span>
+            <span class="info-label">Типоразмер</span>
+            <span class="info-label">Исполнение</span>
+            <span class="info-label">Заводской номер</span>
+
+
+            <span class="info-value">{{info_type.ProducerName}}</span>
+            <span class="info-value">{{info_type.Name}}</span>
+            <span class="info-value">{{info_pump.GroupName}} / {{info_pump.MaterialName}} / {{info_pump.SizeName}}</span>
+            <span class="info-value">{{info_pump.Serial }}</span>
+            
+            <span class="info-label">Длина корпуса</span>
+            <span class="info-label">Кол-во ступеней</span>
+            <span class="info-label">Тип соединения</span>
+            <span class="info-label"></span>
+            
+            <span class="info-value">{{info_pump.Length}}</span>
+            <span class="info-value">{{info_pump.Stages}}</span>
+            <span class="info-value">{{info_pump.ConnectionName}}</span>
+            <span class="info-label"></span>
+        </div>
+        <p>Информация по испытанию:</p>
+        <div id="test-info">
+            <span class="info-label">Дата теста</span>
+            <span class="info-label">Дата сборки</span>
+            <span class="info-label">Заказчик</span>
+            <span class="info-label">Собственник</span>
+            <span class="info-label">Месторождение</span>
+            <span class="info-label">Куст</span>
+            <span class="info-label">Скважина</span>
+            
+            <span class="info-value">{{info_test.DateTime}}</span>
+            <span class="info-value">{{info_test.DateAssemblied}}</span>
+            <span class="info-value">{{info_test.CustomerName}}</span>
+            <span class="info-value">{{info_test.OwnerName}}</span>
+            <span class="info-value">{{info_test.Location}}</span>
+            <span class="info-value">{{info_test.Lease}}</span>
+            <span class="info-value">{{info_test.Well}}</span>
+            
+            <span class="info-label">Наряд-заказ №</span>
+            <span class="info-label">Суткопробег</span>
+            <span class="info-label">Статус секции</span>
+            <span class="info-label">Тип секции</span>
+            <span class="info-label">Диаметр вала, мм</span>
+            <span class="info-label">Вылет вала, мм</span>
+            <span class="info-label">Заглубление вала, мм</span>
+            
+            <span class="info-value">{{info_test.OrderNum}}</span>
+            <span class="info-value">{{info_test.DaysRun}}</span>
+            <span class="info-value">{{info_test.SectionStatusName}}</span>
+            <span class="info-value">{{info_test.SectionTypeName}}</span>
+            <span class="info-value">{{info_test.ShaftDiameter}}</span>
+            <span class="info-value">{{info_test.ShaftOut}}</span>
+            <span class="info-value">{{info_test.ShaftIn}}</span>
+        </div>
+        <p>Результаты испытания:</p>
+        <div id="graph-container">
+            <img id="graph-image" src="graph_image.jpg" alt="graph image">
+        </div>
+        <div id="test-table">
+            <span class="test-table label">№ точки</span>
+            <span class="test-table label">Q, м3/сут</span>
+            <span class="test-table label">H, м</span>
+            <span class="test-table label">H / ст., м</span>
+            <span class="test-table label">H (эт.), м</span>
+            <span class="test-table label">Δ H, %</span>
+            <span class="test-table label">N, кВт</span>
+            <span class="test-table label">N / ст., кВт</span>
+            <span class="test-table label">N (эт.), кВт</span>
+            <span class="test-table label">Δ N, %</span>
+            <span class="test-table label">μ, %</span>
+            <span class="test-table label">μ (эт.), %</span>
+            <span class="test-table label">Δ μ, %</span>
+
+            {% set nominal_eff = 0.0 %}
+            {% for i in range(point_tst | length) %}
+                {% set delta_lft = "" %}
+                {% set delta_pwr = "" %}
+                {% set delta_eff = "" %}
+                {% set valuestyle = 'font-weight: normal' %}
+                {% if info_type['Min'] <= point_tst[i].Flw <= info_type['Max'] %}
+                    {% set delta_lft = (100 * (-1 + point_tst[i].Lft / point_etl[i].Lft)) | round(2) %}
+                    {% set delta_pwr = (100 * (-1 + point_tst[i].Pwr / point_etl[i].Pwr)) | round(3) %}
+                    {% set delta_eff = (point_tst[i].Eff - point_etl[i].Eff) | round(2) %}
+                    {%set classname = 'rangevalue' %}
+                {% endif %}
+                <span class="test-table {{classname}}">{{i + 1}}</span>
+                <span class="test-table {{classname}}">{{point_tst[i].Flw | round(1)}}</span>
+                <span class="test-table {{classname}}" style="color: blue;">{{(point_tst[i].Lft * info_pump['Stages']) | round(2)}}</span>
+                <span class="test-table {{classname}}" style="color: blue;">{{point_tst[i].Lft | round(2)}}</span>
+                <span class="test-table {{classname}}" style="color: blue;">{{point_etl[i].Lft | round(2)}}</span>
+                <span class="test-table {{classname}}" style="color: blue;">{{ delta_lft }}</span>
+                <span class="test-table {{classname}}" style="color: red;">{{(point_tst[i].Pwr * info_pump['Stages']) | round(3)}}</span>
+                <span class="test-table {{classname}}" style="color: red;">{{point_tst[i].Pwr | round(3)}}</span>
+                <span class="test-table {{classname}}" style="color: red;">{{point_etl[i].Pwr | round(3)}}</span>
+                <span class="test-table {{classname}}" style="color: red;">{{ delta_pwr }}</span>
+                <span class="test-table {{classname}}" style="color: green;">{{point_tst[i].Eff | round(3)}}</span>
+                <span class="test-table {{classname}}" style="color: green;">{{point_etl[i].Eff | round(2)}}</span>
+                <span class="test-table {{classname}}" style="color: green;">{{ delta_eff }}</span>
+            {% endfor %}
+        </div>
+        {% set vars = namespace(style = 'color: green;', result = 'ГОДЕН') %}
+        <div class="result-tables-container">
+            <div class="result-table">
+                <span class="test-table label">параметр</span>
+                <span class="test-table title">Отклонение оптимального расхода, %:</span>
+                <span class="test-table title">Отклонение напора, %:</span>
+                <span class="test-table title">Отклонение мощности, %:</span>
+                <span class="test-table title">Отклонение КПД, %:</span>
+    
+                <span class="test-table label">допуск</span>
+                {% for name in ('flw', 'lft', 'pwr', 'eff') %}
+                    <span class="test-table">{{limits[name][0]}} .. {{limits[name][1]}}</span>
+                {% endfor %}
+                <span class="test-table label">данные</span>
+                {% for name in ('flw', 'lft', 'pwr', 'eff') %}
+                    {% if deltas[name] and limits[name][0] <= deltas[name] <= limits[name][1] %}
+                        {% set vars.style = 'color: green;' %}
+                    {% else %}
+                        {% set vars.style = 'color: red;' %}
+                        {% set vars.result = 'НЕ ГОДЕН' %}
+                    {% endif %}
+                    <span class="test-table" style="{{vars.style}}" >{{deltas[name]}}</span>
+                {% endfor %}
+            </div>
+            <div class="result-table">
+                <span class="test-table label">параметр</span>
+                <span class="test-table title">Вибрация, мм:</span>
+                <span class="test-table title">Радиальное биение, мм:</span>
+                <span class="test-table title">Момент проворота, Н*м:</span>
+                <span class="test-table title">Энергоэффективность</span>
+
+                <span class="test-table label">допуск</span>
+                {% for name in ('vbr', 'wob', 'mom') %}
+                    <span class="test-table"> <= {{limits[name]}} </span>
+                {% endfor %}
+                <span class="test-table"></span>
+                <span class="test-table label">данные</span>
+                {% for name in ('vbr', 'wob', 'mom') %}
+                    {% if deltas[name] and (deltas[name] <= limits[name]) %}
+                        {% set vars.style = 'color: green;' %}
+                    {% else %}
+                        {% set vars.style = 'color: red;' %}
+                        {% set vars.result = 'НЕ ГОДЕН' %}
+                    {% endif %}
+                    <span class="test-table" style="{{vars.style}}">{{deltas[name]}}</span>
+                {% endfor %}
+                <span class="test-table">{{efficiency}}</span>
+            </div>
+        </div>
+        <div id="result-bottom">
+            <span><i>
+                * Насос испытывался на воде (1000 кг/м3) в горизонтальном положении.<br>
+                * Данные нормализированы на 2910 об/мин.
+            </i></span>
+            <span style="align-items: flex-end;">
+                Итог: {{vars.result}}
+            </span>
+        </div>
+    </main>
+    <footer>
+        <div class="comments">
+            <p>Примечания:</p>
+            <span>
+                Должен заметить, что мы продолжаем мониторинг, и должен также заметить,
+                что это не первый случай, когда после предостережений, высказанных в том
+                числе и членами нашей комиссии, такие компании, как Google, удаляют
+                вредоносный контент, который, по сути, является противоправным.
+            </span>
+        </div>
+        <div class="signatures">
+            <p>Испытатель:</p>
+            <p>_______________________________</p>
+            <p>Мастер:</p>
+            <p>_______________________________</p>
+        </div>
+    </footer>
+</body>
+</html>

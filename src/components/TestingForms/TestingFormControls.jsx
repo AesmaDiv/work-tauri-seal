@@ -22,10 +22,8 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
   // состояние испытания и callback переключения
   const is_reading = useSelector(state => state.testingReducer.is_reading);
   const is_testing = useSelector(state => state.testingReducer[tracked_state]);
-  const points = useSelector(state => state.recordReducer.points[tracked_state]);
 
   const dispatch = useDispatch();
-
 
   /** Обработчик переключения состояния испытания */
   const _handleChangeRecordMode = (_, new_state) => {
@@ -38,12 +36,9 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
     }
   }
   /** Обработчик кнопки сохранения испытания давления диафрагм */
-  const _handleSave = (event) => {
+  const _handleSave = () => {
     // если запущен тест - не сохранять
-    is_testing || dispatch(writePoints({
-      state_name: tracked_state,
-      state_value: points
-    }));
+    is_testing || dispatch()(writePoints(tracked_state));
   }
 
   const color = name === "Pressure" ? "green" : "red";

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createContainer } from 'react-tracked';
 import { getHardwareValues } from '../shared/funcs_common';
@@ -41,7 +41,7 @@ function HardwareContext() {
         // Здесь должна быть функция чтения данных с оборудования,
         // а пока тут добавление случайных значений
         getHardwareValues(hw_values)
-          .then(result => setValues((prev) => ({...prev, ...result})));
+          .then(result => startTransition(() =>setValues((prev) => ({...prev, ...result}))));
       }
     }, PULLING_RATE);
     return (() => clearTimeout(timer));

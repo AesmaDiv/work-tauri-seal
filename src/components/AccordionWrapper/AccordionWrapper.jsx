@@ -36,8 +36,6 @@ export default function AccordionWrapper({direction, children}) {
     </Accordion>
     )
   }
-    
-
 
   return (
     <Stack direction={direction} sx={{width: '100%', margin: '10px', gap: 1}}>

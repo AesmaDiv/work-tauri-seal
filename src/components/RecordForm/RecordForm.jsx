@@ -1,4 +1,4 @@
-import { Button, FormControl } from '@mui/material';
+import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
 import SealTypeInfo from './RFSealTypeInfo';
@@ -30,34 +30,26 @@ export default function RecordForm() {
       return obj;
     }, {});
     result.id = record.id;
-    result.sealtype = parseInt(data.get('id'), 10);
+    result.sealtype   = parseInt(data.get('id'), 10);
+    result.shaft_rotation   = parseInt(data.get('shaft_rotation'), 10);
+    result.shaft_connection = parseInt(data.get('shaft_connection'), 10);
 
     return result;
   }
-  function InvalidMsg(textbox) {
-    if (textbox.value == '') {
-        textbox.setCustomValidity('Lütfen işaretli yerleri doldurunuz');
-    }
-    else if (textbox.validity.typeMismatch){
-        textbox.setCustomValidity('Lütfen işaretli yere geçerli bir email adresi yazınız.');
-    }
-    else {
-       textbox.setCustomValidity('');
-    }
-    return true;
-}
+
+  const buttons_style = {width: '100%', mt: '1px', pb: 0}
   console.log("*** RECORD-INFO RENDER ***");
   return (
     <div className={cls.main}>
-      <form className={cls.datafields} onSubmit={_handleSubmit} onReset={_handleReset} aria-errormessage="msgID">
-	      <RecordInfo record={record} />
-        <SealTypeInfo />
-        <Button key='btn-reset-testinfo' type='reset' variant='contained' size='small' color='warning'
-          sx={{ gridColumn: 4, gridRow: 6, gridRowEnd: 8, mt: "1px", mb: "41px", pb: 0}}
-        >Сброс</Button>
-        <Button key='btn-save-testinfo' type='submit' variant='contained' size='small' color='primary'
-          sx={{ gridColumn: 4, gridRow: 8, gridRowEnd: 10, mt: "1px", mb: "41px", pb: 0}}
-        >Сохранить</Button>
+      <form onSubmit={_handleSubmit} onReset={_handleReset}>
+        <div className={cls.datafields}>
+          <RecordInfo record={record} />
+          <SealTypeInfo />
+        </div>
+        <div className={cls.buttons}>
+          <Button sx={{...buttons_style, gridColumn: 1}} variant='contained' size='small' key='btn-reset-testinfo' type='reset' color='warning'>Сброс</Button>
+          <Button sx={{...buttons_style, gridColumn: 4}} variant='contained' size='small' key='btn-save-testinfo' type='submit' color='primary'>Сохранить</Button>
+        </div>
       </form>
     </div>
   );

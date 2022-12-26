@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextField, MenuItem, Tooltip } from "@mui/material";
+import { TextField, MenuItem } from "@mui/material";
 
 
 /** Компонент универсального поля данных */
@@ -25,7 +25,7 @@ export default function DataField(props) {
     <TextField
       error={props?.required && !value}
       required={props?.required}
-      key={props.data?.name ? 'required' : ''} 
+      key={props.data?.name} 
       name={props.data?.name} 
       label={props.data?.label}
       value={value}
