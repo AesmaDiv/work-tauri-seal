@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { helperReadRecord, helperUpdateRecord, helperDeleteRecord,
          helperReadSealTypes, helperReadDictionary } from "../database/DatabaseHelper";
-import { refreshPressHW } from "../configs/cfg_press";
-import { refreshPowerHW } from "../configs/cfg_power";
+import { refreshPressHW } from "../shared/cfg_press";
+import { refreshPowerHW } from "../shared/cfg_power";
 import { getPointsFromRecord, serializePoints} from "../database/db_funcs";
 import { POINTS_STRUCT, SEALTYPE } from "../database/db_models";
 

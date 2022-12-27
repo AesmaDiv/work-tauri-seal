@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Area } from 'recharts';
 import { Legend, ResponsiveContainer } from 'recharts';
 import { Stack } from '@mui/system';
 
-import { PRESS_LIMITS, POINTS_MAX, AXIS_MAX } from '../../../configs/cfg_press';
+import { PRESS_LIMITS, POINTS_MAX, AXIS_MAX } from '../../../shared/cfg_press';
 import { PRESS_STYLE } from './_styles';
 import { addLimits } from '../../../shared/funcs_common';
 

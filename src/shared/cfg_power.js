@@ -27,16 +27,3 @@ export function refreshPowerHW(points, hw_values) {
     y2: hw_values.temper
   }];
 }
-export function refreshPowerHW(points, hw_values) {
-  console.warn("refreshPowerHW", points, hw_values);
-  const len = points.chart.length;
-  if (len < POINTS_MAX) {
-    points = { ...points, chart: }
-    let press_top = [...points.press_top, { x: len, y: hw_values.press_top }];
-    let press_btm = [...points.press_btm, { x: len, y: hw_values.press_btm }];
-
-    return { press_top, press_btm };
-  }
-
-  return points;
-}

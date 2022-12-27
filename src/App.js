@@ -8,8 +8,8 @@ import AccordionWrapper from './components/AccordionWrapper/AccordionWrapper';
 import { HardwareProvider } from './contexts/HardwareContext';
 import MessageProvider from './contexts/MessageContext';
 
-import { PressProps, PRESS_DATANAMES } from './configs/cfg_press';
-import { PowerProps, POWER_DATANAMES } from './configs/cfg_power';
+import { PressProps, PRESS_DATANAMES } from './shared/cfg_press';
+import { PowerProps, POWER_DATANAMES } from './shared/cfg_power';
 
 import { useDispatch } from 'react-redux';
 import { readDictionaries } from './redux/recordReducer';

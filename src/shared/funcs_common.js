@@ -97,32 +97,8 @@ export async function getHardwareValues(hw_values) {
       temper:     roundValue(adam_data[0].slot0[5] * 5.0 / 65535, 4),
     },
   }
-  result.test_power.power = Math.round(result.test_power.torque * result.test_power.rpm / 63.025 * 100) / 100;
+  result.test_power.power = roundValue(result.test_power.torque * result.test_power.rpm / 63.025, 8);
   console.warn("RESULT >>", result);
 
   return result;
-}
-
-function _generateRandom(hw_values) {
-  return {
-    test_press: {
-      time:       hw_values.test_press.time + 1,
-      press_sys:  _generateNextValue(hw_values.test_press.press_sys),
-      press_top:  _generateNextValue(hw_values.test_press.press_top),
-      press_btm:  _generateNextValue(hw_values.test_press.press_btm),
-    },
-    test_power: {
-      time:       hw_values.test_power.time + 1,
-      rpm:        _generateNextValue(hw_values.test_power.rpm),
-      torque:     _generateNextValue(hw_values.test_power.torque),
-      temper:     _generateNextValue(hw_values.test_power.temper),
-    },
-  }
-}
-/** Функция генерирования следующего случайного значения */
-function _generateNextValue(prev) {
-  let x = Math.random() - 0.5;
-  x = x < 0 ? -x : x;
-  let result = (prev + x) > 2.5 ? prev - x : prev + x;
-  return Math.round(result * 100) / 100;
 }
