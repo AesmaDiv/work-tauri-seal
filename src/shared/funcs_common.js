@@ -59,26 +59,6 @@ export function generateRandomPressValues() {
   })();
 }
 
-/** Функция добавления информации для пределов */
-export function addLimits(array, limits, length) {
-  if (!array) return [];
-
-  let result = [...array];
-  const props = {
-    limit_top: [limits[1], limits[1] + 0.5],
-    limit_btm: [0, limits[0]]
-  }
-  let first = result.findIndex(el => el.x === 0);
-  if (first >= 0) {
-    result[first] = {...result[first], ...props};
-  } else {
-    result.unshift({x: 0, ...props})
-  }
-  result.push({x: length, ...props})
-
-  return result;
-}
-
 /** Функция генерирования случайных значений для эмуляции работы оборудования */
 export async function getHardwareValues(hw_values) {
   const adam_data = await invoke('read_adam', {address: '10.10.10.11:502'});

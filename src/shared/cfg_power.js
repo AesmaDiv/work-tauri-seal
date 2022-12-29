@@ -19,11 +19,13 @@ export const POWER_LIMITS = {
 }
 
 export function refreshPowerHW(points, hw_values) {
-  console.warn("refreshPowerHW", points, hw_values);
-  // добавление точки с приборов в массив
-  return [...points.chart, {
-    x: points.chart.length, //ttime,
-    y1: hw_values.power,
-    y2: hw_values.temper
+  // console.warn("refreshPowerHW", points, hw_values);
+  const len = points.length;
+  if (len < POINTS_MAX) points = [...points, {
+    time: len,
+    power:  hw_values.power + 0.2,
+    temper: hw_values.temper + 23,
   }];
+
+  return points;
 }

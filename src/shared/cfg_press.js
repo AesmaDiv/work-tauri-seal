@@ -23,14 +23,30 @@ export const AXIS_MAX = {
 };
 
 export function refreshPressHW(points, hw_values) {
-  console.warn("refreshPressHW", points, hw_values);
-  const len = points.press_top.length;
-  if (len < POINTS_MAX) {
-    let press_top = [...points.press_top, { x: len, y: hw_values.press_top }];
-    let press_btm = [...points.press_btm, { x: len, y: hw_values.press_btm }];
-
-    return { press_top, press_btm };
-  }
+  // console.warn("refreshPressHW", points, hw_values);
+  const len = points.length;
+  if (len < POINTS_MAX) points = [...points, {
+    time: len,
+    press_top: hw_values.press_top,
+    press_btm: hw_values.press_btm,
+  }];
 
   return points;
+}
+
+/** Функция добавления информации для пределов */
+export function addLimits(points) {
+  return [{
+    time: 0,
+    press_top_limit_up: [PRESS_LIMITS.top[1], AXIS_MAX.top],
+    press_top_limit_dw: [0, PRESS_LIMITS.top[0]],
+    press_btm_limit_up: [PRESS_LIMITS.btm[1], AXIS_MAX.btm],
+    press_btm_limit_dw: [0, PRESS_LIMITS.btm[0]],
+  }, ...points, {
+    time: POINTS_MAX,
+    press_top_limit_up: [PRESS_LIMITS.top[1], AXIS_MAX.top],
+    press_top_limit_dw: [0, PRESS_LIMITS.top[0]],
+    press_btm_limit_up: [PRESS_LIMITS.btm[1], AXIS_MAX.btm],
+    press_btm_limit_dw: [0, PRESS_LIMITS.btm[0]],
+  }];
 }

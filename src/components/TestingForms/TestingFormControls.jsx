@@ -38,7 +38,7 @@ export default function TestingFormControls({name, tracked_state, data_fields}) 
   /** Обработчик кнопки сохранения испытания давления диафрагм */
   const _handleSave = () => {
     // если запущен тест - не сохранять
-    is_testing || dispatch()(writePoints(tracked_state));
+    is_testing || dispatch(writePoints(tracked_state));
   }
 
   const color = name === "Pressure" ? "green" : "red";

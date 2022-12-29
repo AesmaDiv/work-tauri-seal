@@ -27,6 +27,7 @@ export default function PowerConsumptionCharts(props) {
     fill: props?.for_protocol ? 'black' : 'white'
   }
 
+  // console.warn("Power points %o", points);
   console.log("%c --- CHARTS RENDER %c Power Consumption ---", 'color: #9999ff', 'color: red');
   return (
     <Stack {...common}>
@@ -63,7 +64,7 @@ function PowerChart(props) {
           { type: 'line', color: clr_tmp, value: 'температура'}
         ]} />
 
-        <XAxis {...POWER_STYLE.props_axis} domain={[0, POINTS_MAX]} dataKey="x" tickCount={6}
+        <XAxis {...POWER_STYLE.props_axis} domain={[0, POINTS_MAX]} dataKey="time" tickCount={6}
           stroke={props.fill} label={{...POWER_STYLE.props_label_x, fill: props?.fill}}/>
         <YAxis {...POWER_STYLE.props_axis} domain={[0, props.limits.power]} yAxisId="power" orientation="left"
           stroke={props.fill} label={{...POWER_STYLE.props_label_y, angle: -90, value: "мощность, кВт", position: 'insideLeft', fill: props?.fill}}/>
@@ -71,9 +72,9 @@ function PowerChart(props) {
           stroke={props.fill} label={{...POWER_STYLE.props_label_y, angle: 90,  value: "температура, °C", position: 'insideRight', fill: props?.fill}}/>
 
         <Area animationDuration={props?.animation} 
-          dataKey="y1" stroke={clr_pwr} fillOpacity={1} fill="url(#colorPower)" yAxisId="power" />
+          dataKey="power" stroke={clr_pwr} fillOpacity={1} fill="url(#colorPower)" yAxisId="power" />
         <Area animationDuration={props?.animation}
-          dataKey="y2" stroke={clr_tmp} fillOpacity={1} fill="url(#colorTemper)" yAxisId="temper" />
+          dataKey="temper" stroke={clr_tmp} fillOpacity={1} fill="url(#colorTemper)" yAxisId="temper" />
 
       </ComposedChart>
     </ResponsiveContainer>

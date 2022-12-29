@@ -35,7 +35,7 @@ function App() {
             <RecordForm  accordion_key='key_testinfo'  accordion_title='Информация об объекте'/>
             <TestingForm accordion_key='key_testpress' accordion_title='Давление диафрагм' props={PressProps} data_fields={PRESS_DATANAMES}/>
             <TestingForm accordion_key='key_testpower' accordion_title='Потребляемая мощность' props={PowerProps} data_fields={POWER_DATANAMES}/>
-            <Protocol    accordion_key='key_protocol'  accordion_title='Протокол'/>
+            {/* <Protocol    accordion_key='key_protocol'  accordion_title='Протокол'/> */}
           </AccordionWrapper>
         </HardwareProvider>
       </section>
