@@ -24,11 +24,9 @@ function App() {
   console.log("*** APP RENDER ***");
   return (
     <div className="App">
-      <MessageProvider>
-      <AppHeader>
-        <div style={{width: 600}}>Some item</div>
-      </AppHeader>
+      <AppHeader />
       <section className="App-body">
+      <MessageProvider>
         <RecordList/>
         <HardwareProvider>
           <AccordionWrapper direction='column'>
@@ -38,11 +36,11 @@ function App() {
             {/* <Protocol    accordion_key='key_protocol'  accordion_title='Протокол'/> */}
           </AccordionWrapper>
         </HardwareProvider>
+      </MessageProvider>
       </section>
       {/* <footer className="App-footer">
         <StatusBar />
       </footer> */}
-      </MessageProvider>
     </div>
   );
 }

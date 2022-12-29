@@ -26,10 +26,10 @@ export default function Protocol() {
       rows.push(
         <tr key={`test_table_row_${i}`}>
           <td>{i + 1}</td>
-          <td>{roundValue(points.test_power[i].y3, 3)}</td>
-          <td>{roundValue(points.test_power[i].y1, 3)}</td>
-          <td>{roundValue(points.test_power[i].y2, 1)}</td>
-          <td>{decimal2time(points.test_power[i].x)}</td>
+          <td>{roundValue(points.test_power[i].thrust, 3)}</td>
+          <td>{roundValue(points.test_power[i].power, 3)}</td>
+          <td>{roundValue(points.test_power[i].temper, 1)}</td>
+          <td>{decimal2time(points.test_power[i].time)}</td>
         </tr>
       )
     }
@@ -51,7 +51,6 @@ export default function Protocol() {
     )
   }
 
-  console.warn("Protocol points %o", points);
   console.log("*** PROTOCOL RENDER ***");
   return (
     <div className={cls.protocol}>
@@ -64,7 +63,7 @@ export default function Protocol() {
           <div className={cls.header_pump_type}>№ { record.id }</div>
           <div className={cls.header_title}>
             <img src={logo}/>
-            <p>ЭПУ СЕРВИС</p>
+            <p>ООО «ЭПУ СЕРВИС»</p>
             <p>г.Когалым</p>
           </div>
           <div className={cls.header_test_time}>{ record.datetest }</div>

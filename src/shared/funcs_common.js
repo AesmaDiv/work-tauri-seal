@@ -27,6 +27,7 @@ export function getCurrentDate() {
 export function decimal2time(minutes_decimal) {
   let result = new Date(null)
   result.setSeconds(minutes_decimal * 60);
+  console.warn("time", result);
   return result.toISOString().slice(11,19);
 }
 

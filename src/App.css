@@ -18,7 +18,7 @@
   text-align: center;
 }
 
-.App-header {
+.app_header {
   align-items: center;
   width: 100%;
   height: var(--header-height);
